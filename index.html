@@ -289,7 +289,37 @@ Entwickelt mit Fokus auf Datenschutz.
 </div>
 
 </div>
+<div class="card">
+  <h2>Registrieren</h2>
 
+  <form id="registerForm">
+
+    <input
+      type="text"
+      id="name"
+      placeholder="Ihr Name"
+      required
+    >
+
+    <input
+      type="email"
+      id="email"
+      placeholder="E-Mail"
+      required
+    <input
+  type="password"
+  id="password"
+  placeholder="Passwort"
+  required
+>
+
+<button type="submit">
+  Registrieren
+</button>
+
+</form>
+
+</div>
 <footer>
 
 <h2 style="color:white;margin-bottom:15px;">PingCar</h2>
@@ -310,6 +340,13 @@ QR-Code scannen • Fahrer benachrichtigen • Problem lösen
 
 </footer>
 
-</body>
+  <script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+</script>  
+</body>
 </html>
