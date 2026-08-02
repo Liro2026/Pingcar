@@ -1,17 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PingCar</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#f4f7fb;
+color:#222;
+}
+
+header{
+background:linear-gradient(135deg,#0A84FF,#00C2FF);
+color:white;
+padding:80px 20px;
+text-align:center;
+}
+
+header h1{
+font-size:55px;
+margin-bottom:20px;
+}
+
+header p{
+font-size:22px;
+line-height:1.7;
+max-width:800px;
+margin:auto;
+}
+
+.button{
+display:inline-block;
+margin-top:35px;
+padding:18px 40px;
+background:white;
+color:#0A84FF;
+text-decoration:none;
+font-size:20px;
+font-weight:bold;
+border-radius:50px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:60px 20px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+margin-bottom:30px;
+}
+
+h2{
+color:#0A84FF;
+margin-bottom:20px;
+font-size:34px;
+}
+
+.steps{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:20px;
+}
+
+.step{
+background:#eef6ff;
+padding:20px;
+border-radius:15px;
+font-size:18px;
+line-height:1.8;
+}
+
+footer{
+background:#111;
+color:white;
+text-align:center;
+padding:35px;
+margin-top:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
 <header>
 
 <h1>🚗 PingCar</h1>
 
 <p>
 
-Die sichere Lösung, um Fahrzeughalter zu kontaktieren –
-ohne Telefonnummer und ohne persönliche Daten.
+Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.
 
 Scannen Sie einfach den QR-Code und senden Sie eine Benachrichtigung.
 
 </p>
 
-<a class="button" href="#">
+<a href="#" class="button">
 
 Bald verfügbar
 
@@ -19,179 +118,113 @@ Bald verfügbar
 
 </header>
 
-<div class="container">
-
-<div class="phone">
-
-<div class="screen">
-
-<div class="qr"></div>
-
-<h3>Ihr persönlicher QR-Code</h3>
-
-<p>
-
-QR-Code scannen und den Fahrzeughalter sicher benachrichtigen.
-
-</p>
-
-</div>
-z
-</div><div class="card">
+<div class="container"><section class="section">
 
 <h2>So funktioniert PingCar</h2>
 
-<div class="steps">
-
 <div class="step">
-
-<b>1.</b><br><br>
-
-Konto erstellen
-
+<h3>1. Konto erstellen</h3>
+<p>Registrieren Sie sich kostenlos bei PingCar.</p>
 </div>
 
 <div class="step">
-
-<b>2.</b><br><br>
-
-Persönlichen QR-Code erhalten
-
+<h3>2. Persönlichen QR-Code erhalten</h3>
+<p>Jeder Benutzer erhält einen einzigartigen QR-Code.</p>
 </div>
 
 <div class="step">
-
-<b>3.</b><br><br>
-
-QR-Code an Ihrem Fahrzeug anbringen
-
+<h3>3. QR-Code am Fahrzeug anbringen</h3>
+<p>Bringen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug an.</p>
 </div>
 
 <div class="step">
-
-<b>4.</b><br><br>
-
-Jemand scannt den QR-Code
-
+<h3>4. QR-Code scannen</h3>
+<p>Andere Personen können den Code scannen, ohne Ihre Telefonnummer oder persönlichen Daten zu sehen.</p>
 </div>
 
 <div class="step">
-
-<b>5.</b><br><br>
-
-Sie erhalten sofort eine Benachrichtigung
-
+<h3>5. Nachricht erhalten</h3>
+<p>Sie erhalten sofort eine Benachrichtigung in der PingCar-App.</p>
 </div>
 
-</div>
-
-</div><div class="card">
+</section><section class="section">
 
 <h2>Nach dem Scannen</h2>
 
-<div class="steps">
-
 <div class="step">
-
-🚗<br><br>
-
-Ihr Fahrzeug blockiert mich
-
+🚗 <strong>Mein Fahrzeug wird blockiert</strong><br>
+Informieren Sie den Fahrzeughalter schnell und einfach.
 </div>
 
 <div class="step">
-
-💡<br><br>
-
-Ihr Licht ist eingeschaltet
-
+💡 <strong>Das Licht ist eingeschaltet</strong><br>
+Benachrichtigen Sie den Fahrer, bevor die Batterie leer wird.
 </div>
 
 <div class="step">
-
-🚨<br><br>
-
-Ihr Fahrzeug wurde beschädigt
-
+🚨 <strong>Das Fahrzeug wurde beschädigt</strong><br>
+Senden Sie sofort eine Benachrichtigung.
 </div>
 
 <div class="step">
-
-🔑<br><br>
-
-Sie haben etwas vergessen
-
+🔑 <strong>Etwas vergessen</strong><br>
+Der Fahrer kann schnell informiert werden.
 </div>
 
 <div class="step">
-
-✍️<br><br>
-
-Andere Nachricht
-
+✉️ <strong>Andere Mitteilung</strong><br>
+Senden Sie eine kurze Nachricht über PingCar.
 </div>
 
-</div>
+</section>
 
-</div>
-
-<div class="card">
+<section class="section">
 
 <h2>Warum PingCar?</h2>
 
-<p style="font-size:20px;line-height:2;">
-
-✅ Keine Telefonnummer sichtbar<br>
-
-✅ Keine persönlichen Daten<br>
-
-✅ Sichere Kommunikation per QR-Code<br>
-
-✅ Sofortige Benachrichtigung<br>
-
-✅ Datenschutz an erster Stelle<br>
-
-✅ Schnell und einfach
-
-</p>
-
+<div class="step">
+✅ Keine Telefonnummer sichtbar
 </div>
 
-<div class="card">
-
-<h2>Unsere Mission</h2>
-
-<p style="font-size:20px;line-height:2;">
-
-PingCar ermöglicht eine sichere Kommunikation zwischen Autofahrern.
-
-Ein QR-Code genügt, um den Fahrzeughalter zu informieren –
-ohne Telefonnummer und ohne persönliche Daten.
-
-</p>
-
+<div class="step">
+✅ Keine persönlichen Daten
 </div>
+
+<div class="step">
+✅ Sichere Kommunikation über QR-Code
+</div>
+
+<div class="step">
+✅ Sofortige Benachrichtigungen
+</div>
+
+<div class="step">
+✅ Datenschutz nach Schweizer Standard
+</div>
+
+<div class="step">
+✅ Schnell, einfach und sicher
+</div>
+
+</section>
 
 <footer>
 
 <h3>PingCar</h3>
 
 <p>
-
 QR-Code scannen. Fahrer benachrichtigen. Problem lösen.
-
 </p>
 
 <br>
 
 <p>
-
-© 2026 PingCar
-
+© 2026 PingCar. Alle Rechte vorbehalten.
 </p>
 
 </footer>
 
-</body>
+</div>
 
+</body>
 </html>
