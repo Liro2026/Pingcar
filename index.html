@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>PingCar Chat</title>
+<title>PingCar</title>
 
 <style>
+
 *{
 margin:0;
 padding:0;
@@ -15,78 +15,101 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#f3f5f7;
-color:#333;
+background:#f3f7fb;
+color:#222;
 }
 
 header{
-background:linear-gradient(135deg,#0084ff,#00c6ff);
+background:linear-gradient(135deg,#0A84FF,#00C2FF);
 color:white;
+padding:70px 20px;
 text-align:center;
-padding:60px 20px;
 }
 
 header h1{
-font-size:48px;
+font-size:52px;
 margin-bottom:15px;
 }
 
 header p{
 font-size:22px;
-margin-bottom:35px;
+max-width:700px;
+margin:auto;
+line-height:1.6;
 }
 
-.btn{
+.button{
 display:inline-block;
+margin-top:35px;
 background:white;
-color:#0084ff;
+color:#0A84FF;
 padding:16px 35px;
-border-radius:40px;
+border-radius:50px;
 text-decoration:none;
 font-size:20px;
 font-weight:bold;
 }
 
-section{
-max-width:900px;
+.container{
+max-width:1100px;
 margin:auto;
-padding:30px;
+padding:40px 20px;
 }
 
 .card{
 background:white;
-padding:25px;
+border-radius:20px;
+padding:30px;
 margin-bottom:25px;
-border-radius:18px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
+box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
-.card h2{
+h2{
+color:#0A84FF;
 margin-bottom:20px;
-font-size:32px;
-color:#0084ff;
 }
 
-.card ul{
-padding-left:20px;
-line-height:2;
-font-size:20px;
+.phone{
+width:260px;
+margin:40px auto;
+background:#111;
+padding:12px;
+border-radius:35px;
 }
 
-.card p{
-font-size:20px;
-line-height:1.8;
+.screen{
+background:linear-gradient(135deg,#0A84FF,#00C2FF);
+border-radius:25px;
+padding:45px 20px;
+text-align:center;
+color:white;
+}
+
+.screen h3{
+font-size:30px;
+margin-bottom:10px;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+}
+
+.feature{
+background:#EEF6FF;
+padding:18px;
+border-radius:12px;
+font-size:18px;
 }
 
 footer{
 background:#111;
 color:white;
 text-align:center;
-padding:30px;
-margin-top:40px;
-}
-</style>
-
+padding:35px;
+margin-top:50px;
+}</style>
 </head>
 
 <body>
@@ -95,49 +118,104 @@ margin-top:40px;
 
 <h1>💬 PingCar</h1>
 
-<p>Die neue Schweizer Chat-App für sichere Kommunikation.</p>
+<p>
+Die sichere Chat-App für die Schweiz.
+Schnelle Nachrichten, Audio- und Videoanrufe
+mit maximalem Datenschutz.
+</p>
 
-<a class="btn" href="#">
+<a class="button" href="#">
 App kommt bald
 </a>
 
 </header>
 
-<section>
+<div class="container">
 
-<div class="card">
+<div class="phone">
 
-<h2>Warum PingCar?</h2>
+<div class="screen">
 
-<ul>
-<li>✅ Sichere Nachrichten</li>
-<li>✅ HD Sprachanrufe</li>
-<li>✅ HD Videoanrufe</li>
-<li>✅ Gruppenchat</li>
-<li>✅ Dateiversand</li>
-<li>✅ Ende-zu-Ende Verschlüsselung</li>
-<li>✅ Schweizer Datenschutz</li>
-</ul>
+<h3>PingCar</h3>
+
+<p>Chat • Call • Video</p>
+
+</div>
 
 </div>
 
 <div class="card">
 
-<h2>Funktionen</h2>
+<h2>Warum PingCar?</h2>
 
-<p>
+<div class="features">
 
-📩 Sofort Nachrichten senden<br><br>
+<div class="feature">
+🔒 Ende-zu-Ende Verschlüsselung
+</div>
 
-📞 Kostenlose Anrufe weltweit<br><br>
+<div class="feature">
+💬 Sichere Nachrichten
+</div>
 
-🎥 Videoanrufe in HD<br><br>
+<div class="feature">
+📞 HD Audioanrufe
+</div>
 
-👥 Gruppen bis zu 500 Mitglieder<br><br>
+<div class="feature">
+🎥 HD Videoanrufe
+</div>
 
-📷 Fotos und Videos teilen<br><br>
+<div class="feature">
+👥 Gruppenchats
+</div>
 
-📍 Standort senden
+<div class="feature">
+📷 Fotos & Dateien senden
+</div>
+
+<div class="feature">
+📍 Standort teilen
+</div>
+
+<div class="feature">
+🇨🇭 Schweizer Datenschutz
+</div>
+
+</div>
+
+</div><div class="card">
+
+<h2>Warum PingCar wählen?</h2>
+
+<p style="font-size:20px;line-height:1.8;">
+
+PingCar verbindet Menschen einfach, sicher und schnell.
+
+Unsere Mission ist es, eine moderne Kommunikationsplattform
+für die Schweiz und Europa aufzubauen.
+
+Mit PingCar kannst du:
+
+<br><br>
+
+✔ Sicher chatten
+
+<br>
+
+✔ Audio- und Videoanrufe starten
+
+<br>
+
+✔ Gruppen erstellen
+
+<br>
+
+✔ Fotos und Dokumente senden
+
+<br>
+
+✔ Deine Privatsphäre schützen
 
 </p>
 
@@ -147,29 +225,40 @@ App kommt bald
 
 <h2>Kontakt</h2>
 
-<p>
+<p style="font-size:20px;line-height:2;">
 
-E-Mail:<br>
+📧 support@pingcar.ch
 
-support@pingcar.ch
+<br>
 
-<br><br>
-
-Website:<br>
-
-www.pingcar.ch
+🌐 www.pingcar.ch
 
 </p>
 
 </div>
 
-</section>
+</div>
 
 <footer>
 
-© 2026 PingCar Chat
+<h3>PingCar</h3>
+
+<p>
+
+The Future of Secure Communication
+
+</p>
+
+<br>
+
+<p>
+
+© 2026 PingCar. All rights reserved.
+
+</p>
 
 </footer>
 
 </body>
+
 </html>
