@@ -345,6 +345,22 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail.");
+  });
 </script>  
 </body>
 </html>
