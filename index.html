@@ -1,8 +1,12 @@
- <!DOCTYPE html>
-<html lang="de">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>PingCar</title>
 
 <style>
@@ -11,121 +15,206 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial,sans-serif;
+font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-background:#f3f7fb;
+background:#f4f7fb;
 color:#222;
 }
 
 header{
+
 background:linear-gradient(135deg,#0A84FF,#00C2FF);
+
 color:white;
-padding:70px 20px;
+
+padding:80px 20px;
+
 text-align:center;
+
 }
 
 header h1{
-font-size:52px;
+
+font-size:55px;
+
 margin-bottom:15px;
+
 }
 
 header p{
+
 font-size:22px;
-max-width:700px;
+
+max-width:750px;
+
 margin:auto;
-line-height:1.6;
+
+line-height:1.7;
+
 }
 
 .button{
+
 display:inline-block;
+
 margin-top:35px;
+
+padding:18px 38px;
+
 background:white;
+
 color:#0A84FF;
-padding:16px 35px;
+
 border-radius:50px;
+
 text-decoration:none;
+
 font-size:20px;
+
 font-weight:bold;
+
 }
 
 .container{
-max-width:1100px;
+
+max-width:1200px;
+
 margin:auto;
-padding:40px 20px;
-}
 
-.card{
-background:white;
-border-radius:20px;
-padding:30px;
-margin-bottom:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.08);
-}
+padding:60px 20px;
 
-h2{
-color:#0A84FF;
-margin-bottom:20px;
 }
 
 .phone{
-width:260px;
+
+width:280px;
+
 margin:40px auto;
+
 background:#111;
+
 padding:12px;
+
 border-radius:35px;
+
 }
 
 .screen{
-background:linear-gradient(135deg,#0A84FF,#00C2FF);
+
+background:white;
+
 border-radius:25px;
-padding:45px 20px;
+
+padding:30px;
+
 text-align:center;
-color:white;
+
 }
 
-.screen h3{
-font-size:30px;
-margin-bottom:10px;
+.qr{
+
+width:120px;
+
+height:120px;
+
+background:#ddd;
+
+margin:auto;
+
+border-radius:10px;
+
+margin-bottom:20px;
+
 }
 
-.features{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
-}
+.card{
 
-.feature{
-background:#EEF6FF;
-padding:18px;
-border-radius:12px;
-font-size:18px;
-}
+background:white;
 
-footer{
-background:#111;
-color:white;
-text-align:center;
 padding:35px;
+
+border-radius:20px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+margin-bottom:30px;
+
+}
+
+h2{
+
+color:#0A84FF;
+
+margin-bottom:20px;
+
+font-size:34px;
+
+}
+
+.steps{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+}
+
+.step{
+
+background:#eef6ff;
+
+padding:20px;
+
+border-radius:15px;
+
+font-size:18px;
+
+line-height:1.7;
+
+}footer{
+
+background:#111;
+
+color:white;
+
+text-align:center;
+
+padding:35px;
+
 margin-top:50px;
-}</style>
+
+}
+
+</style>
+
 </head>
 
 <body>
 
 <header>
 
-<h1>💬 PingCar</h1>
+<h1>🚗 PingCar</h1>
 
 <p>
-Die sichere Chat-App für die Schweiz.
-Schnelle Nachrichten, Audio- und Videoanrufe
-mit maximalem Datenschutz.
+
+Communicate with any driver safely.
+
+No phone number.
+
+No personal information.
+
+Just scan the QR Code.
+
 </p>
 
 <a class="button" href="#">
-App kommt bald
+
+Coming Soon
+
 </a>
 
 </header>
@@ -136,9 +225,15 @@ App kommt bald
 
 <div class="screen">
 
-<h3>PingCar</h3>
+<div class="qr"></div>
 
-<p>Chat • Call • Video</p>
+<h3>Your PingCar QR</h3>
+
+<p>
+
+Scan to contact the driver safely.
+
+</p>
 
 </div>
 
@@ -146,76 +241,119 @@ App kommt bald
 
 <div class="card">
 
-<h2>Warum PingCar?</h2>
+<h2>How PingCar Works</h2>
 
-<div class="features">
+<div class="steps">
 
-<div class="feature">
-🔒 Ende-zu-Ende Verschlüsselung
+<div class="step">
+
+<b>1.</b><br><br>
+
+Register your account.
+
 </div>
 
-<div class="feature">
-💬 Sichere Nachrichten
+<div class="step">
+
+<b>2.</b><br><br>
+
+Generate your personal QR Code.
+
 </div>
 
-<div class="feature">
-📞 HD Audioanrufe
+<div class="step">
+
+<b>3.</b><br><br>
+
+Place the QR Code on your vehicle.
+
 </div>
 
-<div class="feature">
-🎥 HD Videoanrufe
+<div class="step">
+
+<b>4.</b><br><br>
+
+Someone scans the QR Code.
+
 </div>
 
-<div class="feature">
-👥 Gruppenchats
-</div>
+<div class="step">
 
-<div class="feature">
-📷 Fotos & Dateien senden
-</div>
+<b>5.</b><br><br>
 
-<div class="feature">
-📍 Standort teilen
-</div>
+You receive an instant notification.
 
-<div class="feature">
-🇨🇭 Schweizer Datenschutz
 </div>
 
 </div>
 
 </div><div class="card">
 
-<h2>Warum PingCar wählen?</h2>
+<h2>What happens after scanning?</h2>
 
-<p style="font-size:20px;line-height:1.8;">
+<div class="steps">
 
-PingCar verbindet Menschen einfach, sicher und schnell.
+<div class="step">
 
-Unsere Mission ist es, eine moderne Kommunikationsplattform
-für die Schweiz und Europa aufzubauen.
+🚗<br><br>
 
-Mit PingCar kannst du:
+Your vehicle is blocking me
 
-<br><br>
+</div>
 
-✔ Sicher chatten
+<div class="step">
 
-<br>
+💡<br><br>
 
-✔ Audio- und Videoanrufe starten
+Your lights are on
 
-<br>
+</div>
 
-✔ Gruppen erstellen
+<div class="step">
 
-<br>
+🚨<br><br>
 
-✔ Fotos und Dokumente senden
+Your vehicle has been damaged
 
-<br>
+</div>
 
-✔ Deine Privatsphäre schützen
+<div class="step">
+
+🔑<br><br>
+
+You forgot something
+
+</div>
+
+<div class="step">
+
+✍️<br><br>
+
+Other message
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Why PingCar?</h2>
+
+<p style="font-size:20px;line-height:2;">
+
+✅ No phone number shared<br>
+
+✅ No personal information<br>
+
+✅ Secure QR Code communication<br>
+
+✅ Instant notification<br>
+
+✅ Privacy first<br>
+
+✅ Fast and simple
 
 </p>
 
@@ -223,15 +361,13 @@ Mit PingCar kannst du:
 
 <div class="card">
 
-<h2>Kontakt</h2>
+<h2>Our Mission</h2>
 
 <p style="font-size:20px;line-height:2;">
 
-📧 support@pingcar.ch
+PingCar helps drivers communicate safely without revealing personal information.
 
-<br>
-
-🌐 www.pingcar.ch
+Just scan the QR Code, notify the driver and solve the situation in seconds.
 
 </p>
 
@@ -245,7 +381,7 @@ Mit PingCar kannst du:
 
 <p>
 
-The Future of Secure Communication
+Scan. Notify. Move.
 
 </p>
 
@@ -253,7 +389,7 @@ The Future of Secure Communication
 
 <p>
 
-© 2026 PingCar. All rights reserved.
+© 2026 PingCar
 
 </p>
 
