@@ -24,7 +24,7 @@ h2{
 color:#0a7cff;
 }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -33,9 +33,24 @@ color:#0a7cff;
 <div id="reader"></div>
 
 <script>
-function onScanSuccess(decodedText){
-alert("QR Code: " + decodedText);
-window.location.href = decodedText;
+const supabase = window.supabase.createClient(
+  "URL_E_PROJEKTIT_TEND",
+  "ANON_KEY_JOTE"
+);
+
+async function onScanSuccess(decodedText) {
+  const { data, error } = await supabase
+    .from("cars")
+    .select("*")
+    .eq("qr_code", decodedText)
+    .single();
+
+  if (error || !data) {
+    alert("QR Code nuk u gjet.");
+    return;
+  }
+
+  window.location.href = "contact.html?id=" + data.id;
 }
 
 new Html5QrcodeScanner(
