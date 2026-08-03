@@ -39,7 +39,7 @@ async function onScanSuccess(decodedText){
 alert(decodedText);
 const { data, error } = await supabase
 .from("cars")
-.select("qr_code")
+.select("*")
 .eq("qr_code", decodedText)
 .single();
 
