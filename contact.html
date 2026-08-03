@@ -3,11 +3,16 @@ const id=new URLSearchParams(location.search).get('id');document.getElementById(
 const supabase=window.supabase.createClient("https://uvmkhqzfsgvicacvgskf.supabase.co","sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2");
 async function send(msg){
 
-const car = await supabase
+const { data: car, error: carError } = await supabase
 .from('cars')
 .select('owner_id')
 .eq('qr_code', id)
 .single();
+
+if (carError) {
+alert(carError.message);
+return;
+}
 
 const { error } = await supabase
 .from('notifications')
