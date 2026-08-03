@@ -36,14 +36,14 @@ const supabase = window.supabase.createClient(
   "https://uvmkhqzfsgvicacvgskf.supabase.co",
   "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
 );
-</script>
+
 async function onScanSuccess(decodedText) {
   const { data, error } = await supabase
     .from("cars")
     .select("*")
     .eq("qr_code", decodedText)
     .single();
-
+  
   if (error || !data) {
     alert("QR Code nuk u gjet.");
     return;
