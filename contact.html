@@ -1,28 +1,88 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PingCar Contact</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>body{font-family:Arial;padding:20px;max-width:500px;margin:auto}button{display:block;width:100%;padding:15px;margin:10px 0;font-size:18px}</style></head><body><h2>PingCar Notification</h2><p id="pid"></p><button onclick="send('Lights are on')">💡 Licht eingeschaltet</button><button onclick="send('Blocking road')">🚗 Ihr Fahrzeug blockiert die Strase</button><button onclick="send('Please contact me')">📞 Bitte kontaktieren Sie mich</button><script>
-const id=new URLSearchParams(location.search).get('id');document.getElementById('pid').textContent='ID: '+id;
-const supabase=window.supabase.createClient("https://uvmkhqzfsgvicacvgskf.supabase.co","sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2");
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PingCar Contact</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+    font-family:Arial;
+    padding:20px;
+    max-width:500px;
+    margin:auto;
+}
+button{
+    display:block;
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    font-size:18px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>PingCar Notification</h2>
+<p id="pid"></p>
+
+<button onclick="send('Lights are on')">
+💡 Licht eingeschaltet
+</button>
+
+<button onclick="send('Blocking road')">
+🚗 Ihr Fahrzeug blockiert die Straße
+</button>
+
+<button onclick="send('Please contact me')">
+📞 Bitte kontaktieren Sie mich
+</button>
+
+<script>
+
+const id = new URLSearchParams(window.location.search).get("id");
+
+document.getElementById("pid").textContent = "ID: " + id;
+
+const supabase = window.supabase.createClient(
+"https://uvmkhqzfsgvicacvgskf.supabase.co",
+"sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+);
+
 async function send(msg){
-alert("TEST");
 
 const { data: car, error: carError } = await supabase
-.from('cars')
-.select('owner_id')
-.eq('qr_code', id)
+.from("cars")
+.select("owner_id")
+.eq("qr_code", id)
 .single();
 
-if (carError) {
+if(carError){
 alert(carError.message);
 return;
 }
 
 const { error } = await supabase
-.from('notifications')
+.from("notifications")
 .insert({
-qr_code: id,
-owner_id: car.owner_id,
-message: msg
+qr_code:id,
+owner_id:car.owner_id,
+message:msg
 });
 
-alert(error ? error.message : 'Ihre Nachricht wurde erfolgreich gesendet!');
+if(error){
+alert(error.message);
+}else{
+alert("Ihre Nachricht wurde erfolgreich gesendet!");
 }
-</script></body></html>
+
+}
+
+</script>
+
+</body>
+</html>
