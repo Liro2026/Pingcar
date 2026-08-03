@@ -7,55 +7,64 @@
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 body{
-font-family:Arial;
-text-align:center;
-background:#f5f5f5;
-padding:20px;
+    font-family:Arial,sans-serif;
+    text-align:center;
+    background:#f5f5f5;
+    padding:20px;
 }
 
 #reader{
-width:320px;
-margin:auto;
+    width:320px;
+    margin:auto;
 }
 
 h2{
-color:#0a7cff;
+    color:#0a7cff;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
 <h2>📱 QR-Code Scanner</h2>
 
 <div id="reader"></div>
+
 <script>
+
 const supabase = window.supabase.createClient(
   "https://uvmkhqzfsgvicacvgskf.supabase.co",
-  "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+  "KETU_VENDOS_PUBLISHABLE_KEY_TENDE"
 );
-</script>
-async function onScanSuccess(decodedText) {
-  const { data, error } = await supabase
-    .from("cars")
-    .select("*")
-    .eq("qr_code", decodedText)
-    .single();
-  
-  if (error || !data) {
-    alert("QR Code nuk u gjet.");
-    return;
-  }
 
-  window.location.href = "contact.html?id=" + data.id;
+async function onScanSuccess(decodedText){
+
+    const { data, error } = await supabase
+      .from("cars")
+      .select("qr_code")
+      .eq("qr_code", decodedText)
+      .single();
+
+    if(error || !data){
+        alert("QR Code nuk u gjet.");
+        return;
+    }
+
+    window.location.href = "contact.html?id=" + data.qr_code;
+
 }
 
 new Html5QrcodeScanner(
-"reader",
-{fps:10, qrbox:250}
+    "reader",
+    {
+        fps:10,
+        qrbox:250
+    }
 ).render(onScanSuccess);
+
 </script>
 
 </body>
