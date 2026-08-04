@@ -469,9 +469,41 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
   location.reload();
 
 });
+document.getElementById("forgotPassword").addEventListener("click", function(e){
+
+e.preventDefault();
+
+document.getElementById("resetBox").style.display="block";
+
+});
+
+document.getElementById("resetButton").addEventListener("click", async function(){
+
+const email=document.getElementById("resetEmail").value;
+
+const { error } = await supabase.auth.resetPasswordForEmail(email,{
+
+redirectTo:"https://pingcar.ch"
+
+});
+
+if(error){
+
+alert(error.message);
+
+}else{
+
+alert("Der Link zum Zurücksetzen wurde per E-Mail gesendet.");
+
+}
+
+});
+
 const { data } = await supabase.auth.getSession();
 
 if (data.session) {
+
+
 
   document.getElementById("userPanel").style.display = "block";
 
