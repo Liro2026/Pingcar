@@ -1,5 +1,21 @@
 <!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PingCar Contact</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>body{font-family:Arial;padding:20px;max-width:500px;margin:auto}button{display:block;width:100%;padding:15px;margin:10px 0;font-size:18px}</style></head><body><h2>PingCar Notification</h2><p id="pid"></p><button onclick="send('Lights are on')">💡 Dritat janë ndezur</button><button onclick="send('Blocking road')">🚗 Makina po bllokon rrugën</button><button onclick="send('Please contact me')">📞 Ju lutem më kontakto</button><script>
 const id=new URLSearchParams(location.search).get('id');document.getElementById('pid').textContent='ID: '+id;
 const supabase=window.supabase.createClient("https://uvmkhqzfsgvicacvgskf.supabase.co","sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2");
-async function send(msg){const {error}=await supabase.from('notifications').insert({qr_code:id,message:msg});alert(error?error.message:'Njoftimi u dërgua!');}
+async function send(msg) {
+  const { error } = await supabase
+    .from("notifications")
+    .insert({
+      qr_code: id,
+      message: msg,
+      status: "pending",
+      created_at: new Date().toISOString()
+    });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Nachricht erfolgreich gesendet!");
+}
 </script></body></html>
