@@ -7,7 +7,6 @@ async function send(msg) {
     .insert({
       qr_code: id,
       message: msg,
-      status: "pending",
       created_at: new Date().toISOString()
     });
 
