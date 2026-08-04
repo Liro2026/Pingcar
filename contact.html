@@ -1,15 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
+
 <meta charset="UTF-8">
-<title>TEST</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PingCar Benachrichtigung</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f5f5;
+    max-width:550px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.15);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.info{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+button{
+    width:100%;
+    padding:16px;
+    margin-bottom:12px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+#btn1{
+    background:#ffd54f;
+}
+
+#btn2{
+    background:#ef5350;
+    color:white;
+}
+
+#btn3{
+    background:#42a5f5;
+    color:white;
+}
+
+</style>
+
 </head>
+
 <body>
-<h1>WORKS</h1>
+
+<div class="container">
+
+<h2>PingCar Benachrichtigung</h2>
+
+<p class="info" id="qrInfo"></p>
+
+<button id="btn1">
+💡 Lichter sind eingeschaltet
+</button>
+
+<button id="btn2">
+🚗 Ihr Fahrzeug blockiert die Straße
+</button>
+
+<button id="btn3">
+📞 Bitte kontaktieren Sie mich
+</button>
+
+</div>
 
 <script>
-alert("HELLO");
+
+const qrId =
+new URLSearchParams(window.location.search).get("id");
+
+document.getElementById("qrInfo").innerText =
+qrId
+? "QR-ID: " + qrId
+: "Keine QR-ID gefunden.";
+
+const supabaseClient =
+window.supabase.createClient(
+
+"https://uvmkhqzfsgvicacvgskf.supabase.co",
+
+"sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+
+);
+
+async function sendNotification(message){
+
+if(!qrId){
+
+alert("QR-Code ungültig.");
+
+return;
+
+}
+
+const { error } =
+await supabaseClient
+
+.from("notifications")
+
+.insert({
+
+qr_qode: qrId,
+
+message: message,
+
+sender_id: "anonymous",
+owner_id: "",
+
+created_at: new Date().toISOString()
+
+});
+
+if(error){
+
+alert("Fehler:\\n\\n" + error.message);
+
+return;
+
+}
+
+alert("Nachricht erfolgreich gesendet!");
+
+}
+
+document
+
+.getElementById("btn1")
+
+.addEventListener(
+
+"click",
+
+function(){
+
+sendNotification(
+
+"Lichter sind eingeschaltet"
+
+);
+
+}
+
+);
+
+document
+
+.getElementById("btn2")
+
+.addEventListener(
+
+"click",
+
+function(){
+
+sendNotification(
+
+"Ihr Fahrzeug blockiert die Straße"
+
+);
+
+}
+
+);
+
+document
+
+.getElementById("btn3")
+
+.addEventListener(
+
+"click",
+
+function(){
+
+sendNotification(
+
+"Bitte kontaktieren Sie mich"
+
+);
+
+}
+
+);
 </script>
 
 </body>
+
 </html>
