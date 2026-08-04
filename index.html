@@ -341,6 +341,49 @@ required
 Registrieren
 </button>
   </form>
+
+<hr style="margin:40px 0;">
+
+<h2>Anmelden</h2>
+
+<form id="loginForm">
+
+<input
+type="email"
+id="loginEmail"
+placeholder="E-Mail"
+required
+>
+
+<input
+type="password"
+id="loginPassword"
+placeholder="Passwort"
+required
+>
+
+<button type="submit">
+Anmelden
+</button>
+
+<p style="margin-top:15px;">
+<a href="#" id="forgotPassword">
+Passwort vergessen?
+</a>
+</p>
+
+</form>
+
+<div id="userPanel" style="display:none;margin-top:30px;">
+
+<h3 id="welcomeUser"></h3>
+
+<button id="logoutButton">
+Abmelden
+</button>
+
+</div>
+
 </div>
 <footer>
 
@@ -386,6 +429,58 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     alert("Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail.");
   }
 });
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const { error } = await supabase.auth.signInWithPassword({
+
+    email,
+    password
+
+  });
+
+  if (error) {
+
+    alert(error.message);
+
+  } else {
+
+    alert("Anmeldung erfolgreich!");
+
+    document.getElementById("userPanel").style.display = "block";
+
+    document.getElementById("welcomeUser").innerText =
+      "Willkommen!";
+
+  }
+
+});
+
+document.getElementById("logoutButton").addEventListener("click", async () => {
+
+  await supabase.auth.signOut();
+
+  alert("Sie wurden abgemeldet.");
+
+  location.reload();
+
+});
+const { data } = await supabase.auth.getSession();
+
+if (data.session) {
+
+  document.getElementById("userPanel").style.display = "block";
+
+  const user = data.session.user;
+
+  document.getElementById("welcomeUser").innerText =
+    "Willkommen " + user.email;
+}
+
 </script>
 </body>
 </html>
