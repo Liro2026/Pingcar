@@ -371,7 +371,30 @@ Anmelden
 Passwort vergessen?
 </a>
 </p>
+<p style="margin-top:15px;">
+<a href="#" id="forgotPassword">
+Passwort vergessen?
+</a>
+</p>
 
+<div id="resetBox" style="display:none;margin-top:20px;">
+
+<input
+type="email"
+id="resetEmail"
+placeholder="E-Mail eingeben"
+required
+>
+
+<button id="resetButton">
+Link senden
+</button>
+
+</div>
+
+</form>
+
+<div id="userPanel" style="display:none;margin-top:30px;">
 </form>
 
 <div id="userPanel" style="display:none;margin-top:30px;">
@@ -484,7 +507,6 @@ const email=document.getElementById("resetEmail").value;
 const { error } = await supabase.auth.resetPasswordForEmail(email,{
 
 redirectTo:"https://pingcar.ch"
-
 });
 
 if(error){
@@ -500,7 +522,7 @@ alert("Der Link zum Zurücksetzen wurde per E-Mail gesendet.");
 });
 
 const { data } = await supabase.auth.getSession();
-
+a
 if (data.session) {
 
 
