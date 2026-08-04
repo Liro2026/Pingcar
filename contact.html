@@ -6,7 +6,7 @@ async function send(msg) {
   const { error } = await supabase
     .from("notifications")
     .insert({
-      qr_code: id,
+      qr_qode: id,
       message: msg,
       created_at: new Date().toISOString()
     });
