@@ -3,6 +3,7 @@ alert("JavaScript OK");
   const id=new URLSearchParams(location.search).get('id');document.getElementById('pid').textContent='ID: '+id;
 const supabase=window.supabase.createClient("https://uvmkhqzfsgvicacvgskf.supabase.co","sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2");
 async function send(msg) {
+ alert("Button works!");
   const { error } = await supabase
     .from("notifications")
     .insert({
