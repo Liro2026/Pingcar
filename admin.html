@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PingCar Admin</title>
+<style>
+body{margin:0;font-family:Arial;background:#f5f5f5}
+header{background:#111;color:#fff;padding:18px;text-align:center;font-size:28px}
+nav{width:230px;position:fixed;top:64px;bottom:0;background:#222}
+nav a{display:block;color:#fff;text-decoration:none;padding:16px;border-bottom:1px solid #333}
+nav a:hover{background:#333}
+main{margin-left:230px;padding:25px}
+.card{background:#fff;border-radius:10px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+input,textarea{width:100%;padding:10px;margin:8px 0}
+textarea{height:180px}
+button{background:#0d6efd;color:#fff;border:0;padding:12px 20px;border-radius:6px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>PingCar Administrator</header>
+<nav>
+<a href="#">📊 Dashboard</a>
+<a href="#">👥 Benutzer</a>
+<a href="#">📧 E-Mail senden</a>
+<a href="#">🔔 Push-Benachrichtigungen</a>
+<a href="#">📈 Statistik</a>
+</nav>
+<main>
+<div class="card">
+<h2>Willkommen</h2>
+<p>Dies ist das zukünftige PingCar-Adminpanel.</p>
+</div>
+<div class="card">
+<h2>E-Mail an Benutzer senden</h2>
+<input id="subject" placeholder="Betreff">
+<textarea id="message" placeholder="Nachricht"></textarea>
+<button onclick="alert('SMTP-Anbindung folgt im nächsten Schritt.')">E-Mail senden</button>
+</div>
+<div class="card">
+<h2>Push-Benachrichtigung</h2>
+<textarea placeholder="Nachricht"></textarea>
+<button onclick="alert('Push-System folgt im nächsten Schritt.')">Push senden</button>
+</div>
+</main>
+</body>
+</html>
