@@ -173,8 +173,15 @@ PingCar Administrator
 <main id="content">
 
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-alert("JavaScript funktioniert!");
+    const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+console.log("Supabase u lidh me sukses!");
 const content=document.getElementById("content");
 
 function showDashboard(){
