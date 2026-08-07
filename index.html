@@ -349,10 +349,10 @@ Entwickelt mit Fokus auf Datenschutz.
     >
 
     <input
-      type="email"
-      id="email"
-      placeholder="E-Mail"
-      required
+type="email"
+id="resetEmail"
+placeholder="E-Mail eingeben"
+>
     >
   <input
   type="password"
@@ -485,20 +485,15 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   });
 
-  if (error) {
+if (error) {
 
     alert(error.message);
 
-  } else {
+} else {
 
-    alert("Anmeldung erfolgreich!");
+    window.location.href = "dashboard.html";
 
-    document.getElementById("userPanel").style.display = "block";
-
-    document.getElementById("welcomeUser").innerText =
-      "Willkommen!";
-
-  }
+}
 
 });
 
@@ -525,7 +520,7 @@ const email=document.getElementById("resetEmail").value;
 
 const { error } = await supabase.auth.resetPasswordForEmail(email,{
 
-redirectTo:"https://pingcar.ch"
+redirectTo: "https://pingcar.ch"
 });
 
 if(error){
