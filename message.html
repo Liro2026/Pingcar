@@ -146,7 +146,74 @@ Vielen Dank!<br><br>
 Ihre Nachricht wurde erfolgreich an den Fahrzeughalter gesendet.
 
 </div>
+<script type="module">
 
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabase = createClient(
+"https://uvmkhqzfsgvicacvgskf.supabase.co",
+"sb_publishable_PlgGThtv9ZEPqgiag8Y7Gw_PvZwsij2"
+);
+
+const params = new URLSearchParams(window.location.search);
+
+const pingId = params.get("id");
+
+document.getElementById("sendMessage").addEventListener("click", async () => {
+
+const senderName = document.getElementById("name").value;
+
+const senderPhone = document.getElementById("phone").value;
+
+const senderMessage = document.getElementById("message").value;
+
+if(senderName==="" || senderMessage===""){
+
+alert("Bitte alle Pflichtfelder ausfüllen.");
+
+return;
+
+}
+
+const { error } = await supabase
+
+.from("messages")
+
+.insert([
+
+{
+
+owner_ping_id: pingId,
+
+sender_name: senderName,
+
+sender_phone: senderPhone,
+
+message: senderMessage
+
+}
+
+]);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+document.getElementById("successBox").style.display="block";
+
+document.getElementById("name").value="";
+
+document.getElementById("phone").value="";
+
+document.getElementById("message").value="";
+
+});
+
+</script>
 </div>
 
 </body>
