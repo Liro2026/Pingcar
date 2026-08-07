@@ -412,7 +412,7 @@ Passwort vergessen?
 type="email"
 id="resetEmail"
 placeholder="E-Mail eingeben"
-required
+
 >
 
 <button id="resetButton">
@@ -523,27 +523,22 @@ e.preventDefault();
 document.getElementById("resetBox").style.display="block";
 
 });
+document.getElementById("resetButton").addEventListener("click", async function () {
 
-document.getElementById("resetButton").addEventListener("click", async function(){
+    const email = document.getElementById("resetEmail").value;
 
-const email=document.getElementById("resetEmail").value;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "https://pingcar.ch"
+    });
 
-const { error } = await supabase.auth.resetPasswordForEmail(email,{
-
-redirectTo: "https://pingcar.ch"
-});
-
-if(error){
-
-alert(error.message);
-
-}else{
-
-alert("Der Link zum Zurücksetzen wurde per E-Mail gesendet.");
-
-}
+    if (error) {
+        alert(error.message);
+    } else {
+        alert("Der Link zum Zurücksetzen wurde per E-Mail gesendet.");
+    }
 
 });
+
 
 const { data } = await supabase.auth.getSession();
 
