@@ -176,23 +176,13 @@ return;
 }
 
 const { error } = await supabase
-
-.from("messages")
-
+.from("notifications")
 .insert([
-
 {
-
-owner_ping_id: pingId,
-
-sender_name: senderName,
-
-sender_phone: senderPhone,
-
-message: senderMessage
-
+    qr_code: pingId,
+    message: senderMessage,
+    sender_id: "anonymous"
 }
-
 ]);
 
 if(error){
