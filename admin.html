@@ -286,19 +286,48 @@ content.innerHTML=`
 
 function showPush(){
 
-content.innerHTML=`
+    content.innerHTML = `
 
-<div class="card">
+    <div class="card">
 
-<h2>Push-Benachrichtigung</h2>
+        <h2>Push-Benachrichtigung</h2>
 
-<textarea placeholder="Nachricht"></textarea>
+        <textarea id="pushMessage" placeholder="Nachricht"></textarea>
 
-<button>Push senden</button>
+        <button onclick="sendPush()">Push senden</button>
 
-</div>
+    </div>
 
-`;
+    `;
+
+}
+
+async function sendPush(){
+
+    const message = document.getElementById("pushMessage").value.trim();
+
+    if(!message){
+        alert("Bitte Nachricht eingeben.");
+        return;
+    }
+
+    const { data, error } = await db
+        .from("notifications")
+        .insert([
+            {
+                message: message
+            }
+        ]);
+
+    if(error){
+        console.error(error);
+        alert("Fehler: " + error.message);
+        return;
+    }
+
+    alert("Push gespeichert!");
+
+    document.getElementById("pushMessage").value = "";
 
 }
 
