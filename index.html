@@ -458,12 +458,80 @@ QR-Code scannen • Fahrer benachrichtigen • Problem lösen
 </footer>
 
   <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+const firebaseConfig = {
+  apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
+  authDomain: "pingcar.firebaseapp.com",
+  projectId: "pingcar",
+  storageBucket: "pingcar.firebasestorage.app",
+  messagingSenderId: "133178961912",
+  appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const messaging = getMessaging(firebaseApp);
+
+const vapidKey = "BHoqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
+async function enablePushNotifications() {
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("Benachrichtigungen wurden nicht erlaubt.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js"
+    );
+
+    const token = await getToken(messaging, {
+      vapidKey: vapidKey,
+      serviceWorkerRegistration: registration
+    });
+
+    console.log("FCM Token:", token);
+
+    if (!token) {
+      alert("FCM Token konnte nicht erstellt werden.");
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Benutzer ist nicht eingeloggt.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("device_tokens")
+      .upsert({
+        user_id: user.id,
+        fcm_token: token
+      }, {
+        onConflict: "user_id"
+      });
+
+    if (error) {
+      console.error(error);
+      alert("Token konnte nicht gespeichert werden.");
+      return;
+    }
+
+    console.log("FCM Token gespeichert.");
+  } catch (error) {
+    console.error(error);
+    alert("Push-Benachrichtigungen konnten nicht aktiviert werden.");
+  }
+}
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
