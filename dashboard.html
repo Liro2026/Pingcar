@@ -79,7 +79,7 @@ const messaging = getMessaging(firebaseApp);
 const VAPID_KEY = "BHOqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
 
 const registration = await navigator.serviceWorker.register(
-  "/firebase-messaging-sw.js"
+    "./firebase-messaging-sw.js"
 );
 
 document.addEventListener("DOMContentLoaded", async () => {
