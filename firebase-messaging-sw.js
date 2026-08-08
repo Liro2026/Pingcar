@@ -2,7 +2,7 @@ importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAxvR0zRSjUWWLp40qovq2iNlt9g0ISw7Y",
+apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
   authDomain: "pingcar.firebaseapp.com",
   projectId: "pingcar",
   storageBucket: "pingcar.firebasestorage.app",
