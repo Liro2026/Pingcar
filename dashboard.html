@@ -2,48 +2,40 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PingCar Dashboard</title>
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:30px}
-.card{max-width:700px;margin:auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 0 15px rgba(0,0,0,.15)}
-h1{text-align:center;color:#0b7cff}
-.info{font-size:20px;margin:15px 0}
-img{width:220px;display:block;margin:20px auto}
-button{width:100%;padding:15px;border:none;border-radius:10px;background:#0b7cff;color:#fff;font-size:18px;cursor:pointer;margin-top:8px}
-button:hover{background:#095fd1}
-button:disabled{opacity:.65;cursor:not-allowed}
-#pushStatus{margin-top:12px;padding:10px;border-radius:8px;display:none}
-.status-ok{background:#e8f7ed;color:#176b35}
-.status-error{background:#fdecec;color:#a11a1a}
-.status-info{background:#eef5ff;color:#164b8a}
-</style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fa;color:#172033}.top{background:linear-gradient(135deg,#1677ff,#00b8ff);color:#fff;padding:22px 18px}.wrap{max-width:900px;margin:auto;padding:20px}.top .wrap{padding:0}.card{background:#fff;border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 8px 24px rgba(0,0,0,.08)}h1{margin:0 0 6px;font-size:30px}h2{margin-top:0}.muted{color:#667085}.btn{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}.primary{background:#1677ff;color:#fff}.danger{background:#e5484d;color:#fff}.status{padding:12px;border-radius:10px;background:#eef5ff;margin-top:12px;white-space:pre-wrap}.notice{padding:12px;border-bottom:1px solid #e6e9ef}.notice:last-child{border-bottom:0}.hidden{display:none}.qr{max-width:220px;display:block;margin:15px auto}.error{background:#fff0f0;color:#a61b1b}.success{background:#effaf3;color:#176b37}</style>
 </head>
 <body>
-<div class="card">
-<h1>PingCar Dashboard</h1>
-<div class="info"><b>Ping ID:</b> <span id="pingid">...</span></div>
-<div class="info"><b>Premium:</b> <span id="premium">Aktiv</span></div>
-<img id="qrimage" alt="QR Code" style="display:none">
-<button id="enablePush" type="button">🔔 Benachrichtigungen aktivieren</button>
-<div id="pushStatus"></div>
-<button id="logout" type="button">Logout</button>
-<hr style="margin:35px 0;">
-<h2>📩 Neue Nachrichten</h2>
-<div id="messageList"><p>Keine Nachrichten vorhanden.</p></div>
-</div>
+<header class="top"><div class="wrap"><h1>PingCar</h1><div id="userEmail">Dashboard</div></div></header>
+<main class="wrap">
+<section class="card">
+<h2>Mein Konto</h2>
+<p id="userInfo" class="muted">Login wird geprüft...</p>
+<button id="enablePush" class="btn primary" type="button">🔔 Benachrichtigungen aktivieren</button>
+<button id="logout" class="btn danger" type="button">🚪 Logout</button>
+<div id="status" class="status">Bereit.</div>
+</section>
+<section class="card">
+<h2>Mein PingCar</h2>
+<div id="pingInfo" class="muted">Wird geladen...</div>
+<img id="qrimage" class="qr hidden" alt="PingCar QR-Code">
+</section>
+<section class="card">
+<h2>Benachrichtigungen</h2>
+<div id="notifications" class="muted">Wird geladen...</div>
+</section>
+</main>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 
 const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const firebaseConfig = {
+const FIREBASE_CONFIG = {
   apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
   authDomain: "pingcar.firebaseapp.com",
   projectId: "pingcar",
@@ -54,144 +46,92 @@ const firebaseConfig = {
 
 const VAPID_KEY = "BHOqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
 
-const pushButton = document.getElementById("enablePush");
-const pushStatus = document.getElementById("pushStatus");
-
-function showStatus(message, type = "info") {
-  pushStatus.textContent = message;
-  pushStatus.className = "status-" + type;
-  pushStatus.style.display = "block";
-}
+const $ = id => document.getElementById(id);
+function status(message, type="") { $("status").textContent = message; $("status").className = "status " + type; }
 
 let currentUser = null;
 
-// Push listener is attached immediately. Firebase is initialized only after the click,
-// so an initialization problem cannot silently prevent the button from working.
-pushButton.addEventListener("click", async () => {
-  pushButton.disabled = true;
-  showStatus("Push-Nachrichten werden aktiviert ...", "info");
+async function loadUser() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) {
+    location.replace("index.html");
+    return null;
+  }
+  currentUser = data.user;
+  $("userEmail").textContent = currentUser.email || "PingCar User";
+  $("userInfo").textContent = "Angemeldet als: " + (currentUser.email || currentUser.id);
+  return currentUser;
+}
 
+async function loadPingCar(user) {
+  const { data, error } = await supabase.from("user_qr").select("*").eq("user_id", user.id).maybeSingle();
+  if (error) { $("pingInfo").textContent = "PingCar-Daten konnten nicht geladen werden: " + error.message; return; }
+  if (!data) { $("pingInfo").textContent = "Noch kein PingCar-Fahrzeug zugeordnet."; return; }
+  $("pingInfo").innerHTML = "Ping-ID: <strong>" + (data.ping_id || "-") + "</strong>";
+  if (data.qr_code) { $("qrimage").src = data.qr_code; $("qrimage").classList.remove("hidden"); }
+}
+
+async function loadNotifications(user) {
+  const box = $("notifications");
+  const { data, error } = await supabase.from("notifications").select("*").eq("owner_id", user.id).order("created_at", {ascending:false}).limit(20);
+  if (error) { box.textContent = "Benachrichtigungen konnten nicht geladen werden: " + error.message; return; }
+  if (!data?.length) { box.textContent = "Noch keine Benachrichtigungen."; return; }
+  box.innerHTML = data.map(n => `<div class="notice"><strong>${escapeHtml(n.message || "Benachrichtigung")}</strong><br><span class="muted">${n.created_at ? new Date(n.created_at).toLocaleString("de-CH") : ""}</span></div>`).join("");
+}
+
+function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
+
+async function enablePush() {
   try {
-    if (!window.isSecureContext) {
-      throw new Error("Diese Seite muss über HTTPS geöffnet werden.");
-    }
+    if (!currentUser) { status("Du bist nicht angemeldet.", "error"); return; }
+    if (!("serviceWorker" in navigator) || !("Notification" in window)) { status("Dieser Browser unterstützt Push-Benachrichtigungen hier nicht.", "error"); return; }
 
-    if (!("serviceWorker" in navigator)) {
-      throw new Error("Dieser Browser unterstützt keine Service Worker.");
-    }
+    status("Firebase wird geladen...");
+    const [{ initializeApp }, { getMessaging, getToken }] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js")
+    ]);
 
-    if (!("Notification" in window)) {
-      throw new Error("Dieser Browser unterstützt keine Browser-Benachrichtigungen.");
-    }
-
-    if (!currentUser) {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) throw error;
-      currentUser = data.user;
-    }
-
-    if (!currentUser) {
-      location.href = "index.html";
-      return;
-    }
-
-    const supported = await isSupported();
-    if (!supported) {
-      throw new Error("Firebase Cloud Messaging wird in diesem Browser nicht unterstützt.");
-    }
-
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-      showStatus("Die Benachrichtigungen wurden nicht erlaubt.", "error");
-      return;
-    }
-
-    const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js", { scope: "./" });
-    await navigator.serviceWorker.ready;
-
-    const firebaseApp = initializeApp(firebaseConfig);
+    const firebaseApp = initializeApp(FIREBASE_CONFIG);
     const messaging = getMessaging(firebaseApp);
 
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: registration
-    });
+    status("Service Worker wird registriert...");
+    const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js", {scope:"./"});
+    await navigator.serviceWorker.ready;
 
-    if (!token) {
-      throw new Error("Firebase hat keinen Device-Token zurückgegeben.");
-    }
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") { status("Benachrichtigungen wurden nicht erlaubt.", "error"); return; }
+
+    status("FCM Token wird erstellt...");
+    const token = await getToken(messaging, {vapidKey: VAPID_KEY, serviceWorkerRegistration: registration});
+    if (!token) throw new Error("Firebase hat keinen FCM Token zurückgegeben.");
+
+    const { error } = await supabase.from("device_tokens").upsert({user_id: currentUser.id, fcm_token: token}, {onConflict:"user_id"});
+    if (error) throw new Error("Token konnte nicht in Supabase gespeichert werden: " + error.message);
 
     console.log("PINGCAR DEVICE TOKEN:", token);
-
-    // Save the token for this logged-in user.
-    const { data: existing, error: findError } = await supabase
-      .from("device_tokens")
-      .select("id,fcm_token")
-      .eq("user_id", currentUser.id)
-      .eq("fcm_token", token)
-      .maybeSingle();
-
-    if (findError) throw new Error("Device-Token konnte nicht geprüft werden: " + findError.message);
-
-    if (!existing) {
-      const { error: insertError } = await supabase
-        .from("device_tokens")
-        .insert({ user_id: currentUser.id, fcm_token: token });
-
-      if (insertError) throw new Error("Device-Token konnte nicht gespeichert werden: " + insertError.message);
-    }
-
-    showStatus("Njoftimet u aktivizuan dhe Device-Token u ruajt.", "ok");
-    alert("Njoftimet u aktivizuan!");
+    status("✅ Benachrichtigungen sind aktiviert und der Geräte-Token wurde gespeichert.", "success");
   } catch (error) {
-    console.error("PingCar Push error:", error);
-    showStatus("Fehler: " + (error?.message || error), "error");
-    alert("Gabim gjatë aktivizimit të njoftimeve. Shiko mesazhin poshtë butonit.");
-  } finally {
-    pushButton.disabled = false;
-  }
-});
-
-async function loadDashboard() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    console.error("Supabase auth error:", error);
-    location.href = "index.html";
-    return;
-  }
-
-  currentUser = data.user;
-  if (!currentUser) {
-    location.href = "index.html";
-    return;
-  }
-
-  const { data: qrData, error: qrError } = await supabase
-    .from("user_qr")
-    .select("ping_id,qr_code")
-    .eq("user_id", currentUser.id)
-    .maybeSingle();
-
-  if (qrError) {
-    console.error("Ping ID error:", qrError);
-  }
-
-  if (qrData) {
-    document.getElementById("pingid").textContent = qrData.ping_id || "...";
-    if (qrData.qr_code) {
-      const qrImage = document.getElementById("qrimage");
-      qrImage.src = qrData.qr_code;
-      qrImage.style.display = "block";
-    }
+    console.error("PINGCAR PUSH ERROR:", error);
+    status("❌ Push-Fehler:\n" + (error?.message || String(error)), "error");
   }
 }
 
-document.getElementById("logout").addEventListener("click", async () => {
-  await supabase.auth.signOut();
-  location.href = "index.html";
-});
+async function logout() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    location.replace("index.html");
+  } catch (error) {
+    status("Logout-Fehler: " + error.message, "error");
+  }
+}
 
-loadDashboard();
+$("enablePush").addEventListener("click", enablePush);
+$("logout").addEventListener("click", logout);
+
+const user = await loadUser();
+if (user) { await Promise.all([loadPingCar(user), loadNotifications(user)]); }
 </script>
 </body>
 </html>
