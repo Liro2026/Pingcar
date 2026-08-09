@@ -36,7 +36,7 @@ const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
+  apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
   authDomain: "pingcar.firebaseapp.com",
   projectId: "pingcar",
   storageBucket: "pingcar.firebasestorage.app",
@@ -44,7 +44,7 @@ const FIREBASE_CONFIG = {
   appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
 };
 
-const VAPID_KEY = "BHOqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
+const VAPID_KEY = "BHoqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
 
 const $ = id => document.getElementById(id);
 function status(message, type="") { $("status").textContent = message; $("status").className = "status " + type; }
@@ -127,8 +127,8 @@ async function logout() {
   }
 }
 
-$("enablePush").addEventListener("click", enablePush);
-$("logout").addEventListener("click", logout);
+document.getElementById("enablePush").addEventListener("click", enablePush);
+document.getElementById("logout").addEventListener("click", logout);
 
 const user = await loadUser();
 if (user) { await Promise.all([loadPingCar(user), loadNotifications(user)]); }
