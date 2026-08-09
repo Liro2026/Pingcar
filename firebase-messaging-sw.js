@@ -1,8 +1,9 @@
+/* PingCar Firebase Cloud Messaging service worker */
 importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
+  apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
   authDomain: "pingcar.firebaseapp.com",
   projectId: "pingcar",
   storageBucket: "pingcar.firebasestorage.app",
@@ -12,15 +13,19 @@ apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function(payload) {
-  const notificationTitle = payload.notification?.title || "PingCar";
-  const notificationOptions = {
-    body: payload.notification?.body || "",
-    icon: "/icon-192.png"
+messaging.onBackgroundMessage((payload) => {
+  const title = payload?.notification?.title || "PingCar";
+  const options = {
+    body: payload?.notification?.body || "Neue PingCar Nachricht",
+    icon: "/favicon.ico",
+    data: payload?.data || {}
   };
 
-  self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  );
+  self.registration.showNotification(title, options);
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = event.notification?.data?.url || "/dashboard.html";
+  event.waitUntil(clients.openWindow(target));
 });
