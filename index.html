@@ -607,7 +607,102 @@ document.getElementById("resetButton").addEventListener("click", async function 
 
 });
 
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY") {
+    const box = document.createElement("div");
 
+    box.innerHTML = `
+      <div style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.65);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:9999;
+      ">
+        <div style="
+          background:white;
+          padding:30px;
+          border-radius:15px;
+          width:90%;
+          max-width:400px;
+          box-shadow:0 10px 30px rgba(0,0,0,.3);
+        ">
+          <h2 style="margin-top:0;">Passwort zurücksetzen</h2>
+
+          <input
+            id="newPassword"
+            type="password"
+            placeholder="Neues Passwort"
+            style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;"
+          >
+
+          <input
+            id="newPassword2"
+            type="password"
+            placeholder="Passwort wiederholen"
+            style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;"
+          >
+
+          <button
+            id="saveNewPassword"
+            style="
+              width:100%;
+              padding:12px;
+              background:#1677ff;
+              color:white;
+              border:0;
+              border-radius:8px;
+              cursor:pointer;
+              margin-top:10px;
+            "
+          >
+            Passwort ändern
+          </button>
+
+          <p id="passwordMessage" style="margin-top:12px;"></p>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(box);
+
+    document
+      .getElementById("saveNewPassword")
+      .addEventListener("click", async () => {
+
+        const password = document.getElementById("newPassword").value;
+        const password2 = document.getElementById("newPassword2").value;
+        const message = document.getElementById("passwordMessage");
+
+        if (password.length < 6) {
+          message.textContent = "Das Passwort muss mindestens 6 Zeichen haben.";
+          return;
+        }
+
+        if (password !== password2) {
+          message.textContent = "Die Passwörter stimmen nicht überein.";
+          return;
+        }
+
+        const { error } = await supabase.auth.updateUser({
+          password: password
+        });
+
+        if (error) {
+          message.textContent = "Fehler: " + error.message;
+          return;
+        }
+
+        message.textContent = "Passwort erfolgreich geändert!";
+
+        setTimeout(() => {
+          window.location.href = "https://pingcar.ch/";
+        }, 1500);
+      });
+  }
+});
 const { data } = await supabase.auth.getSession();
 
 if (data.session) {
