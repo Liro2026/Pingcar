@@ -64,8 +64,8 @@ const supabase = createClient(
 
   "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
 );
-apiKey: AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY
 const firebaseConfig = {
+  apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
   authDomain: "pingcar.firebaseapp.com",
   projectId: "pingcar",
   storageBucket: "pingcar.firebasestorage.app",
@@ -80,7 +80,7 @@ const VAPID_KEY = "BHOqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sP
 
 
 
-document.addEventListener("DOMContentLoaded", async () => {
+(async () => {
     document.getElementById("enablePush").addEventListener("click", async () => {
     const registration = await navigator.serviceWorker.register(
     "./firebase-messaging-sw.js"
@@ -135,7 +135,7 @@ document.getElementById("logout").onclick = async () => {
   await supabase.auth.signOut();
   location.href = "index.html";
 };
-});
+})();
 </script>
 <body>
 
