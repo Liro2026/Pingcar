@@ -47,96 +47,15 @@ button{
     color:white;
     font-size:18px;
     cursor:pointer;
+    margin-bottom:10px;
 }
 
 button:hover{
     background:#095fd1;
 }
 </style>
-
 </head>
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
-const supabase = createClient(
-  "https://uvmkhqzfsgvicacvgskf.supabase.co",
 
-  "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
-);
-const firebaseConfig = {
-  apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
-  authDomain: "pingcar.firebaseapp.com",
-  projectId: "pingcar",
-  storageBucket: "pingcar.firebasestorage.app",
-  messagingSenderId: "133178961912",
-  appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
-
-const VAPID_KEY = "BHOqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
-
-
-
-(async () => {
-    document.getElementById("enablePush").addEventListener("click", async () => {
-    const registration = await navigator.serviceWorker.register(
-    "./firebase-messaging-sw.js"
-);
-      try {
-        const permission = await Notification.requestPermission();
-
-        if (permission === "granted") {
-            const token = await getToken(messaging, {
-                vapidKey: VAPID_KEY,
-                serviceWorkerRegistration: registration
-            });
-
-            console.log("PINGCAR DEVICE TOKEN:", token);
-            alert("Njoftimet u aktivizuan!");
-        } else {
-            alert("Njoftimet nuk u lejuan.");
-        }
-    } catch (error) {
-        console.error("Push notification error:", error);
-        alert("Gabim gjatë aktivizimit të njoftimeve.");
-    }
-});
-// Kontrollo përdoruesin
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-
-if (!user) {
-  location.href = "index.html";
-}
-
-// Merr Ping ID dhe QR Code
-const { data, error } = await supabase
-  .from("user_qr")
-  .select("*")
-  .eq("user_id", user.id)
-  .single();
-
-if (!error && data) {
-  document.getElementById("pingid").innerText = data.ping_id;
-
-  if (data.qr_code) {
-  
-    document.getElementById("qrimage").src = data.qr_code;
-
-  }
-}
-
-// Logout
-document.getElementById("logout").onclick = async () => {
-  await supabase.auth.signOut();
-  location.href = "index.html";
-};
-})();
-</script>
 <body>
 
 <div class="card">
@@ -154,23 +73,110 @@ document.getElementById("logout").onclick = async () => {
 </div>
 
 <img id="qrimage">
+
 <button id="enablePush" type="button">
 🔔 Benachrichtigungen aktivieren
 </button>
-<button id="logout">
+
+<button id="logout" type="button">
 Logout
 </button>
+
 <hr style="margin:35px 0;">
 
 <h2>📩 Neue Nachrichten</h2>
 
 <div id="messageList">
-
 <p>Keine Nachrichten vorhanden.</p>
+</div>
 
 </div>
-</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
+
+const supabase = createClient(
+  "https://uvmkhqzfsgvicacvgskf.supabase.co",
+  "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyComGzTg8b2WRRyzFLt7yt__eD9FRQCbrY",
+  authDomain: "pingcar.firebaseapp.com",
+  projectId: "pingcar",
+  storageBucket: "pingcar.firebasestorage.app",
+  messagingSenderId: "133178961912",
+  appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const messaging = getMessaging(firebaseApp);
+
+const VAPID_KEY = "BHOqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
+
+// Logout is attached after the HTML buttons exist.
+document.getElementById("logout").addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  location.href = "index.html";
+});
+
+// Push notifications are initialized only when the user clicks the button.
+document.getElementById("enablePush").addEventListener("click", async () => {
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("Njoftimet nuk u lejuan.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register(
+      "./firebase-messaging-sw.js"
+    );
+
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+
+    if (!token) {
+      throw new Error("Firebase nuk ktheu device token.");
+    }
+
+    console.log("PINGCAR DEVICE TOKEN:", token);
+    alert("Njoftimet u aktivizuan!");
+  } catch (error) {
+    console.error("Push notification error:", error);
+    alert("Gabim gjatë aktivizimit të njoftimeve.");
+  }
+});
+
+// Kontrollo përdoruesin
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  location.href = "index.html";
+} else {
+  // Merr Ping ID dhe QR Code
+  const { data, error } = await supabase
+    .from("user_qr")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!error && data) {
+    document.getElementById("pingid").innerText = data.ping_id;
+
+    if (data.qr_code) {
+      document.getElementById("qrimage").src = data.qr_code;
+    }
+  }
+}
+</script>
 
 </body>
-
 </html>
