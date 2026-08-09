@@ -38,7 +38,7 @@ var supabase = window.supabase.createClient(
 async function onScanSuccess(decodedText){
 
 const { data, error } = await supabase
-.from("cars")
+.from("user_qr")
 .select("*")
 .eq("qr_code", decodedText)
 .single();
