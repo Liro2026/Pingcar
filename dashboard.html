@@ -68,7 +68,13 @@ async function loadPingCar(user) {
   if (error) { $("pingInfo").textContent = "PingCar-Daten konnten nicht geladen werden: " + error.message; return; }
   if (!data) { $("pingInfo").textContent = "Noch kein PingCar-Fahrzeug zugeordnet."; return; }
   $("pingInfo").innerHTML = "Ping-ID: <strong>" + (data.ping_id || "-") + "</strong>";
-  if (data.qr_code) { $("qrimage").src = data.qr_code; $("qrimage").classList.remove("hidden"); }
+  if (data.ping_id) {
+  const qrValue = data.ping_id;
+  $("qrimage").src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+    encodeURIComponent(qrValue);
+  $("qrimage").classList.remove("hidden");
+}
 }
 
 async function loadNotifications(user) {
