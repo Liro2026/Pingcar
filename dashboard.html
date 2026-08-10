@@ -46,6 +46,26 @@ body {
   padding: 12px;
   margin-top: 10px;
 }
+#notifications {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f7f9fc;
+  border: 1px solid #e2e8f0;
+  color: #172033;
+}
+
+#notifications > div {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+  border-left: 4px solid #1762d2;
+}
+
+#notifications > div:last-child {
+  margin-bottom: 0;
+}
 </style>
 </head>
 <body>
@@ -57,6 +77,7 @@ body {
 <button id="enablePush" class="btn primary" type="button">🔔 Benachrichtigungen aktivieren</button>
 <button id="logout" class="btn danger" type="button">🚪 Logout</button>
 <div id="status" class="status">Bereit.</div>
+
 </section>
 <section class="card">
 <h2>Mein PingCar</h2>
