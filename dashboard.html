@@ -164,9 +164,9 @@ if (user) { await Promise.all([loadPingCar(user), loadNotifications(user)]); }
   // ===== PingCar QR Actions =====
 
 function saveQRAsPDF() {
-    const qrImage = document.getElementById("qrImage");
+    const qrimage = document.getElementById("qrimage");
 
-    if (!qrImage || !qrImage.src) {
+    if (!qrimage || !qrimage.src) {
         alert("QR-Code konnte nicht gefunden werden.");
         return;
     }
@@ -210,7 +210,7 @@ function saveQRAsPDF() {
         </head>
         <body>
             <h2>Mein PingCar QR-Code</h2>
-            <img src="${qrImage.src}" alt="PingCar QR-Code">
+            <img src="${qrimage.src}" alt="PingCar QR-Code">
             <script>
                 window.onload = function() {
                     window.print();
@@ -223,15 +223,15 @@ function saveQRAsPDF() {
     printWindow.document.close();
 }
 function downloadQR() {
-    const qrImage = document.getElementById("qrImage");
+    const qrimage = document.getElementById("qrimage");
 
-    if (!qrImage || !qrImage.src) {
+    if (!qrimage || !qrimage.src) {
         alert("QR-Code konnte nicht gefunden werden.");
         return;
     }
 
     const link = document.createElement("a");
-    link.href = qrImage.src;
+    link.href = qrimage.src;
     link.download = "PingCar-QR-Code.png";
 
     document.body.appendChild(link);
@@ -243,9 +243,9 @@ function printQR() {
 }
 
 async function shareQR() {
-    const qrImage = document.getElementById("qrImage");
+    const qrimage = document.getElementById("qrimage");
 
-    if (!qrImage || !qrImage.src) {
+    if (!qrimage || !qrimage.src) {
         alert("QR-Code konnte nicht gefunden werden.");
         return;
     }
