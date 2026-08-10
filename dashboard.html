@@ -5,7 +5,48 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PingCar Dashboard</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fa;color:#172033}.top{background:linear-gradient(135deg,#1677ff,#00b8ff);color:#fff;padding:22px 18px}.wrap{max-width:900px;margin:auto;padding:20px}.top .wrap{padding:0}.card{background:#fff;border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 8px 24px rgba(0,0,0,.08)}h1{margin:0 0 6px;font-size:30px}h2{margin-top:0}.muted{color:#667085}.btn{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}.primary{background:#1677ff;color:#fff}.danger{background:#e5484d;color:#fff}.status{padding:12px;border-radius:10px;background:#eef5ff;margin-top:12px;white-space:pre-wrap}.notice{padding:12px;border-bottom:1px solid #e6e9ef}.notice:last-child{border-bottom:0}.hidden{display:none}.qr{max-width:220px;display:block;margin:15px auto}.error{background:#fff0f0;color:#a61b1b}.success{background:#effaf3;color:#176b37}</style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fa;color:#172033}.top{background:linear-gradient(135deg,#1677ff,#00b8ff);color:#fff;padding:22px 18px}.wrap{max-width:900px;margin:auto;padding:20px}.top .wrap{padding:0}.card{background:#fff;border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 8px 24px rgba(0,0,0,.08)}h1{margin:0 0 6px;font-size:30px}h2{margin-top:0}.muted{color:#667085}.btn{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}.primary{background:#1677ff;color:#fff}.danger{background:#e5484d;color:#fff}.status{padding:12px;border-radius:10px;background:#eef5ff;margin-top:12px;white-space:pre-wrap}.notice{padding:12px;border-bottom:1px solid #e6e9ef}.notice:last-child{border-bottom:0}.hidden{display:none}.qr{max-width:220px;display:block;margin:15px auto}.error{background:#fff0f0;color:#a61b1b}.success{background:#effaf3;color:#176b37}
+/* ===== PingCar Modern Dashboard ===== */
+
+body {
+  background: #f3f7fb !important;
+  color: #172033;
+}
+
+.top {
+  background: linear-gradient(135deg, #1762d2, #08a9e8) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,.12);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  margin-bottom: 18px;
+}
+
+.btn {
+  border-radius: 10px;
+  transition: .2s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.12);
+}
+
+.status {
+  border-radius: 10px;
+}
+
+.notice {
+  background: #f7f9fc;
+  border-left: 4px solid #1762d2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+</style>
 </head>
 <body>
 <header class="top"><div class="wrap"><h1>PingCar</h1><div id="userEmail">Dashboard</div></div></header>
