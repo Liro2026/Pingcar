@@ -222,22 +222,36 @@ function saveQRAsPDF() {
 
     printWindow.document.close();
 }
-function downloadQR() {
-    const qrimage = document.getElementById("qrimage");
+async function downloadQR() {
+  const qrImage = document.getElementById("qrImage");
 
-    if (!qrimage || !qrimage.src) {
-        alert("QR-Code konnte nicht gefunden werden.");
-        return;
-    }
+  if (!qrImage || !qrImage.src) {
+    alert("QR-Code konnte nicht gefunden werden.");
+    return;
+  }
+
+  try {
+    const response = await fetch(qrImage.src);
+    if (!response.ok) throw new Error("QR-Code konnte nicht geladen werden.");
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
-    link.href = qrimage.src;
+    link.href = url;
     link.download = "PingCar-QR-Code.png";
 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("QR-Code Download-Fehler:", error);
+    alert("Der QR-Code konnte nicht heruntergeladen werden.");
+  }
 }
+
 function printQR() {
     saveQRAsPDF();
 }
