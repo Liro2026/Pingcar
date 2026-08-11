@@ -188,6 +188,7 @@ async function showDashboard(){
 
   content.innerHTML = `
     <div class="statbox">
+
       <div class="stat">
         Benutzer
         <h3 id="userCount">...</h3>
@@ -195,18 +196,19 @@ async function showDashboard(){
 
       <div class="stat">
         Fahrzeuge
-        <h3 id="vehicleCount">0</h3>
+        <h3 id="vehicleCount">...</h3>
       </div>
 
       <div class="stat">
         E-Mails
-        <h3 id="emailCount">0</h3>
+        <h3 id="emailCount">...</h3>
       </div>
 
       <div class="stat">
         Push
-        <h3 id="pushCount">0</h3>
+        <h3 id="pushCount">...</h3>
       </div>
+
     </div>
 
     <div class="card">
@@ -216,11 +218,12 @@ async function showDashboard(){
   `;
 
   try {
-    const { data: sessionData } = await db.auth.getSession();
 
-    if (!sessionData.session) {
-      document.getElementById("userCount").textContent = "0";
-      return;
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
     }
 
     const response = await fetch(
@@ -238,15 +241,36 @@ async function showDashboard(){
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error || "Fehler");
+      throw new Error(result.error || "Fehler beim Laden der Benutzer");
     }
 
     document.getElementById("userCount").textContent =
       (result.users || []).length;
 
+    const { count: vehicleCount, error: vehicleError } =
+      await db
+        .from("cars")
+        .select("*", { count: "exact", head: true });
+
+    if (vehicleError) {
+      console.error("Fahrzeuge Fehler:", vehicleError);
+      document.getElementById("vehicleCount").textContent = "0";
+    } else {
+      document.getElementById("vehicleCount").textContent =
+        vehicleCount || 0;
+    }
+
+    document.getElementById("emailCount").textContent = "0";
+    document.getElementById("pushCount").textContent = "0";
+
   } catch (error) {
+
     console.error("Dashboard Fehler:", error);
+
     document.getElementById("userCount").textContent = "!";
+    document.getElementById("vehicleCount").textContent = "!";
+    document.getElementById("emailCount").textContent = "0";
+    document.getElementById("pushCount").textContent = "0";
   }
 }
 
