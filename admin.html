@@ -224,44 +224,111 @@ Push
 
 }
 
-function showUsers(){
+async function showUsers(){
 
-content.innerHTML=`
+  content.innerHTML = `
+    <div class="card">
+      <h2>Benutzer</h2>
+      <p>Benutzer werden geladen...</p>
+    </div>
+  `;
 
-<div class="card">
+  const { data: sessionData, error: sessionError } =
+    await db.auth.getSession();
 
-<h2>Benutzer</h2>
+  if (sessionError || !sessionData.session) {
+    content.innerHTML = `
+      <div class="card">
+        <h2>Benutzer</h2>
+        <p>Bitte zuerst als Administrator einloggen.</p>
+      </div>
+    `;
+    return;
+  }
 
-<input placeholder="Benutzer suchen...">
+  try {
 
-<table>
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
 
-<tr>
+    const result = await response.json();
 
-<th>Name</th>
+    if (!response.ok) {
+      throw new Error(result.error || "Fehler beim Laden der Benutzer");
+    }
 
-<th>E-Mail</th>
+    const users = result.users || [];
 
-<th>Status</th>
+    let rows = "";
 
-</tr>
+    users.forEach(user => {
 
-<tr>
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        "-";
 
-<td colspan="3">
+      const email = user.email || "-";
 
-Benutzer werden im nächsten Schritt aus Supabase geladen.
+      const status = user.email_confirmed_at
+        ? "Bestätigt"
+        : "Nicht bestätigt";
 
-</td>
+      rows += `
+        <tr>
+          <td>${name}</td>
+          <td>${email}</td>
+          <td>${status}</td>
+        </tr>
+      `;
+    });
 
-</tr>
+    if (!rows) {
+      rows = `
+        <tr>
+          <td colspan="3">Keine Benutzer gefunden.</td>
+        </tr>
+      `;
+    }
 
-</table>
+    content.innerHTML = `
+      <div class="card">
+        <h2>Benutzer</h2>
 
-</div>
+        <input placeholder="Benutzer suchen..." id="userSearch">
 
-`;
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>Status</th>
+          </tr>
 
+          ${rows}
+
+        </table>
+      </div>
+    `;
+
+  } catch (error) {
+
+    content.innerHTML = `
+      <div class="card">
+        <h2>Fehler</h2>
+        <p>${error.message}</p>
+      </div>
+    `;
+
+  }
 }
 
 function showEmail(){
