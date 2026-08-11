@@ -387,15 +387,20 @@ function showEmail(){
     <div class="card">
       <h2>E-Mail senden</h2>
 
-      <input id="emailTo" placeholder="Empfänger">
+<input id="emailTo" placeholder="Empfänger">
 
-      <input id="emailSubject" placeholder="Betreff">
+<label style="display:block;margin:10px 0;">
+  <input type="checkbox" id="sendToAll">
+  An alle bestätigten Benutzer senden
+</label>
 
-      <textarea id="emailMessage" placeholder="Nachricht"></textarea>
+<input id="emailSubject" placeholder="Betreff">
 
-      <button onclick="sendAdminEmail()">Senden</button>
+<textarea id="emailMessage" placeholder="Nachricht"></textarea>
 
-      <div id="emailResult" style="margin-top:15px;"></div>
+<button onclick="sendAdminEmail()">Senden</button>
+
+<div id="emailResult" style="margin-top:15px;"></div>
     </div>
   `;
 }
@@ -405,14 +410,17 @@ async function sendAdminEmail(){
   const to = document.getElementById("emailTo").value.trim();
   const subject = document.getElementById("emailSubject").value.trim();
   const message = document.getElementById("emailMessage").value.trim();
+  const sendToAll = document.getElementById("sendToAll").checked;
   const result = document.getElementById("emailResult");
 
-  if (!to || !subject || !message) {
+  if ((!to && !sendToAll) || !subject || !message) {
     result.innerHTML = "Bitte alle Felder ausfüllen.";
     return;
   }
 
-  result.innerHTML = "E-Mail wird gesendet...";
+  result.innerHTML = sendToAll
+    ? "📨 E-Mails an alle Benutzer werden vorbereitet..."
+    : "📨 E-Mail wird gesendet...";
 
   try {
 
@@ -426,30 +434,95 @@ async function sendAdminEmail(){
       return;
     }
 
-    const { data, error } = await db.functions.invoke(
-      "send-email",
-      {
-        body: {
-          to: to,
-          subject: subject,
-          message: message
+    // Nur ein Empfänger
+    if (!sendToAll) {
+
+      const { data, error } = await db.functions.invoke(
+        "send-email",
+        {
+          body: {
+            to: to,
+            subject: subject,
+            message: message
+          }
         }
-      }
-    );
-
-    if (error) {
-      throw error;
-    }
-
-    if (data?.error) {
-      throw new Error(
-        typeof data.error === "string"
-          ? data.error
-          : JSON.stringify(data.error)
       );
+
+      if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(
+          typeof data.error === "string"
+            ? data.error
+            : JSON.stringify(data.error)
+        );
+      }
+
+      result.innerHTML = "✅ E-Mail wurde erfolgreich gesendet.";
+      document.getElementById("emailMessage").value = "";
+      return;
     }
 
-    result.innerHTML = "✅ E-Mail wurde erfolgreich gesendet.";
+    // Alle Benutzer holen
+    const {
+      data: usersData,
+      error: usersError
+    } = await db.functions.invoke("admin-users");
+
+    if (usersError) throw usersError;
+
+    const users = usersData?.users || [];
+
+    const emails = [
+      ...new Set(
+        users
+          .map(user => user.email)
+          .filter(email => email)
+      )
+    ];
+
+    if (!emails.length) {
+      result.innerHTML = "❌ Keine Benutzer mit E-Mail-Adresse gefunden.";
+      return;
+    }
+
+    let sent = 0;
+    let failed = 0;
+
+    // E-Mails nacheinander senden
+    for (const email of emails) {
+
+      try {
+
+        const { data, error } = await db.functions.invoke(
+          "send-email",
+          {
+            body: {
+              to: email,
+              subject: subject,
+              message: message
+            }
+          }
+        );
+
+        if (error || data?.error) {
+          failed++;
+        } else {
+          sent++;
+        }
+
+        result.innerHTML =
+          `📨 Gesendet: ${sent} / ${emails.length}` +
+          (failed ? ` | ❌ Fehler: ${failed}` : "");
+
+      } catch (err) {
+        failed++;
+      }
+    }
+
+    result.innerHTML =
+      `✅ Fertig: ${sent} von ${emails.length} E-Mails gesendet.` +
+      (failed ? ` ❌ Fehler: ${failed}` : "");
 
     document.getElementById("emailMessage").value = "";
 
@@ -459,7 +532,7 @@ async function sendAdminEmail(){
 
     result.innerHTML =
       "❌ Fehler: " +
-      (error.message || "E-Mail konnte nicht gesendet werden.");
+      (error?.message || "E-Mail konnte nicht gesendet werden.");
   }
 }
 
