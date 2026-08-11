@@ -222,6 +222,27 @@ sendNotification(
 }
 
 );
+document
+.getElementById("btn4")
+.addEventListener(
+  "click",
+  function(){
+    sendNotification(
+      "Fahrzeug steht falsch / falsch parkiert"
+    );
+  }
+);
+
+document
+.getElementById("btn5")
+.addEventListener(
+  "click",
+  function(){
+    sendNotification(
+      "Sonstige Nachricht"
+    );
+  }
+);
 </script>
 
 </body>
