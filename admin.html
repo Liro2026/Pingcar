@@ -383,22 +383,84 @@ async function showUsers(){
 
 function showEmail(){
 
-content.innerHTML=`
+  content.innerHTML = `
+    <div class="card">
+      <h2>E-Mail senden</h2>
 
-<div class="card">
+      <input id="emailTo" placeholder="Empfänger">
 
-<h2>E-Mail senden</h2>
+      <input id="emailSubject" placeholder="Betreff">
 
-<input placeholder="Betreff">
+      <textarea id="emailMessage" placeholder="Nachricht"></textarea>
 
-<textarea placeholder="Nachricht"></textarea>
+      <button onclick="sendAdminEmail()">Senden</button>
 
-<button>Senden</button>
+      <div id="emailResult" style="margin-top:15px;"></div>
+    </div>
+  `;
+}
 
-</div>
+async function sendAdminEmail(){
 
-`;
+  const to = document.getElementById("emailTo").value.trim();
+  const subject = document.getElementById("emailSubject").value.trim();
+  const message = document.getElementById("emailMessage").value.trim();
+  const result = document.getElementById("emailResult");
 
+  if (!to || !subject || !message) {
+    result.innerHTML = "Bitte alle Felder ausfüllen.";
+    return;
+  }
+
+  result.innerHTML = "E-Mail wird gesendet...";
+
+  try {
+
+    const {
+      data: { session },
+      error: sessionError
+    } = await db.auth.getSession();
+
+    if (sessionError || !session) {
+      result.innerHTML = "Nicht eingeloggt.";
+      return;
+    }
+
+    const { data, error } = await db.functions.invoke(
+      "send-email",
+      {
+        body: {
+          to: to,
+          subject: subject,
+          message: message
+        }
+      }
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    if (data?.error) {
+      throw new Error(
+        typeof data.error === "string"
+          ? data.error
+          : JSON.stringify(data.error)
+      );
+    }
+
+    result.innerHTML = "✅ E-Mail wurde erfolgreich gesendet.";
+
+    document.getElementById("emailMessage").value = "";
+
+  } catch (error) {
+
+    console.error("E-Mail Fehler:", error);
+
+    result.innerHTML =
+      "❌ Fehler: " +
+      (error.message || "E-Mail konnte nicht gesendet werden.");
+  }
 }
 
 function showPush(){
