@@ -154,7 +154,7 @@ async function loadPingCar(user) {
   if (!data) { $("pingInfo").textContent = "Noch kein PingCar-Fahrzeug zugeordnet."; return; }
   $("pingInfo").innerHTML = "Ping-ID: <strong>" + (data.ping_id || "-") + "</strong>";
   if (data.ping_id) {
-  const qrValue = data.ping_id;
+  const qrValue = "https://pingcar.ch/contact.html?id=" + data.ping_id;
   $("qrimage").src =
     "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
     encodeURIComponent(qrValue);
