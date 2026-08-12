@@ -125,42 +125,65 @@ window.supabase.createClient(
 
 async function sendNotification(message){
 
-if(!qrId){
+  if(!qrId){
+    alert("QR-Code ungültig.");
+    return;
+  }
 
-alert("QR-Code ungültig.");
+  // Ein eindeutiger Benutzer/Browser-Schlüssel
+  let clientId = localStorage.getItem("pingcar_client_id");
 
-return;
+  if(!clientId){
+    clientId = crypto.randomUUID();
+    localStorage.setItem("pingcar_client_id", clientId);
+  }
 
-}
+  // 5 Meldungen innerhalb von 24 Stunden prüfen
+  const { data: limitData, error: limitError } =
+    await supabaseClient.rpc(
+      "check_report_limit",
+      {
+        p_client_id: clientId
+      }
+    );
 
-const { error } =
-await supabaseClient
+  if(limitError){
+    alert("Fehler bei der Überprüfung des Meldelimits.");
+    console.error(limitError);
+    return;
+  }
 
-.from("notifications")
+  // Tageslimit erreicht
+  if(!limitData.allowed){
+    alert(
+      "Sie haben das tägliche Limit von 5 Meldungen erreicht.\n\n" +
+      "Bitte versuchen Sie es in 24 Stunden erneut."
+    );
+    return;
+  }
 
-.insert({
+  // Meldung speichern
+  const { error } = await supabaseClient
+    .from("notifications")
+    .insert({
+      qr_code: qrId,
+      message: message,
+      sender_id: "anonymous",
+      owner_id: "",
+      created_at: new Date().toISOString()
+    });
 
-qr_qode: qrId,
+  if(error){
+    alert("Fehler:\n\n" + error.message);
+    console.error(error);
+    return;
+  }
 
-message: message,
-
-sender_id: "anonymous",
-owner_id: "",
-
-created_at: new Date().toISOString()
-
-});
-
-if(error){
-
-alert("Fehler:\\n\\n" + error.message);
-
-return;
-
-}
-
-alert("Nachricht erfolgreich gesendet!");
-
+  alert(
+    "Nachricht erfolgreich gesendet!\n\n" +
+    "Verbleibende Meldungen heute: " +
+    limitData.remaining
+  );
 }
 
 document
