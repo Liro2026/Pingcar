@@ -890,7 +890,7 @@ const translations = {
   }
 };
 
-function setLanguage(lang) {
+window.setLanguage = function(lang) {
 
   const t = translations[lang];
 
@@ -1011,7 +1011,7 @@ function setLanguage(lang) {
       p.textContent = t.notificationText;
     }
   });
-}
+};
 
 // Load saved language
 document.addEventListener("DOMContentLoaded", function() {
