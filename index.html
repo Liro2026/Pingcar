@@ -519,6 +519,30 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+async function registerPageVisit() {
+  try {
+    let visitorId = localStorage.getItem("pingcar_visitor_id");
+
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem("pingcar_visitor_id", visitorId);
+    }
+
+    await supabase
+      .from("page_visits")
+      .insert([
+        {
+          visitor_id: visitorId,
+          page: window.location.pathname
+        }
+      ]);
+
+  } catch (error) {
+    console.error("Page visit error:", error);
+  }
+}
+
+registerPageVisit();
 const firebaseConfig = {
   apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
   authDomain: "pingcar.firebaseapp.com",
