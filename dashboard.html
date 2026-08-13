@@ -112,6 +112,96 @@ style="padding:12px 16px;border:none;border-radius:8px;background:#8e24aa;color:
 <div id="notifications" class="muted">Wird geladen...</div>
 </section>
 </main>
+<script>
+const dashLang = localStorage.getItem("pingcar_language") || "de";
+
+const dashTranslations = {
+  de: {
+    "PingCar Dashboard": "PingCar Dashboard",
+    "Mein Konto": "Mein Konto",
+    "Benachrichtigungen aktivieren": "Benachrichtigungen aktivieren",
+    "Logout": "Logout",
+    "Mein PingCar": "Mein PingCar",
+    "Als PDF speichern": "Als PDF speichern",
+    "QR-Code drucken": "QR-Code drucken",
+    "QR-Code teilen": "QR-Code teilen",
+    "QR-Code herunterladen": "QR-Code herunterladen",
+    "Benachrichtigungen": "Benachrichtigungen"
+  },
+  sq: {
+    "PingCar Dashboard": "Paneli PingCar",
+    "Mein Konto": "Llogaria ime",
+    "Benachrichtigungen aktivieren": "Aktivizo njoftimet",
+    "Logout": "Dil",
+    "Mein PingCar": "PingCar im",
+    "Als PDF speichern": "Ruaj si PDF",
+    "QR-Code drucken": "Printo QR-Code",
+    "QR-Code teilen": "Ndaj QR-Code",
+    "QR-Code herunterladen": "Shkarko QR-Code",
+    "Benachrichtigungen": "Njoftimet"
+  },
+  fr: {
+    "PingCar Dashboard": "Tableau de bord PingCar",
+    "Mein Konto": "Mon compte",
+    "Benachrichtigungen aktivieren": "Activer les notifications",
+    "Logout": "Déconnexion",
+    "Mein PingCar": "Mon PingCar",
+    "Als PDF speichern": "Enregistrer en PDF",
+    "QR-Code drucken": "Imprimer le QR-Code",
+    "QR-Code teilen": "Partager le QR-Code",
+    "QR-Code herunterladen": "Télécharger le QR-Code",
+    "Benachrichtigungen": "Notifications"
+  },
+  it: {
+    "PingCar Dashboard": "Dashboard PingCar",
+    "Mein Konto": "Il mio account",
+    "Benachrichtigungen aktivieren": "Attiva notifiche",
+    "Logout": "Esci",
+    "Mein PingCar": "Il mio PingCar",
+    "Als PDF speichern": "Salva come PDF",
+    "QR-Code drucken": "Stampa QR-Code",
+    "QR-Code teilen": "Condividi QR-Code",
+    "QR-Code herunterladen": "Scarica QR-Code",
+    "Benachrichtigungen": "Notifiche"
+  },
+  en: {
+    "PingCar Dashboard": "PingCar Dashboard",
+    "Mein Konto": "My Account",
+    "Benachrichtigungen aktivieren": "Enable Notifications",
+    "Logout": "Logout",
+    "Mein PingCar": "My PingCar",
+    "Als PDF speichern": "Save as PDF",
+    "QR-Code drucken": "Print QR-Code",
+    "QR-Code teilen": "Share QR-Code",
+    "QR-Code herunterladen": "Download QR-Code",
+    "Benachrichtigungen": "Notifications"
+  }
+};
+
+function translateDashboard() {
+  const translations = dashTranslations[dashLang] || dashTranslations.de;
+
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT
+  );
+
+  let node;
+
+  while (node = walker.nextNode()) {
+    const original = node.nodeValue.trim();
+
+    if (translations[original]) {
+      node.nodeValue = node.nodeValue.replace(
+        original,
+        translations[original]
+      );
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", translateDashboard);
+</script>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
