@@ -24,10 +24,23 @@ body{
 </head>
 <body>
 
-<h2>📱 QR-Code Scanner</h2>
+<h2 id="qrTitle">📱 QR-Code Scanner</h2>
 
 <div id="reader"></div>
+<script>
+const qrLang = localStorage.getItem("pingcar_language") || "de";
 
+const qrTranslations = {
+  de: "📱 QR-Code Scanner",
+  fr: "📱 Scanner de code QR",
+  it: "📱 Scanner di codici QR",
+  en: "📱 QR-Code Scanner",
+  sq: "📱 Skaneri i kodit QR"
+};
+
+document.getElementById("qrTitle").textContent =
+  qrTranslations[qrLang] || qrTranslations.de;
+</script>
 <script>
 
 var supabase = window.supabase.createClient(
