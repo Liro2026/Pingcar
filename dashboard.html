@@ -443,6 +443,142 @@ window.printQR = printQR;
 window.shareQR = shareQR;
 window.downloadQR = downloadQR;
 </script>
+<script>
+const dashboardTranslations = {
+  de: {
+    logged: "Angemeldet als:",
+    notifications: "Benachrichtigungen aktivieren",
+    logout: "Logout",
+    ready: "Bereit.",
+    myPingcar: "PingCar im",
+    pingId: "Ping-ID:",
+    download: "QR-Code herunterladen",
+    pdf: "Als PDF speichern",
+    print: "QR-Code drucken",
+    share: "QR-Code teilen",
+    notificationsTitle: "Benachrichtigungen",
+    loading: "Wird geladen..."
+  },
+
+  sq: {
+    logged: "I kyçur si:",
+    notifications: "Aktivizo njoftimet",
+    logout: "Dil",
+    ready: "Gati.",
+    myPingcar: "PingCar-i im",
+    pingId: "Ping-ID:",
+    download: "Shkarko QR-Code",
+    pdf: "Ruaje si PDF",
+    print: "Printo QR-Code",
+    share: "Shpërndaje QR-Code",
+    notificationsTitle: "Njoftimet",
+    loading: "Duke u ngarkuar..."
+  },
+
+  en: {
+    logged: "Logged in as:",
+    notifications: "Enable notifications",
+    logout: "Logout",
+    ready: "Ready.",
+    myPingcar: "My PingCar",
+    pingId: "Ping-ID:",
+    download: "Download QR-Code",
+    pdf: "Save as PDF",
+    print: "Print QR-Code",
+    share: "Share QR-Code",
+    notificationsTitle: "Notifications",
+    loading: "Loading..."
+  },
+
+  fr: {
+    logged: "Connecté en tant que :",
+    notifications: "Activer les notifications",
+    logout: "Déconnexion",
+    ready: "Prêt.",
+    myPingcar: "Mon PingCar",
+    pingId: "ID Ping :",
+    download: "Télécharger le QR-Code",
+    pdf: "Enregistrer en PDF",
+    print: "Imprimer le QR-Code",
+    share: "Partager le QR-Code",
+    notificationsTitle: "Notifications",
+    loading: "Chargement..."
+  },
+
+  it: {
+    logged: "Accesso come:",
+    notifications: "Attiva notifiche",
+    logout: "Esci",
+    ready: "Pronto.",
+    myPingcar: "Il mio PingCar",
+    pingId: "ID Ping:",
+    download: "Scarica QR-Code",
+    pdf: "Salva come PDF",
+    print: "Stampa QR-Code",
+    share: "Condividi QR-Code",
+    notificationsTitle: "Notifiche",
+    loading: "Caricamento..."
+  }
+};
+
+function translateDashboard() {
+  const lang = localStorage.getItem("pingcar_language") || "de";
+  const t = dashboardTranslations[lang] || dashboardTranslations.de;
+
+  // Login
+  const userInfo = document.getElementById("userInfo");
+  if (userInfo && userInfo.textContent.trim().startsWith("Angemeldet")) {
+    const email = userInfo.textContent.split(":").slice(1).join(":").trim();
+    userInfo.textContent = t.logged + " " + email;
+  }
+
+  // Buttons
+  const enablePush = document.getElementById("enablePush");
+  if (enablePush) enablePush.textContent = "🔔 " + t.notifications;
+
+  const logout = document.getElementById("logout");
+  if (logout) logout.textContent = "🚪 " + t.logout;
+
+  // Status
+  const statusBox = document.getElementById("status");
+  if (statusBox && statusBox.textContent.trim() === "Bereit.") {
+    statusBox.textContent = t.ready;
+  }
+
+  // PingCar title
+  const headings = document.querySelectorAll("h2");
+  headings.forEach(h => {
+    const text = h.textContent.trim();
+
+    if (text === "PingCar im") h.textContent = t.myPingcar;
+    if (text === "Benachrichtigungen") h.textContent = t.notificationsTitle;
+  });
+
+  // Ping-ID
+  const pingInfo = document.getElementById("pingInfo");
+  if (pingInfo) {
+    pingInfo.innerHTML = pingInfo.innerHTML.replace(
+      "Ping-ID:",
+      t.pingId
+    );
+  }
+
+  // QR buttons
+  const downloadBtn = document.querySelector('[onclick="downloadQR()"]');
+  if (downloadBtn) downloadBtn.textContent = "📥 " + t.download;
+
+  const pdfBtn = document.querySelector('[onclick="saveQRAsPDF()"]');
+  if (pdfBtn) pdfBtn.textContent = "📄 " + t.pdf;
+
+  const printBtn = document.querySelector('[onclick="printQR()"]');
+  if (printBtn) printBtn.textContent = "🖨️ " + t.print;
+
+  const shareBtn = document.querySelector('[onclick="shareQR()"]');
+  if (shareBtn) shareBtn.textContent = "📤 " + t.share;
+}
+
+translateDashboard();
+</script>
 </body>
 </html>
 <!-- PingCar Pages redeploy test -->
