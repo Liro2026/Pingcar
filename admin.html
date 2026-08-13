@@ -209,6 +209,21 @@ async function showDashboard(){
         <h3 id="pushCount">...</h3>
       </div>
 
+      <div class="stat">
+        Seitenbesuche
+        <h3 id="visitCount">...</h3>
+      </div>
+
+      <div class="stat">
+        Besucher heute
+        <h3 id="todayVisitCount">...</h3>
+      </div>
+
+      <div class="stat">
+        Besucher einzigartig
+        <h3 id="uniqueVisitCount">...</h3>
+      </div>
+
     </div>
 
     <div class="card">
@@ -263,6 +278,63 @@ async function showDashboard(){
     document.getElementById("emailCount").textContent = "0";
     document.getElementById("pushCount").textContent = "0";
 
+
+    const { data: visits, error: visitsError } =
+      await db
+        .from("page_visits")
+        .select("visitor_id, visited_at");
+
+    if (visitsError) {
+
+      console.error("Besuche Fehler:", visitsError);
+
+      document.getElementById("visitCount").textContent = "0";
+      document.getElementById("todayVisitCount").textContent = "0";
+      document.getElementById("uniqueVisitCount").textContent = "0";
+
+    } else {
+
+      const allVisits = visits || [];
+
+      document.getElementById("visitCount").textContent =
+        allVisits.length;
+
+      const today = new Date();
+
+      const todayStart = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+
+      const todayEnd = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() + 1
+      );
+
+      const todayVisits = allVisits.filter(visit => {
+
+        const visitDate = new Date(visit.visited_at);
+
+        return visitDate >= todayStart && visitDate < todayEnd;
+
+      });
+
+      document.getElementById("todayVisitCount").textContent =
+        todayVisits.length;
+
+      const uniqueVisitors = new Set(
+        allVisits
+          .map(visit => visit.visitor_id)
+          .filter(Boolean)
+      );
+
+      document.getElementById("uniqueVisitCount").textContent =
+        uniqueVisitors.size;
+    }
+
+
   } catch (error) {
 
     console.error("Dashboard Fehler:", error);
@@ -271,6 +343,9 @@ async function showDashboard(){
     document.getElementById("vehicleCount").textContent = "!";
     document.getElementById("emailCount").textContent = "0";
     document.getElementById("pushCount").textContent = "0";
+    document.getElementById("visitCount").textContent = "0";
+    document.getElementById("todayVisitCount").textContent = "0";
+    document.getElementById("uniqueVisitCount").textContent = "0";
   }
 }
 
