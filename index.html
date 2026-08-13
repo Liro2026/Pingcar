@@ -187,11 +187,11 @@ margin-top:50px;
 
     <div style="display:flex;gap:4px;align-items:center;">
 
-      <button style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇩🇪 DE</button>
-      <button style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇫🇷 FR</button>
-      <button style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇮🇹 IT</button>
-      <button style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇬🇧 EN</button>
-      <button style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇦🇱 SQ</button>
+<button id="lang-de" onclick="setLanguage('de')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇩🇪 DE</button>
+<button id="lang-fr" onclick="setLanguage('fr')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇫🇷 FR</button>
+<button id="lang-it" onclick="setLanguage('it')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇮🇹 IT</button>
+<button id="lang-en" onclick="setLanguage('en')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇬🇧 EN</button>
+<button id="lang-sq" onclick="setLanguage('sq')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇦🇱 SQ</button>    
 
     </div>
 
@@ -769,7 +769,260 @@ if (data.session) {
   document.getElementById("welcomeUser").innerText =
     "Willkommen " + user.email;
 }
+// ===============================
+// PingCar Language System
+// ===============================
 
+const translations = {
+  de: {
+    home: "Home",
+    qr: "QR",
+    contact: "Contact",
+    dashboard: "Dashboard",
+    messages: "Messages",
+    title: "PingCar",
+    description: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.",
+    available: "Bald verfügbar",
+    how: "So funktioniert PingCar",
+    register: "Registrieren",
+    registerText: "Erstellen Sie kostenlos Ihr PingCar-Konto.",
+    getQr: "QR-Code erhalten",
+    getQrText: "Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.",
+    placeQr: "QR-Code anbringen",
+    placeQrText: "Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.",
+    scanQr: "QR-Code scannen",
+    scanQrText: "Eine andere Person scannt den QR-Code mit dem Smartphone.",
+    notification: "Benachrichtigung",
+    notificationText: "Sie erhalten sofort eine Nachricht in der PingCar-App.",
+    afterScan: "Nach dem Scannen"
+  },
+
+  fr: {
+    home: "Accueil",
+    qr: "QR",
+    contact: "Contact",
+    dashboard: "Tableau de bord",
+    messages: "Messages",
+    title: "PingCar",
+    description: "La solution sécurisée pour contacter le propriétaire d'un véhicule – sans numéro de téléphone et sans données personnelles.",
+    available: "Bientôt disponible",
+    how: "Comment fonctionne PingCar",
+    register: "Inscription",
+    registerText: "Créez gratuitement votre compte PingCar.",
+    getQr: "Obtenir le code QR",
+    getQrText: "Vous recevez un code QR personnel pour votre véhicule.",
+    placeQr: "Placer le code QR",
+    placeQrText: "Fixez le code QR de manière bien visible sur votre véhicule.",
+    scanQr: "Scanner le code QR",
+    scanQrText: "Une autre personne scanne le code QR avec son smartphone.",
+    notification: "Notification",
+    notificationText: "Vous recevez immédiatement un message dans PingCar.",
+    afterScan: "Après le scan"
+  },
+
+  it: {
+    home: "Home",
+    qr: "QR",
+    contact: "Contatti",
+    dashboard: "Dashboard",
+    messages: "Messaggi",
+    title: "PingCar",
+    description: "La soluzione sicura per contattare il proprietario di un veicolo – senza numero di telefono e senza dati personali.",
+    available: "Presto disponibile",
+    how: "Come funziona PingCar",
+    register: "Registrazione",
+    registerText: "Crea gratuitamente il tuo account PingCar.",
+    getQr: "Ottieni il codice QR",
+    getQrText: "Ricevi un codice QR personale per il tuo veicolo.",
+    placeQr: "Posiziona il codice QR",
+    placeQrText: "Fissa il codice QR in modo ben visibile sul tuo veicolo.",
+    scanQr: "Scansiona il codice QR",
+    scanQrText: "Un'altra persona scansiona il codice QR con lo smartphone.",
+    notification: "Notifica",
+    notificationText: "Ricevi immediatamente un messaggio in PingCar.",
+    afterScan: "Dopo la scansione"
+  },
+
+  en: {
+    home: "Home",
+    qr: "QR",
+    contact: "Contact",
+    dashboard: "Dashboard",
+    messages: "Messages",
+    title: "PingCar",
+    description: "The secure solution for contacting vehicle owners – without phone numbers and without personal data.",
+    available: "Coming soon",
+    how: "How PingCar works",
+    register: "Register",
+    registerText: "Create your PingCar account for free.",
+    getQr: "Get QR Code",
+    getQrText: "You receive a personal QR code for your vehicle.",
+    placeQr: "Place the QR Code",
+    placeQrText: "Attach the QR code clearly and visibly to your vehicle.",
+    scanQr: "Scan the QR Code",
+    scanQrText: "Another person scans the QR code with their smartphone.",
+    notification: "Notification",
+    notificationText: "You receive a message immediately through PingCar.",
+    afterScan: "After scanning"
+  },
+
+  sq: {
+    home: "Ballina",
+    qr: "QR",
+    contact: "Kontakt",
+    dashboard: "Paneli",
+    messages: "Mesazhet",
+    title: "PingCar",
+    description: "Zgjidhja e sigurt për të kontaktuar pronarin e një automjeti – pa numër telefoni dhe pa të dhëna personale.",
+    available: "Së shpejti",
+    how: "Si funksionon PingCar",
+    register: "Regjistrohu",
+    registerText: "Krijo falas llogarinë tënde në PingCar.",
+    getQr: "Merr QR-Code",
+    getQrText: "Merr një QR-Code personal për automjetin tënd.",
+    placeQr: "Vendos QR-Code",
+    placeQrText: "Vendose QR-Code në një vend të dukshëm në automjetin tënd.",
+    scanQr: "Skano QR-Code",
+    scanQrText: "Një person tjetër e skanon QR-Code me telefonin e tij.",
+    notification: "Njoftim",
+    notificationText: "Merr menjëherë një mesazh përmes PingCar.",
+    afterScan: "Pas skanimit"
+  }
+};
+
+function setLanguage(lang) {
+
+  const t = translations[lang];
+
+  if (!t) return;
+
+  localStorage.setItem("pingcar_language", lang);
+
+  // Navigation
+  const homeLink = document.querySelector('a[href="index.html"]');
+  const qrLink = document.querySelector('a[href="qr.html"]');
+  const contactLink = document.querySelector('a[href="contact.html"]');
+  const dashboardLink = document.querySelector('a[href="dashboard.html"]');
+  const messageLink = document.querySelector('a[href="message.html"]');
+
+  if (homeLink) homeLink.innerHTML = "🏠 " + t.home;
+  if (qrLink) qrLink.innerHTML = "📷 " + t.qr;
+  if (contactLink) contactLink.innerHTML = "💬 " + t.contact;
+  if (dashboardLink) dashboardLink.innerHTML = "👤 " + t.dashboard;
+  if (messageLink) messageLink.innerHTML = "🔔 " + t.messages;
+
+  // Main title
+  const h1 = document.querySelector("header h1");
+  if (h1) h1.textContent = t.title;
+
+  // Main description
+  const headerParagraph = document.querySelector("header p");
+  if (headerParagraph) headerParagraph.textContent = t.description;
+
+  // "Bald verfügbar / Coming soon"
+  const availableButton = document.querySelector('header a.button');
+  if (availableButton) availableButton.textContent = t.available;
+
+  // Main section title
+  const headings = document.querySelectorAll("h2");
+
+  headings.forEach(function(h) {
+
+    const text = h.textContent.trim();
+
+    if (
+      text === "So funktioniert PingCar" ||
+      text === "How PingCar works" ||
+      text === "Comment fonctionne PingCar" ||
+      text === "Come funziona PingCar" ||
+      text === "Si funksionon PingCar"
+    ) {
+      h.textContent = t.how;
+    }
+
+    if (
+      text === "Nach dem Scannen" ||
+      text === "After scanning" ||
+      text === "Après le scan" ||
+      text === "Dopo la scansione" ||
+      text === "Pas skanimit"
+    ) {
+      h.textContent = t.afterScan;
+    }
+  });
+
+  // Step headings
+  const headings3 = document.querySelectorAll("h3");
+
+  headings3.forEach(function(h) {
+
+    const text = h.textContent.trim();
+
+    if (text.includes("Registrieren") || text === "Register" || text === "Inscription" || text === "Registrazione" || text === "Regjistrohu") {
+      h.textContent = "1. " + t.register;
+    }
+
+    if (text.includes("QR-Code erhalten") || text === "Get QR Code" || text === "Obtenir le code QR" || text === "Ottieni il codice QR" || text === "Merr QR-Code") {
+      h.textContent = "2. " + t.getQr;
+    }
+
+    if (text.includes("QR-Code anbringen") || text === "Place the QR Code" || text === "Placer le code QR" || text === "Posiziona il codice QR" || text === "Vendos QR-Code") {
+      h.textContent = "3. " + t.placeQr;
+    }
+
+    if (text.includes("QR-Code scannen") || text === "Scan the QR Code" || text === "Scanner le code QR" || text === "Scansiona il codice QR" || text === "Skano QR-Code") {
+      h.textContent = "4. " + t.scanQr;
+    }
+
+    if (
+      text.includes("Benachrichtigung") ||
+      text === "Notification" ||
+      text === "Notifica" ||
+      text === "Njoftim"
+    ) {
+      h.textContent = "5. " + t.notification;
+    }
+  });
+
+  // Step descriptions
+  const paragraphs = document.querySelectorAll(".item p");
+
+  paragraphs.forEach(function(p) {
+
+    const text = p.textContent.trim();
+
+    if (text.includes("Erstellen Sie kostenlos")) {
+      p.textContent = t.registerText;
+    }
+
+    if (text.includes("Sie erhalten einen persönlichen")) {
+      p.textContent = t.getQrText;
+    }
+
+    if (text.includes("Befestigen Sie den QR-Code")) {
+      p.textContent = t.placeQrText;
+    }
+
+    if (text.includes("Eine andere Person scannt")) {
+      p.textContent = t.scanQrText;
+    }
+
+    if (text.includes("Sie erhalten sofort eine Nachricht")) {
+      p.textContent = t.notificationText;
+    }
+  });
+}
+
+// Load saved language
+document.addEventListener("DOMContentLoaded", function() {
+
+  const savedLanguage =
+    localStorage.getItem("pingcar_language") || "de";
+
+  setLanguage(savedLanguage);
+
+});
+    
 </script>
 </body>
 </html>
