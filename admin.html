@@ -265,7 +265,7 @@ async function showDashboard(){
     const { count: vehicleCount, error: vehicleError } =
       await db
         .from("user_qr")
-        .select("*", { count: "exact", head: true });
+        .select("*", { count: "exact", head: true })
       .eq("active", true);
 
     if (vehicleError) {
