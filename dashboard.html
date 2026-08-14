@@ -357,49 +357,95 @@ function saveQRAsPDF() {
         return;
     }
 
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html lang="de">
-        <head>
-            <meta charset="UTF-8">
-            <title>PingCar QR-Code</title>
-            <style>
-                body {
-                    text-align: center;
-                    font-family: Arial, sans-serif;
-                    padding: 40px;
-                }
+   printWindow.document.write(`
+  <!DOCTYPE html>
+  <html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <title>PingCar QR-Code</title>
 
-                img {
-                    width: 300px;
-                    height: 300px;
-                    object-fit: contain;
-                }
+    <style>
+      @page {
+        margin: 0;
+      }
 
-                h2 {
-                    margin-bottom: 25px;
-                }
+      body {
+        margin: 0;
+        padding: 30px;
+        background: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
 
-                @media print {
-                    body {
-                        padding-top: 50px;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <h2>Mein PingCar QR-Code</h2>
-            <img src="${qrimage.src}" alt="PingCar QR-Code">
-            <script>
-                window.onload = function() {
-                    window.print();
-                };
-            <\/script>
-        </body>
-        </html>
-    `);
+      .sticker {
+        width: 360px;
+        margin: 0 auto;
+        border: 2px solid #111827;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+      }
 
-    printWindow.document.close();
+      .pingcar-header {
+        background: #111827;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        padding: 14px 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .qr-area {
+        padding: 25px;
+        background: white;
+      }
+
+      .qr-area img {
+        width: 300px;
+        height: 300px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+      }
+
+      @media print {
+        body {
+          padding: 0;
+        }
+
+        .sticker {
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sticker">
+
+      <div class="pingcar-header">
+        PingCar.ch
+      </div>
+
+      <div class="qr-area">
+        <img src="${qrimage.src}" alt="PingCar QR-Code">
+      </div>
+
+    </div>
+
+    <script>
+      window.onload = function() {
+        window.print();
+      };
+    </script>
+
+  </body>
+  </html>
+`);
+
+printWindow.document.close();
+
+
 }
 async function downloadQR() {
   const qrImage = document.querySelector('img[alt="PingCar QR-Code"]');
