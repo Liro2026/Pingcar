@@ -253,47 +253,37 @@ async function loadPingCar(user) {
 }
 
 async function loadNotifications(user) {
-
   const box = $("notifications");
 
   try {
-
-    // Gjej QR-kodet aktive të këtij përdoruesi
-    const { data: qrCodes, error: qrError } =
-      await supabase
-        .from("user_qr")
-        .select("qr_code")
-        .eq("user_id", user.id)
-        .eq("active", true);
+    // Gjej Ping-ID e përdoruesit
+    const { data: qrData, error: qrError } = await supabase
+      .from("user_qr")
+      .select("ping_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
     if (qrError) {
-      console.error("QR Fehler:", qrError);
-      box.textContent =
-        "Benachrichtigungen konnten nicht geladen werden.";
+      console.error("QR-Fehler:", qrError);
+      box.textContent = "PingCar konnte nicht geladen werden.";
       return;
     }
 
-    const codes = (qrCodes || [])
-      .map(item => item.qr_code)
-      .filter(Boolean);
-
-    if (!codes.length) {
-      box.textContent = "Noch keine Benachrichtigungen.";
+    if (!qrData?.ping_id) {
+      box.textContent = "Noch kein PingCar-Fahrzeug zugeordnet.";
       return;
     }
 
-    // Merr njoftimet që i përkasin këtyre QR-kodeve
-    const { data, error } =
-      await supabase
-        .from("notifications")
-        .select("*")
-        .in("qr_code", codes)
-        .order("created_at", { ascending: false });
+    // Merr njoftimet direkt sipas QR-Code / Ping-ID
+    const { data, error } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("qr_code", qrData.ping_id)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Benachrichtigungen Fehler:", error);
-      box.textContent =
-        "Benachrichtigungen konnten nicht geladen werden.";
+      console.error("Notifications-Fehler:", error);
+      box.textContent = "Benachrichtigungen konnten nicht geladen werden.";
       return;
     }
 
@@ -315,11 +305,8 @@ async function loadNotifications(user) {
     `).join("");
 
   } catch (error) {
-
     console.error("loadNotifications Fehler:", error);
-
-    box.textContent =
-      "Benachrichtigungen konnten nicht geladen werden.";
+    box.textContent = "Benachrichtigungen konnten nicht geladen werden.";
   }
 }
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
