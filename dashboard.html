@@ -291,27 +291,11 @@ async function loadNotifications(user) {
     );
   }
 
-  const messages = chatMessages || [];
+  const chatMessage = (chatMessages || []).find(m =>
+  m.qr_code === n.qr_code
+);
 
-  box.innerHTML = data.map(n => {
 
-    /*
-      IMPORTANT:
-      Mos përdor sender_id këtu.
-      Disa notifications kanë sender_id = anonymous,
-      ndërsa messages kanë UUID.
-
-      QR-Code është lidhja e përbashkët.
-    */
-    const chatMessage = messages
-      .filter(m =>
-        String(m.qr_code || "") ===
-        String(n.qr_code || "")
-      )
-      .sort((a, b) =>
-        new Date(b.created_at) -
-        new Date(a.created_at)
-      )[0];
 
     return `
       <div class="notice">
