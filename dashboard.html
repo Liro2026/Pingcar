@@ -353,7 +353,7 @@ function replyToPingCar(conversationId, senderId, qrCode) {
 
   window.location.href = url;
 }
-
+window.replyToPingCar = replyToPingCar;
   
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
 
