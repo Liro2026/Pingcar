@@ -4,375 +4,665 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>PingCar - Nachricht senden</title>
+<title>PingCar Chat</title>
 
 <style>
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 }
 
 body{
-    background:#f4f6fb;
+  background:#f4f6fb;
 }
 
 .container{
-    max-width:700px;
-    margin:40px auto;
-    background:white;
-    border-radius:15px;
-    padding:35px;
-    box-shadow:0 10px 25px rgba(0,0,0,.12);
+  max-width:700px;
+  margin:30px auto;
+  background:white;
+  border-radius:15px;
+  padding:25px;
+  box-shadow:0 10px 25px rgba(0,0,0,.12);
 }
 
 .logo{
-    text-align:center;
-    margin-bottom:25px;
+  text-align:center;
+  margin-bottom:20px;
 }
 
 .logo h1{
-    color:#1877f2;
-    font-size:38px;
+  color:#1877f2;
+  font-size:36px;
 }
 
 .logo p{
-    color:#666;
-    margin-top:10px;
+  color:#666;
+  margin-top:8px;
 }
 
-label{
-    display:block;
-    margin-top:20px;
-    margin-bottom:8px;
-    font-weight:bold;
+.chat-box{
+  height:420px;
+  overflow-y:auto;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:15px;
+  background:#f8f9fc;
 }
 
-input,
+.message{
+  margin-bottom:12px;
+  padding:12px 15px;
+  border-radius:12px;
+  max-width:80%;
+  word-wrap:break-word;
+}
+
+.mine{
+  margin-left:auto;
+  background:#1877f2;
+  color:white;
+}
+
+.theirs{
+  margin-right:auto;
+  background:#e9ecef;
+  color:#222;
+}
+
+.message-time{
+  font-size:11px;
+  margin-top:5px;
+  opacity:.7;
+}
+
+.input-area{
+  margin-top:15px;
+}
+
 textarea{
-    width:100%;
-    padding:14px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:16px;
-}
-
-textarea{
-    resize:vertical;
-    min-height:140px;
-}
-
-input[type=file]{
-    border:none;
-    padding:0;
-    margin-top:10px;
+  width:100%;
+  min-height:100px;
+  resize:vertical;
+  padding:14px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  font-size:16px;
 }
 
 button{
-    width:100%;
-    margin-top:30px;
-    padding:16px;
-    border:none;
-    border-radius:10px;
-    background:#1877f2;
-    color:white;
-    font-size:18px;
-    cursor:pointer;
+  width:100%;
+  margin-top:12px;
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  background:#1877f2;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 button:hover{
-    background:#0d63d6;
+  background:#0d63d6;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.status{
+  margin-top:12px;
+  text-align:center;
+  font-size:14px;
+  color:#666;
+}
+
+.error{
+  color:#c62828;
 }
 
 .success{
-    display:none;
-    margin-top:25px;
-    padding:15px;
-    background:#d4edda;
-    color:#155724;
-    border-radius:8px;
-    text-align:center;
+  color:#16803c;
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="logo">
-<h1>PingCar</h1>
-<p id="pageSubtitle">Sie haben dieses Fahrzeug gefunden?</p>
-</div>
+  <div class="logo">
+    <h1>PingCar</h1>
+    <p id="chatTitle">PingCar Chat</p>
+  </div>
 
-<label id="nameLabel">Ihr Name</label>
+  <div id="chatBox" class="chat-box">
+    <div class="status" id="loading">
+      Nachrichten werden geladen...
+    </div>
+  </div>
 
-<input
-type="text"
-id="name"
-placeholder="Ihr Name">
+  <div class="input-area">
 
-<label id="phoneLabel">Telefon (optional)</label>
+    <textarea
+      id="messageInput"
+      placeholder="Ihre Nachricht..."
+    ></textarea>
 
-<input
-type="text"
-id="phone"
-placeholder="+41...">
+    <button id="sendButton">
+      Nachricht senden
+    </button>
 
-<label id="messageLabel">Ihre Nachricht</label>
+    <div id="status" class="status"></div>
 
-<textarea
-id="message"
-placeholder="Beschreiben Sie das Problem..."></textarea>
-
-<label id="photoLabel">Foto hochladen (optional)</label>
-
-<input
-type="file"
-id="photo">
-
-<button id="sendMessage">
-Nachricht senden
-</button>
-
-<div
-class="success"
-id="successBox">
-
-<span id="successText">
-Vielen Dank!<br><br>
-Ihre Nachricht wurde erfolgreich an den Fahrzeughalter gesendet.
-</span>
+  </div>
 
 </div>
 
 <script type="module">
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient(
-"https://uvmkhqzfsgvicacvgskf.supabase.co",
-"sb_publishable_PlgGThtv9ZEPqgiag8Y7Gw_PvZwsij2"
+  "https://uvmkhqzfsgvicacvgskf.supabase.co",
+  "sb_publishable_PlgGThtv9ZEPqgiag8Y7Gw_PvZwsij2"
 );
-
-const params = new URLSearchParams(window.location.search);
-const pingId = params.get("id");
 
 
 /* =========================
-   LANGUAGE SYSTEM
+   URL PARAMETER
+========================= */
+
+const params =
+  new URLSearchParams(window.location.search);
+
+const conversationId =
+  params.get("conversation_id");
+
+const receiverId =
+  params.get("receiver_id");
+
+const qrCode =
+  params.get("qr_code");
+
+
+/* =========================
+   LANGUAGE
 ========================= */
 
 const translations = {
 
-de: {
-    title: "PingCar - Nachricht senden",
-    subtitle: "Sie haben dieses Fahrzeug gefunden?",
-    name: "Ihr Name",
-    namePlaceholder: "Ihr Name",
-    phone: "Telefon (optional)",
-    message: "Ihre Nachricht",
-    messagePlaceholder: "Beschreiben Sie das Problem...",
-    photo: "Foto hochladen (optional)",
-    send: "Nachricht senden",
-    success: "Vielen Dank!|Ihre Nachricht wurde erfolgreich an den Fahrzeughalter gesendet.",
-    required: "Bitte alle Pflichtfelder ausfüllen.",
-    error: "Fehler"
-},
+  de:{
+    title:"PingCar Chat",
+    loading:"Nachrichten werden geladen...",
+    placeholder:"Ihre Nachricht...",
+    send:"Nachricht senden",
+    sent:"Nachricht erfolgreich gesendet.",
+    limit:"Sie haben Ihr Limit von 5 Nachrichten innerhalb von 24 Stunden erreicht.",
+    error:"Fehler",
+    empty:"Noch keine Nachrichten.",
+    missing:"Chat-Parameter fehlen."
+  },
 
-fr: {
-    title: "PingCar - Envoyer un message",
-    subtitle: "Vous avez trouvé ce véhicule ?",
-    name: "Votre nom",
-    namePlaceholder: "Votre nom",
-    phone: "Téléphone (facultatif)",
-    message: "Votre message",
-    messagePlaceholder: "Décrivez le problème...",
-    photo: "Télécharger une photo (facultatif)",
-    send: "Envoyer le message",
-    success: "Merci !|Votre message a été envoyé avec succès au propriétaire du véhicule.",
-    required: "Veuillez remplir tous les champs obligatoires.",
-    error: "Erreur"
-},
+  fr:{
+    title:"PingCar Chat",
+    loading:"Chargement des messages...",
+    placeholder:"Votre message...",
+    send:"Envoyer le message",
+    sent:"Message envoyé avec succès.",
+    limit:"Vous avez atteint votre limite de 5 messages en 24 heures.",
+    error:"Erreur",
+    empty:"Aucun message pour le moment.",
+    missing:"Paramètres du chat manquants."
+  },
 
-it: {
-    title: "PingCar - Invia messaggio",
-    subtitle: "Hai trovato questo veicolo?",
-    name: "Il tuo nome",
-    namePlaceholder: "Il tuo nome",
-    phone: "Telefono (facoltativo)",
-    message: "Il tuo messaggio",
-    messagePlaceholder: "Descrivi il problema...",
-    photo: "Carica una foto (facoltativo)",
-    send: "Invia messaggio",
-    success: "Grazie!|Il tuo messaggio è stato inviato con successo al proprietario del veicolo.",
-    required: "Compila tutti i campi obbligatori.",
-    error: "Errore"
-},
+  it:{
+    title:"PingCar Chat",
+    loading:"Caricamento dei messaggi...",
+    placeholder:"Il tuo messaggio...",
+    send:"Invia messaggio",
+    sent:"Messaggio inviato con successo.",
+    limit:"Hai raggiunto il limite di 5 messaggi in 24 ore.",
+    error:"Errore",
+    empty:"Nessun messaggio.",
+    missing:"Parametri della chat mancanti."
+  },
 
-en: {
-    title: "PingCar - Send Message",
-    subtitle: "Have you found this vehicle?",
-    name: "Your name",
-    namePlaceholder: "Your name",
-    phone: "Phone (optional)",
-    message: "Your message",
-    messagePlaceholder: "Describe the problem...",
-    photo: "Upload photo (optional)",
-    send: "Send message",
-    success: "Thank you!|Your message was successfully sent to the vehicle owner.",
-    required: "Please fill in all required fields.",
-    error: "Error"
-},
+  en:{
+    title:"PingCar Chat",
+    loading:"Loading messages...",
+    placeholder:"Your message...",
+    send:"Send message",
+    sent:"Message sent successfully.",
+    limit:"You have reached your limit of 5 messages within 24 hours.",
+    error:"Error",
+    empty:"No messages yet.",
+    missing:"Chat parameters are missing."
+  },
 
-sq: {
-    title: "PingCar - Dërgo mesazh",
-    subtitle: "A e keni gjetur këtë automjet?",
-    name: "Emri juaj",
-    namePlaceholder: "Emri juaj",
-    phone: "Telefoni (opsionale)",
-    message: "Mesazhi juaj",
-    messagePlaceholder: "Përshkruani problemin...",
-    photo: "Ngarko foto (opsionale)",
-    send: "Dërgo mesazhin",
-    success: "Faleminderit!|Mesazhi juaj u dërgua me sukses te pronari i automjetit.",
-    required: "Ju lutemi plotësoni të gjitha fushat e detyrueshme.",
-    error: "Gabim"
-}
+  sq:{
+    title:"PingCar Chat",
+    loading:"Mesazhet po ngarkohen...",
+    placeholder:"Mesazhi juaj...",
+    send:"Dërgo mesazhin",
+    sent:"Mesazhi u dërgua me sukses.",
+    limit:"Keni arritur kufirin prej 5 mesazhesh brenda 24 orëve.",
+    error:"Gabim",
+    empty:"Ende nuk ka mesazhe.",
+    missing:"Mungojnë parametrat e chat-it."
+  }
 
 };
 
 
-/* =========================
-   GET SELECTED LANGUAGE
-========================= */
-
 function getLanguage(){
 
-    const possibleKeys = [
-        "language",
-        "lang",
-        "selectedLanguage",
-        "pingcar_language"
-    ];
+  const keys = [
+    "pingcar_language",
+    "language",
+    "lang",
+    "selectedLanguage"
+  ];
 
-    for(const key of possibleKeys){
+  for(const key of keys){
 
-        const value = localStorage.getItem(key);
+    const value =
+      localStorage.getItem(key);
 
-        if(value && translations[value]){
-            return value;
-        }
-
+    if(value && translations[value]){
+      return value;
     }
+  }
 
-    return "de";
+  return "de";
 }
 
-
-/* =========================
-   APPLY LANGUAGE
-========================= */
-
-function applyLanguage(){
-
-    const lang = getLanguage();
-    const t = translations[lang];
-
-    document.documentElement.lang = lang;
-
-    document.title = t.title;
-
-    document.getElementById("pageSubtitle").textContent = t.subtitle;
-
-    document.getElementById("nameLabel").textContent = t.name;
-    document.getElementById("name").placeholder = t.namePlaceholder;
-
-    document.getElementById("phoneLabel").textContent = t.phone;
-
-    document.getElementById("messageLabel").textContent = t.message;
-    document.getElementById("message").placeholder = t.messagePlaceholder;
-
-    document.getElementById("photoLabel").textContent = t.photo;
-
-    document.getElementById("sendMessage").textContent = t.send;
-
-    const successParts = t.success.split("|");
-
-    document.getElementById("successText").innerHTML =
-        successParts[0] +
-        "<br><br>" +
-        successParts[1];
-}
-
-
-/* Apply language when page loads */
-applyLanguage();
-
-
-/* Also react if language changes in another PingCar page */
-window.addEventListener("storage", applyLanguage);
-
-
-/* =========================
-   SEND MESSAGE
-========================= */
-
-document.getElementById("sendMessage").addEventListener("click", async () => {
 
 const lang = getLanguage();
 const t = translations[lang];
 
-const senderName =
-document.getElementById("name").value;
+document.documentElement.lang = lang;
+document.title = t.title;
 
-const senderPhone =
-document.getElementById("phone").value;
+document.getElementById(
+  "chatTitle"
+).textContent = t.title;
 
-const senderMessage =
-document.getElementById("message").value;
+document.getElementById(
+  "messageInput"
+).placeholder = t.placeholder;
 
-if(senderName==="" || senderMessage===""){
+document.getElementById(
+  "sendButton"
+).textContent = t.send;
 
-alert(t.required);
+document.getElementById(
+  "loading"
+).textContent = t.loading;
 
-return;
+
+/* =========================
+   CLIENT ID
+========================= */
+
+let clientId =
+  localStorage.getItem("pingcar_client_id");
+
+if(!clientId){
+
+  clientId = crypto.randomUUID();
+
+  localStorage.setItem(
+    "pingcar_client_id",
+    clientId
+  );
+}
+
+
+/* =========================
+   CURRENT USER
+========================= */
+
+let currentUser = null;
+let activeSenderId = null;
+
+async function initializeUser(){
+
+  const { data } =
+    await supabase.auth.getUser();
+
+  currentUser = data?.user || null;
+
+  /*
+   * Nëse pronari është i kyçur,
+   * përdorim UUID e account-it.
+   *
+   * Nëse është personi që ka skanuar QR,
+   * përdorim client_id anonim.
+   */
+
+  activeSenderId =
+    currentUser?.id || clientId;
 
 }
 
-const { error } = await supabase
-.from("notifications")
-.insert([
-{
-    qr_code: pingId,
-    message: senderMessage,
-    sender_id: "anonymous"
+
+/* =========================
+   CHECK PARAMETERS
+========================= */
+
+if(
+  !conversationId ||
+  !receiverId ||
+  !qrCode
+){
+
+  document.getElementById(
+    "chatBox"
+  ).innerHTML =
+    `<div class="status error">
+      ${t.missing}
+    </div>`;
+
+  document.getElementById(
+    "sendButton"
+  ).disabled = true;
 }
-]);
 
-if(error){
 
-alert(t.error + ": " + error.message);
+/* =========================
+   LOAD CHAT
+========================= */
 
-return;
+async function loadMessages(){
 
+  if(
+    !conversationId ||
+    !activeSenderId
+  ){
+    return;
+  }
+
+  const { data, error } =
+    await supabase.rpc(
+      "get_pingcar_chat_messages",
+      {
+        p_conversation_id:
+          conversationId,
+
+        p_user_id:
+          activeSenderId
+      }
+    );
+
+  const box =
+    document.getElementById("chatBox");
+
+  if(error){
+
+    console.error(
+      "Chat load error:",
+      error
+    );
+
+    box.innerHTML =
+      `<div class="status error">
+        ${t.error}: ${error.message}
+      </div>`;
+
+    return;
+  }
+
+  if(!data || data.length === 0){
+
+    box.innerHTML =
+      `<div class="status">
+        ${t.empty}
+      </div>`;
+
+    return;
+  }
+
+  box.innerHTML = "";
+
+  data.forEach(msg => {
+
+    const div =
+      document.createElement("div");
+
+    const isMine =
+      msg.sender_id === activeSenderId;
+
+    div.className =
+      "message " +
+      (isMine ? "mine" : "theirs");
+
+    const text =
+      document.createElement("div");
+
+    text.textContent =
+      msg.message || "";
+
+    const time =
+      document.createElement("div");
+
+    time.className =
+      "message-time";
+
+    time.textContent =
+      msg.created_at
+        ? new Date(
+            msg.created_at
+          ).toLocaleString(
+            lang === "de"
+              ? "de-CH"
+              : lang
+          )
+        : "";
+
+    div.appendChild(text);
+    div.appendChild(time);
+
+    box.appendChild(div);
+
+  });
+
+  box.scrollTop =
+    box.scrollHeight;
 }
 
-document.getElementById("successBox").style.display="block";
 
-document.getElementById("name").value="";
+/* =========================
+   SEND CHAT MESSAGE
+========================= */
 
-document.getElementById("phone").value="";
+async function sendMessage(){
 
-document.getElementById("message").value="";
+  const input =
+    document.getElementById(
+      "messageInput"
+    );
 
-});
+  const message =
+    input.value.trim();
+
+  const statusBox =
+    document.getElementById(
+      "status"
+    );
+
+  if(!message){
+    return;
+  }
+
+  if(
+    !conversationId ||
+    !receiverId ||
+    !qrCode ||
+    !activeSenderId
+  ){
+
+    statusBox.textContent =
+      t.missing;
+
+    statusBox.className =
+      "status error";
+
+    return;
+  }
+
+  const button =
+    document.getElementById(
+      "sendButton"
+    );
+
+  button.disabled = true;
+
+  try{
+
+    const { data, error } =
+      await supabase.rpc(
+        "send_pingcar_chat_message",
+        {
+          p_conversation_id:
+            conversationId,
+
+          p_sender_id:
+            activeSenderId,
+
+          p_receiver_id:
+            receiverId,
+
+          p_qr_code:
+            qrCode,
+
+          p_message:
+            message
+        }
+      );
+
+    if(error){
+
+      console.error(
+        "Chat send error:",
+        error
+      );
+
+      statusBox.textContent =
+        t.error +
+        ": " +
+        error.message;
+
+      statusBox.className =
+        "status error";
+
+      return;
+    }
+
+    if(!data || !data.allowed){
+
+      statusBox.textContent =
+        t.limit;
+
+      statusBox.className =
+        "status error";
+
+      return;
+    }
+
+    input.value = "";
+
+    statusBox.textContent =
+      t.sent +
+      " (" +
+      data.remaining +
+      ")";
+
+    statusBox.className =
+      "status success";
+
+    await loadMessages();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    statusBox.textContent =
+      t.error;
+
+    statusBox.className =
+      "status error";
+
+  }
+  finally{
+
+    button.disabled = false;
+
+  }
+}
+
+
+/* =========================
+   SEND BUTTON
+========================= */
+
+document
+.getElementById("sendButton")
+.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+/* =========================
+   CTRL + ENTER
+========================= */
+
+document
+.getElementById("messageInput")
+.addEventListener(
+  "keydown",
+  function(event){
+
+    if(
+      event.key === "Enter" &&
+      event.ctrlKey
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   START
+========================= */
+
+await initializeUser();
+
+await loadMessages();
+
+
+/* =========================
+   AUTO REFRESH
+========================= */
+
+setInterval(
+  loadMessages,
+  5000
+);
 
 </script>
-
-</div>
 
 </body>
 </html>
