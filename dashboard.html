@@ -335,56 +335,23 @@ box.innerHTML = data.map(n => {
   `;
 }).join("");
 }
-async function replyToPingCar(conversationId, senderId, qrCode) {
-  const message = prompt("Ihre Antwort:");
-
-  if (!message || !message.trim()) {
-    return;
-  }
-
+function replyToPingCar(conversationId, senderId, qrCode) {
   if (!currentUser) {
     alert("Sie sind nicht angemeldet.");
     return;
   }
 
-  try {
-    const { data, error } = await supabase.rpc(
-      "send_pingcar_chat_message",
-      {
-        p_conversation_id: conversationId,
-        p_sender_id: currentUser.id,
-        p_receiver_id: senderId,
-        p_qr_code: qrCode,
-        p_message: message.trim()
-      }
-    );
+  const url =
+    "message.html?conversation_id=" +
+    encodeURIComponent(conversationId) +
+    "&receiver_id=" +
+    encodeURIComponent(senderId) +
+    "&qr_code=" +
+    encodeURIComponent(qrCode);
 
-    if (error) {
-      console.error("Chat-Fehler:", error);
-      alert("Antwort konnte nicht gesendet werden:\n\n" + error.message);
-      return;
-    }
-
-    if (!data || !data.allowed) {
-      alert(
-        "Sie haben Ihr Limit von 5 Nachrichten innerhalb von 24 Stunden erreicht."
-      );
-      return;
-    }
-
-    alert(
-      "Antwort erfolgreich gesendet!\n\n" +
-      "Verbleibende Nachrichten: " +
-      data.remaining
-    );
-
-    await loadNotifications(currentUser);
-
-  } catch (error) {
-    console.error("Antwort-Fehler:", error);
-    alert("Antwort konnte nicht gesendet werden.");
-  }
+  window.location.href = url;
 }
+
   
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
 
