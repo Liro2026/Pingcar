@@ -275,15 +275,17 @@ async function loadNotifications(user) {
     return;
   }
 
-  const { data: chatMessages, error: chatError } = await supabase
-    .from("messages")
-    .select("*")
-    .eq("receiver_id", user.id)
-    .order("created_at", { ascending: false });
+ const { data: chatMessages, error: chatError } =
+  await supabase.rpc(
+    "get_owner_chat_messages",
+    {
+      p_owner_id: user.id
+    }
+  );
 
-  if (chatError) {
-    console.error("Chat-Nachrichten Fehler:", chatError);
-  }
+if (chatError) {
+  console.error("Chat-Nachrichten Fehler:", chatError);
+}
 
   box.innerHTML = data.map(n => {
 
