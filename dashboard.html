@@ -275,49 +275,33 @@ async function loadNotifications(user) {
     return;
   }
 
-  const messagesResult = await supabase
+  const { data: chatMessages, error: chatError } = await supabase
     .from("messages")
     .select("*")
     .eq("receiver_id", user.id)
     .order("created_at", { ascending: false });
 
-  if (messagesResult.error) {
-    console.error("Chat-Nachrichten Fehler:", messagesResult.error);
+  if (chatError) {
+    console.error("Chat-Nachrichten Fehler:", chatError);
   }
-
-  const chatMessages = messagesResult.data || [];
 
   box.innerHTML = data.map(n => {
 
-    /*
-     * Gjej bisedën përkatëse.
-     *
-     * NUK kontrollojmë më sender_id të notifications,
-     * sepse aty mund të jetë "anonymous".
-     *
-     * messages.sender_id përmban UUID-në reale të dërguesit.
-     */
-    const chatMessage = chatMessages.find(m =>
+    const chatMessage = (chatMessages || []).find(m =>
       m.qr_code === n.qr_code &&
-      m.receiver_id === user.id &&
-      m.message === n.message
+      m.receiver_id === user.id
     );
 
     return `
       <div class="notice">
-
-        <strong>
-          ${escapeHtml(n.message || "Benachrichtigung")}
-        </strong>
+        <strong>${escapeHtml(n.message || "Benachrichtigung")}</strong>
 
         <br>
 
         <span class="muted">
-          ${
-            n.created_at
-              ? new Date(n.created_at).toLocaleString("de-CH")
-              : ""
-          }
+          ${n.created_at
+            ? new Date(n.created_at).toLocaleString("de-CH")
+            : ""}
         </span>
 
         ${
