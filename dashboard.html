@@ -291,9 +291,7 @@ if (chatError) {
 
   const chatMessage = (chatMessages || []).find(m =>
   m.qr_code === n.qr_code &&
-  m.owner_id === user.id &&
-  m.notification_sender === n.sender_id &&
-  m.notification_message === n.message
+  m.receiver_id === user.id
 );
 
 
