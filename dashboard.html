@@ -290,6 +290,7 @@ async function loadNotifications(user) {
       chatError
     );
   }
+box.innerHTML = data.map(n => {
 
   const chatMessage = (chatMessages || []).find(m =>
   m.qr_code === n.qr_code
