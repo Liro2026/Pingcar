@@ -275,18 +275,117 @@ async function loadNotifications(user) {
     return;
   }
 
-  box.innerHTML = data.map(n => `
+ const messagesResult = await supabase
+  .from("messages")
+  .select("*")
+  .eq("receiver_id", user.id)
+  .order("created_at", { ascending: false });
+
+const chatMessages = messagesResult.data || [];
+
+box.innerHTML = data.map(n => {
+
+  const chatMessage = chatMessages.find(m =>
+    m.qr_code === n.qr_code &&
+    m.sender_id === n.sender_id &&
+    m.receiver_id === user.id &&
+    m.message === n.message
+  );
+
+  return `
     <div class="notice">
       <strong>${escapeHtml(n.message || "Benachrichtigung")}</strong>
+
       <br>
+
       <span class="muted">
         ${n.created_at
           ? new Date(n.created_at).toLocaleString("de-CH")
           : ""}
       </span>
+
+      ${
+        chatMessage
+          ? `
+            <br><br>
+
+            <button
+              onclick="replyToPingCar(
+                '${chatMessage.conversation_id}',
+                '${chatMessage.sender_id}',
+                '${chatMessage.qr_code}'
+              )"
+              style="
+                background:#2563eb;
+                color:white;
+                border:0;
+                border-radius:8px;
+                padding:8px 14px;
+                cursor:pointer;
+                font-weight:bold;
+              "
+            >
+              💬 Antworten
+            </button>
+          `
+          : ""
+      }
+
     </div>
-  `).join("");
+  `;
+}).join("");
 }
+async function replyToPingCar(conversationId, senderId, qrCode) {
+  const message = prompt("Ihre Antwort:");
+
+  if (!message || !message.trim()) {
+    return;
+  }
+
+  if (!currentUser) {
+    alert("Sie sind nicht angemeldet.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.rpc(
+      "send_pingcar_chat_message",
+      {
+        p_conversation_id: conversationId,
+        p_sender_id: currentUser.id,
+        p_receiver_id: senderId,
+        p_qr_code: qrCode,
+        p_message: message.trim()
+      }
+    );
+
+    if (error) {
+      console.error("Chat-Fehler:", error);
+      alert("Antwort konnte nicht gesendet werden:\n\n" + error.message);
+      return;
+    }
+
+    if (!data || !data.allowed) {
+      alert(
+        "Sie haben Ihr Limit von 5 Nachrichten innerhalb von 24 Stunden erreicht."
+      );
+      return;
+    }
+
+    alert(
+      "Antwort erfolgreich gesendet!\n\n" +
+      "Verbleibende Nachrichten: " +
+      data.remaining
+    );
+
+    await loadNotifications(currentUser);
+
+  } catch (error) {
+    console.error("Antwort-Fehler:", error);
+    alert("Antwort konnte nicht gesendet werden.");
+  }
+}
+  
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
 
 async function enablePush() {
