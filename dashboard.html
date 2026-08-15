@@ -274,38 +274,61 @@ async function loadNotifications(user) {
     box.textContent = "Noch keine Benachrichtigungen.";
     return;
   }
-
-const { data: chatMessages, error: chatError } =
-  await supabase.rpc(
+  const {
+    data: chatMessages,
+    error: chatError
+  } = await supabase.rpc(
     "get_owner_chat_messages",
     {
       p_owner_id: user.id
     }
   );
 
-if (chatError) {
-  console.error("Chat-Nachrichten Fehler:", chatError);
-}
+  if (chatError) {
+    console.error(
+      "Chat-Nachrichten Fehler:",
+      chatError
+    );
+  }
 
   box.innerHTML = data.map(n => {
 
-const chatMessage = (chatMessages || []).find(m =>
-  m.qr_code === n.qr_code &&
-  m.sender_id === n.sender_id &&
-  m.message === n.message
-);
+    // Gjej mesazhin përkatës të chat-it
+    let chatMessage = (chatMessages || []).find(m =>
+      m.qr_code === n.qr_code &&
+      m.sender_id === n.sender_id &&
+      m.message === n.message
+    );
 
+    // Fallback për mesazhet e vjetra
+    // ku sender_id mund të jetë "anonymous"
+    if (!chatMessage) {
+      chatMessage = (chatMessages || []).find(m =>
+        m.qr_code === n.qr_code &&
+        m.message === n.message &&
+        m.receiver_id === user.id.toString()
+      );
+    }
 
     return `
       <div class="notice">
-        <strong>${escapeHtml(n.message || "Benachrichtigung")}</strong>
+
+        <strong>
+          ${escapeHtml(
+            n.message || "Benachrichtigung"
+          )}
+        </strong>
 
         <br>
 
         <span class="muted">
-          ${n.created_at
-            ? new Date(n.created_at).toLocaleString("de-CH")
-            : ""}
+          ${
+            n.created_at
+              ? new Date(
+                  n.created_at
+                ).toLocaleString("de-CH")
+              : ""
+          }
         </span>
 
         ${
