@@ -289,9 +289,10 @@ if (chatError) {
 
   box.innerHTML = data.map(n => {
 
-  const chatMessage = (chatMessages || []).find(m =>
+const chatMessage = (chatMessages || []).find(m =>
   m.qr_code === n.qr_code &&
-  m.receiver_id === user.id
+  m.sender_id === n.sender_id &&
+  m.message === n.message
 );
 
 
