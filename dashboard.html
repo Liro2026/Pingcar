@@ -275,12 +275,13 @@ async function loadNotifications(user) {
     return;
   }
 
- const { data: chatMessages, error: chatError } =
-  await supabase
-    .from("messages")
-    .select("conversation_id,sender_id,receiver_id,qr_code,message,created_at")
-    .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-    .order("created_at", { ascending: false });
+const { data: chatMessages, error: chatError } =
+  await supabase.rpc(
+    "get_owner_chat_messages",
+    {
+      p_owner_id: user.id
+    }
+  );
 
 if (chatError) {
   console.error("Chat-Nachrichten Fehler:", chatError);
@@ -290,11 +291,11 @@ if (chatError) {
 
   const chatMessage = (chatMessages || []).find(m =>
   m.qr_code === n.qr_code &&
-  (
-    m.sender_id === n.sender_id ||
-    m.receiver_id === n.sender_id
-  )
+  m.owner_id === user.id &&
+  m.notification_sender === n.sender_id &&
+  m.notification_message === n.message
 );
+
 
     return `
       <div class="notice">
