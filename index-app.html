@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://supabase.co https://jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: *; connect-src 'self' https://supabase.co https://stripe.com;">
+<title>PingCar</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#f5f7fb;color:#222;line-height:1.6;}
+header{background:linear-gradient(135deg,#0066ff,#00bfff);color:white;text-align:center;padding:25px 15px 35px;}
+.logo{width:140px;display:block;margin:15px auto;border-radius:50%;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
+header h1{font-size:38px;margin-bottom:10px;}
+header p{max-width:600px;margin:auto;font-size:18px;}
+.container{max-width:700px;margin:auto;padding:25px 15px;}
+.card{background:white;border-radius:16px;padding:25px;margin-bottom:20px;box-shadow:0 5px 18px rgba(0,0,0,.08);}
+h2{color:#0066ff;margin-bottom:18px;}
+input{width:100%;padding:14px;margin-bottom:12px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#0066ff;color:white;font-size:17px;font-weight:bold;cursor:pointer;-webkit-appearance:none;}
+button:active{opacity:.8;}
+.secondary{background:#28a745;}
+.logout{background:#dc3545;}
+.status{margin-top:15px;padding:12px;border-radius:10px;background:#eef6ff;display:none;}
+a{color:#0066ff;}
+nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:15px;}
+nav a{color:white;text-decoration:none;background:rgba(255,255,255,.18);padding:7px 10px;border-radius:8px;font-size:14px;}
+footer{background:#111;color:white;text-align:center;padding:30px;margin-top:30px;}
+</style>
+</head>
+<body>
+<header>
+<div style="display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 15px; padding: 0 10px; flex-wrap: wrap;">
+  <span style="background: white; color: #222; padding: 4px 8px; border-radius: 5px; font-size: 12px; font-weight: bold;">DE</span>
+  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">FR</span>
+  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">IT</span>
+  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">EN</span>
+  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">SQ</span>
+</div>
+<nav>
+  <a href="index-app.html">🏠 Home</a>
+  <a href="qr.html">📷 QR</a>
+  <a href="contact.html">💬 Contact</a>
+  <a href="dashboard.html">👤 Dashboard</a>
+  <a href="message.html">🔔 Messages</a>
+</nav>
+<img class="logo" src="https://pingcar.ch" alt="PingCar">
+<h1>PingCar</h1>
+<p style="margin-bottom: 25px;">Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.</p>
+</header>
+<div class="container">
+  <!-- NACH DEM SCANNEN -->
+  <div class="card" style="background: none; box-shadow: none; padding: 0; margin-top: 10px;">
+    <h2 style="color: #0066ff; margin-bottom: 20px; text-align: left; font-size: 28px; font-weight: bold;">Nach dem Scannen</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px;">
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">🚗</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Mein Fahrzeug wird blockiert</strong>
+      </div>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">💡</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Das Licht ist eingeschaltet</strong>
+      </div>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">🚨</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Fahrzeug beschädigt</strong>
+      </div>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">🔑</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Etwas vergessen</strong>
+      </div>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">✉️</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Andere Mitteilung</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTRIEREN -->
+  <div class="card">
+    <h2>Registrieren</h2>
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Ihr Name" required>
+      <input type="email" id="email" placeholder="E-Mail eingeben" required>
+      <input type="password" id="password" placeholder="Passwort" required>
+      <button type="submit">Kostenlos registrieren</button>
+    </form>
+    <div id="registerStatus" class="status"></div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="card">
+    <h2>Anmelden</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="E-Mail" required>
+      <input type="password" id="loginPassword" placeholder="Passwort" required>
+      <button type="submit">Anmelden</button>
+    </form>
+    <button id="forgotPassword" type="button" class="secondary" style="margin-top:12px;">Passwort vergessen?</button>
+    <div id="resetBox" style="display:none;margin-top:15px;">
+      <input type="email" id="resetEmail" placeholder="E-Mail eingeben">
+      <button id="resetButton" type="button">Link senden</button>
+    </div>
+    <div id="loginStatus" class="status"></div>
+  </div>
+
+  <!-- USER PANEL -->
+  <div class="card" id="userPanel" style="display:none;">
+    <h2>Mein Konto</h2>
+    <p>Angemeldet als:</p><strong id="welcomeUser"></strong><br><br>
+    <button id="dashboardButton" type="button">👤 Dashboard öffnen</button><br><br>
+    <button id="logoutButton" type="button" class="logout">🚪 Logout</button>
+    <div id="userStatus" class="status"></div>
+  </div>
+</div>
+
+<footer>
+  <h2>PingCar</h2>
+  <p>© 2026 PingCar. Alle Rechte vorbehalten.</p>
+</footer>
+
+<script type="module">
+import { createClient } from "https://jsdelivr.net";
+const supabaseUrl = "https://supabase.co";
+const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+const supabase = createClient(supabaseUrl, supabaseKey);
+const registerForm = document.getElementById("registerForm");
+const loginForm = document.getElementById("loginForm");
+const userPanel = document.getElementById("userPanel");
+const welcomeUser = document.getElementById("welcomeUser");
+const registerStatus = document.getElementById("registerStatus");
+const loginStatus = document.getElementById("loginStatus");
+function showStatus(element,message){ element.textContent = message; element.style.display = "block"; }
+registerForm.addEventListener("submit", async function(event){
+  event.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const name = document.getElementById("name").value.trim();
+  showStatus(registerStatus, "Registrierung läuft...");
+  try{
+    const { data, error } = await supabase.auth.signUp({ email:email, password:password, options:{ data:{ name:name } } });
+    if(error){ showStatus(registerStatus, "Fehler: " + error.message); return; }
+    showStatus(registerStatus, "Registrierung erfolgreich. Bitte E-Mail bestätigen.");
+    registerForm.reset();
+  }catch(error){ showStatus(registerStatus, "Fehler: " + error.message); }
+});
+loginForm.addEventListener("submit", async function(event){
+  event.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  showStatus(loginStatus, "Anmeldung läuft...");
+  try{
+    const { data, error } = await supabase.auth.signInWithPassword({ email:email, password:password });
+    if(error){ showStatus(loginStatus, "Fehler: " + error.message); return; }
+    showStatus(loginStatus, "Login erfolgreich.");
+    setTimeout(function(){ window.location.href = "dashboard.html"; }, 500);
+  }catch(error){ showStatus(loginStatus, "Fehler: " + error.message); }
+});
+document.getElementById("forgotPassword").addEventListener("click", function(){
+  const box = document.getElementById("resetBox");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+});
+const resetButton = document.getElementById("resetButton");
+if(resetButton) {
+  resetButton.addEventListener("click", async function(){
+    const email = document.getElementById("resetEmail").value.trim();
+    if(!email){ showStatus(loginStatus, "Bitte E-Mail eingeben."); return; }
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if(error) { showStatus(loginStatus, "Fehler: " + error.message); } 
+      else { showStatus(loginStatus, "Reset-Link gesendet."); }
+    } catch(e) { showStatus(loginStatus, "Fehler beim Senden."); }
+  });
+}
+</script>
+</body>
+</html>
