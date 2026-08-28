@@ -2,13 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://supabase.co https://jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: *; connect-src 'self' https://supabase.co https://stripe.com;">
 <title>PingCar</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
 body{background:#f5f7fb;color:#222;line-height:1.6;}
-header{background:linear-gradient(135deg,#0066ff,#00bfff);color:white;text-align:center;padding:25px 15px 35px;}
+header{background:linear-gradient(135deg,#0066ff,#00bfff);color:white;text-align:center;padding:75px 15px 35px;}
 .logo{width:140px;display:block;margin:15px auto;border-radius:50%;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
 header h1{font-size:38px;margin-bottom:10px;}
 header p{max-width:600px;margin:auto;font-size:18px;}
@@ -22,21 +22,16 @@ button:active{opacity:.8;}
 .logout{background:#dc3545;}
 .status{margin-top:15px;padding:12px;border-radius:10px;background:#eef6ff;display:none;}
 a{color:#0066ff;}
-nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:15px;}
-nav a{color:white;text-decoration:none;background:rgba(255,255,255,.18);padding:7px 10px;border-radius:8px;font-size:14px;}
+nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+nav a{color:white;text-decoration:none;background:rgba(255,255,255,.18);padding:8px 12px;border-radius:8px;font-size:14px;font-weight:bold;}
+nav a.back-btn{background:#dc3545;}
 footer{background:#111;color:white;text-align:center;padding:30px;margin-top:30px;}
 </style>
 </head>
 <body>
 <header>
-<div style="display: flex; justify-content: flex-end; gap: 5px; margin-bottom: 15px; padding: 0 10px; flex-wrap: wrap;">
-  <span style="background: white; color: #222; padding: 4px 8px; border-radius: 5px; font-size: 12px; font-weight: bold;">DE</span>
-  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">FR</span>
-  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">IT</span>
-  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">EN</span>
-  <span style="background: rgba(255,255,255,0.2); color: white; padding: 4px 8px; border-radius: 5px; font-size: 12px;">SQ</span>
-</div>
 <nav>
+  <a href="#" onclick="window.history.back(); return false;" class="back-btn">⬅️ Zurück</a>
   <a href="index-app.html">🏠 Home</a>
   <a href="qr.html">📷 QR</a>
   <a href="contact.html">💬 Contact</a>
@@ -45,7 +40,7 @@ footer{background:#111;color:white;text-align:center;padding:30px;margin-top:30p
 </nav>
 <img class="logo" src="https://pingcar.ch" alt="PingCar">
 <h1>PingCar</h1>
-<p style="margin-bottom: 25px;">Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.</p>
+<p>Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.</p>
 </header>
 <div class="container">
   <!-- NACH DEM SCANNEN -->
@@ -66,6 +61,30 @@ footer{background:#111;color:white;text-align:center;padding:30px;margin-top:30p
       </div>
       <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
         <span style="font-size: 18px;">✉️</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Andere Mitteilung</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMIUM ABONNEMENT BOXEN -->
+  <div class="card" style="border-radius: 16px; padding: 25px; margin-top: 25px; box-shadow: 0 5px 18px rgba(0,0,0,.08); text-align: center;">
+    <h2 style="color: #dc3545; font-size: 28px; font-weight: bold; margin-bottom: 5px;">🚀 7 Tage kostenlos testen.</h2>
+    <p style="color: #555; font-size: 16px; margin-bottom: 20px;">Teste alle Premium-Funktionen kostenlos.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 15px;">
+      <div style="border: 1px solid #e1e5eb; border-radius: 16px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; background: #fafbfc;">
+        <div>
+          <h3 style="font-size: 18px; margin-bottom: 15px; color: #222;">📅 Monatsabo</h3>
+          <span style="font-size: 32px; font-weight: bold; color: #0066ff; display: block; margin-bottom: 5px;">CHF 4.90</span>
+          <span style="font-size: 14px; color: #666; display: block; margin-bottom: 20px;">pro Monat</span>
+        </div>
+        <a href="https://stripe.com" style="text-decoration: none;"><button type="button" style="background:#0066ff; padding:12px;">Monatsabo wählen</button></a>
+      </div>
+      <div style="border: 2px solid #ffc107; border-radius: 16px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; background: white; box-shadow: 0 4px 12px rgba(255,193,7,0.1);">
+        <div>
+          <h3 style="font-size: 18px; margin-bottom: 15px; color: #222;">⭐ Jahresabo</h3>
+          <span style="font-size: 32px; font-weight: bold; color: #0066ff; display: block; margin-bottom: 5px;">CHF 49.90</span>
+          <span style="font-size: 14px; color: #666; display: block; margin-bottom: 20px;">pro Jahr</span>
+        </div>
+        <a href="https://stripe.com" style="text-decoration: none;"><button type="button" style="background:#ff9800; padding:12px;">Jahresabo wählen</button></a>
       </div>
     </div>
   </div>
