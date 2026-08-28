@@ -26,6 +26,12 @@ nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20p
 nav a{color:white;text-decoration:none;background:rgba(255,255,255,.18);padding:8px 12px;border-radius:8px;font-size:14px;font-weight:bold;}
 nav a.back-btn{background:#dc3545;}
 footer{background:#111;color:white;text-align:center;padding:30px;margin-top:30px;}
+  header {
+  padding-top: calc(45px + env(safe-area-inset-top)) !important;
+}
+body {
+  padding-bottom: env(safe-area-inset-bottom) !important;
+}
 </style>
 </head>
 <body>
