@@ -185,15 +185,19 @@ margin-top:50px;
 
     </nav>
 
-    <div style="display:flex;gap:4px;align-items:center;">
-
-<button id="lang-de" onclick="PingCarLanguage.set('de')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇩🇪 DE</button>
-<button id="lang-fr" onclick="PingCarLanguage.set('fr')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇫🇷 FR</button>
-<button id="lang-it" onclick="PingCarLanguage.set('it')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇮🇹 IT</button>
-<button id="lang-en" onclick="PingCarLanguage.set('en')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇬🇧 EN</button>
-<button id="lang-sq" onclick="PingCarLanguage.set('sq')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇦🇱 SQ</button>    
-<button id="lang-sr" onclick="PingCarLanguage.set('sr')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">RS SR</button>
-    </div>
+ <div class="lang-dropdown">
+  <button class="lang-btn" id="current-lang-btn" type="button">
+    <span id="current-flag">🇨🇭</span> <span id="current-lang-text">DE</span> <span class="arrow">▾</span>
+  </button>
+  <div class="lang-menu" id="lang-menu">
+    <a href="#" onclick="PingCarLanguage.set('de'); return false;"><span class="flag">🇨🇭</span> Deutsch (DE)</a>
+    <a href="#" onclick="PingCarLanguage.set('fr'); return false;"><span class="flag">🇫🇷</span> Français (FR)</a>
+    <a href="#" onclick="PingCarLanguage.set('it'); return false;"><span class="flag">🇮🇹</span> Italiano (IT)</a>
+    <a href="#" onclick="PingCarLanguage.set('en'); return false;"><span class="flag">🇬🇧</span> English (EN)</a>
+    <a href="#" onclick="PingCarLanguage.set('sq'); return false;"><span class="flag">🇦🇱</span> Shqip (SQ)</a>
+    <a href="#" onclick="PingCarLanguage.set('sr'); return false;"><span class="flag">🇷🇸</span> Srpski (SR)</a>
+  </div>
+</div>
 
   </div>
 
