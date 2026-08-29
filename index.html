@@ -1472,6 +1472,75 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <script src="/js/language.js"></script>
-  
+<style>
+  .lang-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .lang-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .lang-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 115%;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 9999;
+  }
+
+  .lang-menu a {
+    color: #333333 !important;
+    padding: 10px 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .lang-menu a:hover {
+    background-color: #f1f5f9;
+  }
+
+  .lang-dropdown.active .lang-menu {
+    display: block;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('current-lang-btn');
+    var dropdown = document.querySelector('.lang-dropdown');
+
+    if (btn && dropdown) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+      });
+
+      document.addEventListener('click', function() {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+</script>  
 </body>
 </html>
