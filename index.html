@@ -1132,26 +1132,61 @@ const translations = {
     contact: "Kontakt",
     dashboard: "Kontrolna tabla",
     messages: "Poruke",
-    message: "Poruka",
+
+    title: "PingCar",
+    description: "Sigurno rešenje za kontaktiranje vlasnika vozila – bez broja telefona i bez ličnih podataka.",
+    available: "Registrujte se besplatno",
+
+    how: "Kako funkcioniše PingCar",
+    afterScan: "Nakon skeniranja",
+
     register: "Registracija",
-    login: "Prijava",
-    email: "E-mail",
+    registerText: "Kreirajte svoj PingCar nalog besplatno.",
+
+    getQr: "Preuzmite QR kod",
+    getQrText: "Dobijate lični QR kod za vaše vozilo.",
+
+    placeQr: "Postavite QR kod",
+    placeQrText: "Postavite QR kod na vidno mesto na vašem vozilu.",
+
+    scanQr: "Skenirajte QR kod",
+    scanQrText: "Druga osoba skenira QR kod pametnim telefonom.",
+
+    notification: "Obaveštenje",
+    notificationText: "Odmah dobijate poruku u PingCar aplikaciji.",
+
+    blocked: "Moje vozilo je blokirano",
+    lights: "Svetlo je uključeno",
+    damaged: "Vozilo je oštećeno",
+    forgot: "Nešto je zaboravljeno",
+    otherMessage: "Druga poruka",
+
+    noPhone: "Bez broja telefona",
+    noPersonalData: "Bez ličnih podataka",
+    fastNotification: "Brzo obaveštenje",
+    privacy: "Zaštita podataka",
+
+    discover: "Otkrijte PingCar",
+
+    monthly: "Mesečna pretplata",
+    yearly: "Godišnja pretplata",
+    premiumText: "Isprobajte sve Premium funkcije besplatno.",
+    perMonth: "mesečno",
+    perYear: "godišnje",
+
+    name: "Vaše ime",
+    email: "Vaša e-mail adresa",
     password: "Lozinka",
+
+    login: "Prijava",
     forgotPassword: "Zaboravili ste lozinku?",
     sendLink: "Pošaljite link",
     logout: "Odjava",
+
     contactTitle: "Kontakt",
     footerText: "PingCar – siguran način za kontaktiranje vlasnika vozila.",
-    rights: "Sva prava zadržana.",
-    step1Title: "Registracija",
-    step2Title: "Naručite nalepnicu",
-    step3Title: "Zalepite na vozilo",
-    step4Title: "Skenirajte kod",
-    step5Title: "Direktan kontakt",
-    scanTitle: "Skenirajte QR kod",
-    enterCodeTitle: "Unesite PingCar kod",
-    pingCarCodeLabel: "PingCar kod"
-  }
+    rights: "Sva prava zadržana."
+  },
 
 };
 
@@ -1174,15 +1209,7 @@ window.setLanguage = function(lang) {
   if (contactLink) contactLink.innerHTML = "💬 " + t.contact;
   if (dashboardLink) dashboardLink.innerHTML = "👤 " + t.dashboard;
   if (messageLink) messageLink.innerHTML = "🔔 " + t.messages;
-  // Steps translation
-    const steps = document.querySelectorAll('.step-card h3, .step-title, [class*="step"] h3');
-    if (steps.length >= 5) {
-      if (t.step1Title) steps[0].innerText = t.step1Title;
-      if (t.step2Title) steps[1].innerText = t.step2Title;
-      if (t.step3Title) steps[2].innerText = t.step3Title;
-      if (t.step4Title) steps[3].innerText = t.step4Title;
-      if (t.step5Title) steps[4].innerText = t.step5Title;
-    }
+
 
   // Header
   const header = document.querySelector("header");
