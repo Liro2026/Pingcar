@@ -1126,23 +1126,32 @@ const translations = {
     footerText: "PingCar – zgjidhja e sigurt për pronarët e automjeteve.",
     rights: "Të gjitha të drejtat e rezervuara."
   },
-  sr: {
-      home: "Početna",
-      qr: "QR",
-      contact: "Kontakt",
-      dashboard: "Kontrolna tabla",
-      messages: "Poruke",
-      register: "Registracija",
-      login: "Prijava",
-      email: "E-mail",
-      password: "Lozinka",
-      forgotPassword: "Zaboravili ste lozinku?",
-      sendLink: "Pošaljite link",
-      logout: "Odjava",
-      contactTitle: "Kontakt",
-      footerText: "PingCar – siguran način za kontaktiranje vlasnika vozila.",
-      rights: "Sva prava zadržana."
-    }
+ sr: {
+    home: "Početna",
+    qr: "QR",
+    contact: "Kontakt",
+    dashboard: "Kontrolna tabla",
+    messages: "Poruke",
+    message: "Poruka",
+    register: "Registracija",
+    login: "Prijava",
+    email: "E-mail",
+    password: "Lozinka",
+    forgotPassword: "Zaboravili ste lozinku?",
+    sendLink: "Pošaljite link",
+    logout: "Odjava",
+    contactTitle: "Kontakt",
+    footerText: "PingCar – siguran način za kontaktiranje vlasnika vozila.",
+    rights: "Sva prava zadržana.",
+    step1Title: "Registracija",
+    step2Title: "Naručite nalepnicu",
+    step3Title: "Zalepite na vozilo",
+    step4Title: "Skenirajte kod",
+    step5Title: "Direktan kontakt",
+    scanTitle: "Skenirajte QR kod",
+    enterCodeTitle: "Unesite PingCar kod",
+    pingCarCodeLabel: "PingCar kod"
+  }
 
 };
 
@@ -1165,6 +1174,15 @@ window.setLanguage = function(lang) {
   if (contactLink) contactLink.innerHTML = "💬 " + t.contact;
   if (dashboardLink) dashboardLink.innerHTML = "👤 " + t.dashboard;
   if (messageLink) messageLink.innerHTML = "🔔 " + t.messages;
+  // Steps translation
+    const steps = document.querySelectorAll('.step-card h3, .step-title, [class*="step"] h3');
+    if (steps.length >= 5) {
+      if (t.step1Title) steps[0].innerText = t.step1Title;
+      if (t.step2Title) steps[1].innerText = t.step2Title;
+      if (t.step3Title) steps[2].innerText = t.step3Title;
+      if (t.step4Title) steps[3].innerText = t.step4Title;
+      if (t.step5Title) steps[4].innerText = t.step5Title;
+    }
 
   // Header
   const header = document.querySelector("header");
