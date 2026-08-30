@@ -1,354 +1,109 @@
 // PingCar - Central Language System
 
+import de from './languages/de.js';
+import en from './languages/en.js';
+import fr from './languages/fr.js';
+import it from './languages/it.js';
+import sq from './languages/sq.js';
+import sr from './languages/sr.js';
+import es from './languages/es.js';
+
 (function () {
-
-  const supportedLanguages = [
-    "de",
-    "en",
-    "fr",
-    "it",
-    "sq",
-    "sr",
-    "es"
-  ];
-
+  const translationsMap = { de, en, fr, it, sq, sr, es };
+  const supportedLanguages = ["de", "en", "fr", "it", "sq", "sr", "es"];
   const defaultLanguage = "de";
 
-  // --------------------------------------------------
-  // 1. Manual language selection has highest priority
-  // --------------------------------------------------
-
   const savedLanguage = localStorage.getItem("pingcar_language");
-
-  // --------------------------------------------------
-  // 2. Browser language
-  // --------------------------------------------------
-
-  const browserLanguage = (
-    navigator.language ||
-    navigator.userLanguage ||
-    defaultLanguage
-  ).split("-")[0].toLowerCase();
-
-  // --------------------------------------------------
-  // 3. Map country to PingCar language
-  // --------------------------------------------------
+  const browserLanguage = (navigator.language || defaultLanguage).split("-")[0].toLowerCase();
 
   const countryLanguageMap = {
-    CH: "de",
-    DE: "de",
-    AT: "de",
-
-    GB: "en",
-    US: "en",
-    CA: "en",
-    AU: "en",
-
-    FR: "fr",
-    BE: "fr",
-
-    IT: "it",
-
-    AL: "sq",
-    XK: "sq",
-
-    RS: "sr",
-    ES: "es"
+    CH: "de", DE: "de", AT: "de",
+    GB: "en", US: "en", CA: "en", AU: "en",
+    FR: "fr", BE: "fr", IT: "it",
+    AL: "sq", XK: "sq", RS: "sr", ES: "es"
   };
 
-  // --------------------------------------------------
-  // 4. Get language from IP country
-  // --------------------------------------------------
-
   async function detectLanguageFromIP() {
-
     try {
-
-      const response = await fetch(
-        "https://ipapi.co/json/",
-        {
-          cache: "no-store"
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("IP detection failed");
-      }
-
+      const response = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+      if (!response.ok) throw new Error("IP failed");
       const data = await response.json();
-
-      const countryCode = (
-        data.country_code || ""
-      ).toUpperCase();
-
-      const detectedLanguage =
-        countryLanguageMap[countryCode];
-
-      if (
-        detectedLanguage &&
-        supportedLanguages.includes(detectedLanguage)
-      ) {
-        return detectedLanguage;
-      }
-
-    } catch (error) {
-
-      console.warn(
-        "PingCar IP language detection failed:",
-        error
-      );
-
+      const countryCode = (data.country_code || "").toUpperCase();
+      const detected = countryLanguageMap[countryCode];
+      if (detected && supportedLanguages.includes(detected)) return detected;
+    } catch (e) {
+      console.warn("IP detection failed", e);
     }
-
     return null;
   }
 
-  // --------------------------------------------------
-  // 5. Choose initial language
-  // --------------------------------------------------
-
   async function determineLanguage() {
-
-    // User manually selected a language
-    if (
-      savedLanguage &&
-      supportedLanguages.includes(savedLanguage)
-    ) {
-      return savedLanguage;
+    if (savedLanguage && supportedLanguages.includes(savedLanguage)) return savedLanguage;
+    const ipLang = await detectLanguageFromIP();
+    if (ipLang) {
+      localStorage.setItem("pingcar_language", ipLang);
+      return ipLang;
     }
-
-    // Try IP country first
-    const ipLanguage = await detectLanguageFromIP();
-
-    if (ipLanguage) {
-      localStorage.setItem(
-        "pingcar_language",
-        ipLanguage
-      );
-
-      return ipLanguage;
-    }
-
-    // Fall back to browser language
-    if (
-      supportedLanguages.includes(browserLanguage)
-    ) {
-      localStorage.setItem(
-        "pingcar_language",
-        browserLanguage
-      );
-
+    if (supportedLanguages.includes(browserLanguage)) {
+      localStorage.setItem("pingcar_language", browserLanguage);
       return browserLanguage;
     }
-
-    // Final fallback
-    localStorage.setItem(
-      "pingcar_language",
-      defaultLanguage
-    );
-
+    localStorage.setItem("pingcar_language", defaultLanguage);
     return defaultLanguage;
   }
 
-  // --------------------------------------------------
-  // 6. Load translation file
-  // --------------------------------------------------
+  function loadLanguage(language) {
+    if (!supportedLanguages.includes(language)) language = defaultLanguage;
 
-  async function loadLanguage(language) {
+    window.PingCarTranslations = translationsMap[language] || {};
+    window.PingCarLanguage.current = language;
+    document.documentElement.setAttribute("lang", language);
 
-    if (
-      !supportedLanguages.includes(language)
-    ) {
-      language = defaultLanguage;
-    }
-
-    try {
-
-      const module = await import(
-        `./languages/${language}.js`
-      );
-
-      window.PingCarTranslations =
-        module.default || {};
-
-      window.PingCarLanguage.current =
-        language;
-
-      document.documentElement.setAttribute(
-        "lang",
-        language
-      );
-
-      applyTranslations();
-
-    } catch (error) {
-
-      console.error(
-        "PingCar language could not be loaded:",
-        language,
-        error
-      );
-
-    }
+    applyTranslations();
   }
-
-  // --------------------------------------------------
-  // 7. Apply translations
-  // --------------------------------------------------
 
   function applyTranslations() {
+    const translations = window.PingCarTranslations || {};
 
-    const translations =
-      window.PingCarTranslations || {};
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      if (translations[key] !== undefined) el.textContent = translations[key];
+    });
 
-    // Normal text
-    document
-      .querySelectorAll("[data-i18n]")
-      .forEach(function (element) {
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+      const key = el.getAttribute("data-i18n-placeholder");
+      if (translations[key] !== undefined) el.placeholder = translations[key];
+    });
 
-        const key =
-          element.getAttribute("data-i18n");
-
-        if (
-          translations[key] !== undefined
-        ) {
-          element.textContent =
-            translations[key];
-        }
-
-      });
-
-    // Placeholders
-    document
-      .querySelectorAll("[data-i18n-placeholder]")
-      .forEach(function (element) {
-
-        const key =
-          element.getAttribute(
-            "data-i18n-placeholder"
-          );
-
-        if (
-          translations[key] !== undefined
-        ) {
-          element.placeholder =
-            translations[key];
-        }
-
-      });
-
-    // Titles
-    document
-      .querySelectorAll("[data-i18n-title]")
-      .forEach(function (element) {
-
-        const key =
-          element.getAttribute(
-            "data-i18n-title"
-          );
-
-        if (
-          translations[key] !== undefined
-        ) {
-          element.title =
-            translations[key];
-        }
-
-      });
-
+    document.querySelectorAll("[data-i18n-title]").forEach(el => {
+      const key = el.getAttribute("data-i18n-title");
+      if (translations[key] !== undefined) el.title = translations[key];
+    });
   }
-
-  // --------------------------------------------------
-  // 8. Central PingCar language object
-  // --------------------------------------------------
 
   window.PingCarLanguage = {
-
     current: null,
-
     get: function () {
-
-      return (
-        localStorage.getItem(
-          "pingcar_language"
-        ) || defaultLanguage
-      );
-
+      return localStorage.getItem("pingcar_language") || defaultLanguage;
     },
-
     set: function (language) {
-
-      if (
-        !supportedLanguages.includes(language)
-      ) {
-        console.warn(
-          "Unsupported PingCar language:",
-          language
-        );
-
-        return;
-      }
-
-      localStorage.setItem(
-        "pingcar_language",
-        language
-      );
-
-      window.PingCarLanguage.current =
-        language;
-if (typeof window.setLanguage === "function") {
-  window.setLanguage(language);
-  return;
-}
-   
-
-loadLanguage(language);
-
+      if (!supportedLanguages.includes(language)) return;
+      localStorage.setItem("pingcar_language", language);
+      loadLanguage(language);
     },
-
-    supported:
-      supportedLanguages,
-
+    supported: supportedLanguages,
     translations: function () {
-
-      return (
-        window.PingCarTranslations || {}
-      );
-
+      return window.PingCarTranslations || {};
     },
-
     translate: function (key) {
-
-      const translations =
-        window.PingCarTranslations || {};
-
-      return (
-        translations[key] || key
-      );
-
+      return (window.PingCarTranslations || {})[key] || key;
     }
-
   };
 
-  // --------------------------------------------------
-  // 9. Start PingCar language system
-  // --------------------------------------------------
-
   async function initializeLanguage() {
-
-    const language =
-      await determineLanguage();
-
-    document.documentElement.setAttribute(
-      "lang",
-      language
-    );
-
-    await loadLanguage(language);
-
+    const language = await determineLanguage();
+    loadLanguage(language);
   }
 
-  // Start
   initializeLanguage();
-
 })();
