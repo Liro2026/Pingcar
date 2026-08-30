@@ -9,7 +9,8 @@
     "it",
     "sq",
     "sr",
-    "es"
+    "es",
+    "tr"
   ];
 
   const defaultLanguage = "de";
@@ -53,7 +54,8 @@
     XK: "sq",
 
     RS: "sr",
-    ES: "es"
+    ES: "es",
+    TR: "tr"
     
   };
 
