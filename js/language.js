@@ -9,7 +9,8 @@
     "it",
     "sq",
     "sr",
-    "es"
+    "es",
+    "pt"
   ];
 
   const defaultLanguage = "de";
