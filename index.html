@@ -1257,7 +1257,33 @@ window.setLanguage = function(lang) {
   if (!t) return;
 
   localStorage.setItem("pingcar_language", lang);
+const currentFlag = document.getElementById("current-flag");
+const currentLangText = document.getElementById("current-lang-text");
 
+const languageFlags = {
+  de: "CH",
+  fr: "FR",
+  it: "IT",
+  en: "GB",
+  sq: "AL",
+  sr: "RS",
+  es: "ES",
+  
+};
+
+const languageNames = {
+  de: "DE",
+  fr: "FR",
+  it: "IT",
+  en: "EN",
+  sq: "SQ",
+  sr: "SR",
+  es: "ES",
+  
+};
+
+if (currentFlag) currentFlag.textContent = languageFlags[lang] || "CH";
+if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   // Navigation
   const homeLink = document.querySelector('a[href="index.html"]');
   const qrLink = document.querySelector('a[href="qr.html"]');
