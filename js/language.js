@@ -296,10 +296,15 @@
 
       window.PingCarLanguage.current =
         language;
-
-   
+if (typeof window.setLanguage === "function") {
+  window.setLanguage(language);
+  return;
+}
 
 loadLanguage(language);
+   
+
+
 
     },
 
