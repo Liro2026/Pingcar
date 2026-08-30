@@ -1,17 +1,7 @@
 // PingCar - Central Language System
 
 (function () {
-
-  const supportedLanguages = [
-    "de",
-    "en",
-    "fr",
-    "it",
-    "sq",
-    "sr",
-    "es"
-  ];
-
+  const supportedLanguages = ["de", "en", "fr", "it", "sq", "sr", "es"];
   const defaultLanguage = "de";
 
   const savedLanguage = localStorage.getItem("pingcar_language");
@@ -23,40 +13,16 @@
   ).split("-")[0].toLowerCase();
 
   const countryLanguageMap = {
-    CH: "de",
-    DE: "de",
-    AT: "de",
-
-    GB: "en",
-    US: "en",
-    CA: "en",
-    AU: "en",
-
-    FR: "fr",
-    BE: "fr",
-
-    IT: "it",
-
-    AL: "sq",
-    XK: "sq",
-
-    RS: "sr",
-    ES: "es"
+    CH: "de", DE: "de", AT: "de",
+    GB: "en", US: "en", CA: "en", AU: "en",
+    FR: "fr", BE: "fr", IT: "it",
+    AL: "sq", XK: "sq", RS: "sr", ES: "es"
   };
 
   async function detectLanguageFromIP() {
     try {
-      const response = await fetch(
-        "https://ipapi.co/json/",
-        {
-          cache: "no-store"
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("IP detection failed");
-      }
-
+      const response = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+      if (!response.ok) throw new Error("IP detection failed");
       const data = await response.json();
       const countryCode = (data.country_code || "").toUpperCase();
       const detectedLanguage = countryLanguageMap[countryCode];
@@ -67,7 +33,6 @@
     } catch (error) {
       console.warn("PingCar IP language detection failed:", error);
     }
-
     return null;
   }
 
