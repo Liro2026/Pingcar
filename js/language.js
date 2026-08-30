@@ -8,7 +8,7 @@
     "fr",
     "it",
     "sq",
-    "sr",
+    "sr"
     "es"
   ];
 
@@ -52,7 +52,7 @@
     AL: "sq",
     XK: "sq",
 
-    RS: "sr",
+    RS: "sr"
     ES: "es"
   };
 
@@ -300,11 +300,9 @@ if (typeof window.setLanguage === "function") {
   window.setLanguage(language);
   return;
 }
-
-loadLanguage(language);
    
 
-
+loadLanguage(language);
 
     },
 
