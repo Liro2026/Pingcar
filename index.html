@@ -202,6 +202,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('hr'); return false;"><span class="flag">🇭🇷</span> Hrvatski (HR)</a>
     <a href="#" onclick="PingCarLanguage.set('hu'); return false;"><span class="flag">🇭🇺</span> Magyar (HU)</a>
     <a href="#" onclick="PingCarLanguage.set('pt'); return false;"><span class="flag">🇵🇹</span> Português (PT)</a>
+    <a href="#" onclick="PingCarLanguage.set('mk'); return false;"><span class="flag">🇲🇰</span> Македонски (MK)</a>
   </div>
 </div>
 
@@ -1685,6 +1686,99 @@ pt: {
   rights: "Todos os direitos reservados."
 
 },
+mk: {
+
+  home: "Почетна",
+
+  qr: "QR",
+
+  contact: "Контакт",
+
+  dashboard: "Контролна табла",
+
+  messages: "Пораки",
+
+  title: "PingCar",
+
+  description: "Безбеден начин за контакт со сопствениците на возила без телефонски број или лични податоци.",
+
+  available: "Бесплатна регистрација",
+
+  how: "Како функционира PingCar",
+
+  afterScan: "По скенирањето",
+
+  register: "Регистрација",
+
+  registerText: "Креирајте ја вашата PingCar сметка бесплатно.",
+
+  getQr: "Добијте QR-код",
+
+  getQrText: "Ќе добиете личен QR-код за вашето возило.",
+
+  placeQr: "Поставете QR-код",
+
+  placeQrText: "Поставете го QR-кодот на видливо место на вашето возило.",
+
+  scanQr: "Скенирајте QR-код",
+
+  scanQrText: "Друго лице го скенира QR-кодот со својот паметен телефон.",
+
+  notification: "Известување",
+
+  notificationText: "Веднаш ќе добиете порака преку PingCar.",
+
+  blocked: "Моето возило го блокира преминот",
+
+  lights: "Светлата се вклучени",
+
+  damaged: "Возилото е оштетено",
+
+  forgot: "Нешто е заборавено",
+
+  otherMessage: "Друга порака",
+
+  noPhone: "Без телефонски број",
+
+  noPersonalData: "Без лични податоци",
+
+  fastNotification: "Брзо известување",
+
+  privacy: "Приватност",
+
+  discover: "Откријте го PingCar",
+
+  monthly: "Месечна претплата",
+
+  yearly: "Годишна претплата",
+
+  premiumText: "Испробајте ги сите Premium функции бесплатно.",
+
+  perMonth: "месечно",
+
+  perYear: "годишно",
+
+  name: "Вашето име",
+
+  email: "Вашата е-пошта",
+
+  password: "Лозинка",
+
+  login: "Најава",
+
+  forgotPassword: "Ја заборавивте лозинката?",
+
+  sendLink: "Испрати линк",
+
+  logout: "Одјавување",
+
+  contactTitle: "Контакт",
+
+  footerText: "PingCar – безбедно решение за сопствениците на возила.",
+
+  rights: "Сите права се задржани."
+
+},
 
 };
 
@@ -1710,7 +1804,8 @@ const languageFlags = {
   sk: "SK",
   hr: "HR",
   hu: "HU",
-  pt: "PT"
+  pt: "PT",
+  mk: "MK"
   
 };
 
@@ -1735,7 +1830,8 @@ const languageNames = {
   sk: "SK",
   hr: "HR",
   hu: "HU",
-  pt: "PT"
+  pt: "PT",
+  mk: "MK"
 
   
   
@@ -1789,7 +1885,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Ako funguje PingCar") ||
       text.includes("Kako PingCar funkcionira")||
       text.includes("Hogyan működik a PingCar") ||
-      text.includes("Como funciona o PingCar")
+      text.includes("Como funciona o PingCar")||
+      text.includes("Како функционира PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -1806,7 +1903,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Po skenovaní") ||
       text.includes("Nakon skeniranja")||
       text.includes("Hogyan működik a PingCar") ||
-      text.includes("Após a leitura")
+      text.includes("Após a leitura")||
+      text.includes("По скенирањето")
     ) {
       el.textContent = t.afterScan;
     }
@@ -1820,7 +1918,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "Contacto" ||
       text === "İletişim" ||
       text === "Kapcsolat"||
-      text === "Contacto"
+      text === "Contacto"||
+      text === "Контакт"
     ) {
       el.textContent = t.contactTitle;
     }
@@ -1837,7 +1936,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Registrovať sa" ||
   text === "Registriraj se"||
   text === "Regisztráció"||
-  text === "Registar"
+  text === "Registar"||
+  text === "Регистрација"
     ) {
       el.textContent = t.register;
     }
@@ -1854,7 +1954,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Prihlásiť sa" ||
   text === "Prijava" ||
   text === "Bejelentkezés"||
-  text === "Iniciar sessão"
+  text === "Iniciar sessão"||
+  text === "Најава"
   
     ) {
       el.textContent = t.login;
@@ -1944,7 +2045,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Moje vozidlo je zablokované") ||
       text.includes("Moje vozilo je blokirano") ||
       text.includes("A járművem akadályozza a forgalmat")||
-      text.includes("O meu veículo está a bloquear a passagem")
+      text.includes("O meu veículo está a bloquear a passagem")||
+      text.includes("Моето возило го блокира преминот")
     ) {
       el.textContent = t.blocked;
     }
@@ -1961,7 +2063,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Svetlá sú zapnuté") ||
       text.includes("Svjetla su uključena") ||
       text.includes("A lámpák égve maradtak")||
-      text.includes("As luzes estão acesas")
+      text.includes("As luzes estão acesas")||
+      text.includes("Светлата се вклучени")
     ) {
       el.textContent = t.lights;
     }
@@ -1978,7 +2081,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Vozidlo je poškodené") ||
       text.includes("Vozilo je oštećeno") ||
       text.includes("A jármű megsérült")||
-      text.includes("O veículo está danificado")
+      text.includes("O veículo está danificado")||
+      text.includes("Возилото е оштетено")
     ) {
       el.textContent = t.damaged;
     }
@@ -1995,7 +2099,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Niečo bolo zabudnuté") ||
       text.includes("Nešto je zaboravljeno") ||
       text.includes("Valami ott maradt")||
-      text.includes("Algo foi esquecido")
+      text.includes("Algo foi esquecido")||
+      text.includes("Нешто е заборавено")
     ) {
       el.textContent = t.forgot;
     }
@@ -2012,7 +2117,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Iná správa") ||
       text.includes("Druga poruka") ||
       text.includes("Egyéb üzenet")||
-      text.includes("Outra mensagem")
+      text.includes("Outra mensagem")||
+      text.includes("Друга порака")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -2029,7 +2135,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bez telefónneho čísla") ||
       text.includes("Bez telefonskog broja") ||
       text.includes("Telefonszám nélkül")||
-      text.includes("Sem número de telefone")
+      text.includes("Sem número de telefone")||
+      text.includes("Без телефонски број")
     ) {
       el.textContent = t.noPhone;
     }
@@ -2046,7 +2153,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bez osobných údajov") ||
       text.includes("Bez osobnih podataka") ||
       text.includes("Személyes adatok nélkül")||
-      text.includes("Sem dados pessoais")
+      text.includes("Sem dados pessoais")||
+      text.includes("Без лични податоци")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -2063,7 +2171,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text.includes("Rýchle oznámenie") ||
         text.includes("Brza obavijest") ||
         text.includes("Gyors értesítés") ||
-        text.includes("Notificação rápida")
+        text.includes("Notificação rápida")||
+        text.includes("Брзо известување")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -2080,7 +2189,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Súkromie") ||
       text.includes("Privatnost") ||
       text.includes("Adatvédelem")||
-      text.includes("Privacidade")
+      text.includes("Privacidade")||
+      text.includes("Приватност")
     ) {
       el.textContent = t.privacy;
     }
@@ -2109,7 +2219,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Vyskúšajte všetky prémiové funkcie zdarma."||
         text === "Isprobajte sve Premium funkcije besplatno."||
         text === "Próbálja ki az összes Premium funkciót ingyen."||
-        text === "Experimente todas as funcionalidades Premium gratuitamente."
+        text === "Experimente todas as funcionalidades Premium gratuitamente."||
+        text === "Испробајте ги сите Premium функции бесплатно."
         ) {
       el.textContent = t.premiumText;
     }
