@@ -549,14 +549,26 @@ async function registerPageVisit() {
       localStorage.setItem("pingcar_visitor_id", visitorId);
     }
 
+    let country = null;
+
+    try {
+      const response = await fetch("https://ipapi.co/json/");
+      const geo = await response.json();
+
+      country = geo.country_name || null;
+    } catch (geoError) {
+      console.warn("Country detection failed:", geoError);
+    }
+
     await supabase
       .from("page_visits")
       .insert([
         {
           visitor_id: visitorId,
-          page: window.location.pathname
+          page: window.location.pathname,
+          country: country
         }
-      ]);
+      ])
 
   } catch (error) {
     console.error("Page visit error:", error);
