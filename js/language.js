@@ -14,7 +14,8 @@
     "sk",
     "hr",
     "hu",
-    "pt"
+    "pt",
+    "mk"
   ];
 
   const defaultLanguage = "de";
@@ -63,7 +64,8 @@
     SK: "sk",
     HR: "hr",
     HU: "hu",
-    PT: "pt"
+    PT: "pt",
+    MK: "mk"
     
   };
 
