@@ -11,7 +11,8 @@
     "sr",
     "es",
     "tr",
-    "sk"
+    "sk",
+    "hr"
   ];
 
   const defaultLanguage = "de";
@@ -57,7 +58,8 @@
     RS: "sr",
     ES: "es",
     TR: "tr",
-    SK: "sk"
+    SK: "sk",
+    HR: "hr"
     
   };
 
