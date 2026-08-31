@@ -409,7 +409,7 @@ Entwickelt mit Fokus auf Datenschutz.
 
 </div>
 <div class="card">
-  <h2 data-i18n="register">Registrieren</h2>
+  <h2>Registrieren</h2>
 
  <form id="registerForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 
@@ -439,14 +439,13 @@ Entwickelt mit Fokus auf Datenschutz.
     type="submit"
     style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;"
 >
-  <span data-i18n="register">Registrieren</span>
+    Kostenlos registrieren
 </button>
-
   </form>
 
 <hr style="margin:40px 0;">
 
-<h2 data-i18n="login">Anmelden</h2>
+<h2>Anmelden</h2>
 
 <form id="loginForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 <input
@@ -2061,9 +2060,19 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   }
 
 };
+function setLanguage(lang) {
+    localStorage.setItem("pingcar_language", lang);
+    
+}
+// Load saved language
+document.addEventListener("DOMContentLoaded", function() {
 
+  const savedLanguage =
+    localStorage.getItem("pingcar_language") || "de";
 
+  window.setLanguage(savedLanguage);
 
+});
     
 </script>
 
