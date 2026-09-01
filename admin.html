@@ -729,6 +729,10 @@ async function showStats() {
       <h2>Statistik</h2>
       <p>Aktuelle PingCar Seitenbesuche</p>
     </div>
+        <div class="card">
+      <h2>🌍 Besucher nach Ländern</h2>
+      <div id="countryStats">Wird geladen...</div>
+    </div>
   `;
 
   try {
@@ -788,6 +792,12 @@ async function showStats() {
     });
 
     console.log("Besucher nach Ländern:", countryCounts);
+        const countryStats = document.getElementById("countryStats");
+
+    countryStats.innerHTML = Object.entries(countryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([country, count]) => `<p>🌍 ${country}: <strong>${count}</strong></p>`)
+      .join("");
   }
 }
 
