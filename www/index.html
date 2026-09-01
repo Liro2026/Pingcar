@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PingCar</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+background:#f5f7fb;
+
+color:#222;
+
+line-height:1.6;
+
+}
+
+header{
+
+background:linear-gradient(135deg,#0066ff,#00bfff);
+
+color:white;
+
+text-align:center;
+
+padding:80px 20px;
+
+}
+
+header h1{
+
+font-size:56px;
+
+margin-bottom:20px;
+
+}
+
+header p{
+
+font-size:22px;
+
+max-width:850px;
+
+margin:auto;
+
+}
+
+.button{
+
+display:inline-block;
+
+margin-top:35px;
+
+padding:18px 40px;
+
+background:white;
+
+color:#0066ff;
+
+border-radius:40px;
+
+text-decoration:none;
+
+font-size:20px;
+
+font-weight:bold;
+
+}
+
+.container{
+
+max-width:1200px;
+
+margin:auto;
+
+padding:60px 20px;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:18px;
+
+padding:35px;
+
+margin-bottom:30px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+h2{
+
+color:#0066ff;
+
+margin-bottom:20px;
+
+font-size:34px;
+
+}
+
+.grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+
+gap:20px;
+
+}
+
+.item{
+
+background:#eef6ff;
+
+padding:20px;
+
+border-radius:14px;
+
+}
+
+footer{
+
+background:#111;
+
+color:white;
+
+text-align:center;
+
+padding:35px;
+
+margin-top:50px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header style="padding:18px 15px 25px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;max-width:1100px;margin:auto;">
+
+    <div style="font-size:24px;font-weight:bold;">
+      PingCar
+    </div>
+
+    <nav style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;">
+
+      <a href="index.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">
+        🏠 Home
+      </a>
+
+      <a href="qr.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">
+        📷 QR
+      </a>
+
+      <a href="contact.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">
+        💬 Contact
+      </a>
+
+      <a href="dashboard.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">
+        👤 Dashboard
+      </a>
+
+      <a href="message.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">
+        🔔 Messages
+      </a>
+
+    </nav>
+
+    <div style="display:flex;gap:4px;align-items:center;">
+
+<button id="lang-de" onclick="setLanguage('de')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇩🇪 DE</button>
+<button id="lang-fr" onclick="setLanguage('fr')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇫🇷 FR</button>
+<button id="lang-it" onclick="setLanguage('it')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇮🇹 IT</button>
+<button id="lang-en" onclick="setLanguage('en')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇬🇧 EN</button>
+<button id="lang-sq" onclick="setLanguage('sq')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇦🇱 SQ</button>    
+
+    </div>
+
+  </div>
+
+  <img src="86B24C84-C6A7-421A-AEC8-D1789A6C8285.png"
+       alt="PingCar Logo"
+       style="width:150px;display:block;margin:22px auto 15px;">
+
+  <p style="margin:0 auto 15px;max-width:600px;">
+    Die sichere Lösung, um Fahrzeughalter zu kontaktieren –
+    ohne Telefonnummer und ohne persönliche Daten.
+  </p>
+
+  <a href="#" class="button">
+    Bald verfügbar
+  </a>
+
+</header>
+
+<div class="container"><div class="card">
+
+<h2>So funktioniert PingCar</h2>
+
+<div class="grid">
+
+<div class="item">
+<h3>1. Registrieren</h3>
+<p>Erstellen Sie kostenlos Ihr PingCar-Konto.</p>
+</div>
+
+<div class="item">
+<h3>2. QR-Code erhalten</h3>
+<p>Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.</p>
+</div>
+
+<div class="item">
+<h3>3. QR-Code anbringen</h3>
+<p>Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.</p>
+</div>
+
+<div class="item">
+<h3>4. QR-Code scannen</h3>
+<p>Eine andere Person scannt den QR-Code mit dem Smartphone.</p>
+</div>
+<div class="item">
+  <h3>📱 Entdecke PingCar</h3>
+  <p>Scanne den QR-Code und öffne direkt PingCar.ch.</p>
+
+  <a href="https://www.pingcar.ch/" target="_blank">
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fwww.pingcar.ch%2F"
+      alt="PingCar QR-Code"
+      style="width:180px;display:block;margin:15px auto;"
+    >
+  </a>
+
+  <p><strong>www.pingcar.ch</strong></p>
+</div>
+<div class="item">
+<h3>5. Benachrichtigung</h3>
+<p>Sie erhalten sofort eine Nachricht in der PingCar-App.</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Nach dem Scannen</h2>
+
+<div class="grid">
+
+<div class="item">
+🚗<br><br>
+<b>Mein Fahrzeug wird blockiert</b>
+</div>
+
+<div class="item">
+💡<br><br>
+<b>Das Licht ist eingeschaltet</b>
+</div>
+
+<div class="item">
+🚨<br><br>
+<b>Fahrzeug beschädigt</b>
+</div>
+
+<div class="item">
+🔑<br><br>
+<b>Etwas vergessen</b>
+</div>
+
+<div class="item">
+✉️<br><br>
+<b>Andere Mitteilung</b>
+</div>
+
+</div>
+
+</div><div class="card">
+<div style="text-align:center; margin:25px 0;">
+    <a href="qr.html" style="
+        background:#28a745;
+        color:white;
+        padding:15px 30px;
+        border-radius:10px;
+        text-decoration:none;
+        font-size:20px;
+        font-weight:bold;">
+        📱 QR-Code scannen
+    </a>
+</div>
+
+<div style="text-align:center; margin:30px 0;">
+  <h1 style="color:red;">
+🚀 7 Tage kostenlos testen.
+</h1>
+  <p>
+Teste alle Premium-Funktionen kostenlos.<br><br>
+
+<strong>⭐ Jetzt neu:</strong><br>
+
+7 Tage kostenlos testen.<br>
+
+Keine Zahlung heute.<br>
+
+Jederzeit kündbar.
+</p>
+
+<script async src="https://js.stripe.com/v3/buy-button.js"></script>
+
+<div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:25px;">
+
+  <div style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;width:280px;text-align:center;">
+    <h3>📅 Monatsabo</h3>
+    <h2>CHF 4.90</h2>
+    <p>pro Monat</p>
+
+    <a href="https://buy.stripe.com/7sYcMXdIk1094RAdMB6J200?locale=de&__embed_source=buy_btn_1U06zM1bPlhWc3Hfq7LBoWxD"
+       target="_blank"
+       style="display:inline-block;background:#0066ff;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
+      Monatsabo wählen
+    </a>
+  </div>
+
+  <div style="background:#fff;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:280px;text-align:center;">
+    <h3>⭐ Jahresabo</h3>
+    <h2>CHF 49.90</h2>
+    <p>pro Jahr</p>
+
+    <a href="https://buy.stripe.com/7sYbITdIkaAJ6ZI23T6J201"
+       target="_blank"
+       style="display:inline-block;background:#f59e0b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
+      Jahresabo wählen
+    </a>
+  </div>
+
+</div>
+
+</div>
+<div class="grid">
+
+<div class="item">
+🔒<br><br>
+<b>Keine Telefonnummer</b><br>
+Ihre Telefonnummer bleibt privat.
+</div>
+
+<div class="item">
+👤<br><br>
+<b>Keine persönlichen Daten</b><br>
+Name und Kontaktdaten werden nicht angezeigt.
+</div>
+
+<div class="item">
+⚡<br><br>
+<b>Schnelle Benachrichtigung</b><br>
+Der Fahrzeughalter wird sofort informiert.
+</div>
+
+<div class="item">
+🇨🇭<br><br>
+<b>Datenschutz</b><br>
+Entwickelt mit Fokus auf Datenschutz.
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Kontakt</h2>
+
+<p style="font-size:18px;line-height:2">
+
+📧 info@pingcar.ch<br>
+
+🌐 www.pingcar.ch
+
+</p>
+
+</div>
+
+</div>
+<div class="card">
+  <h2>Registrieren</h2>
+
+  <form id="registerForm">
+
+    <input
+      type="text"
+      id="name"
+      placeholder="Ihr Name"
+      required
+    >
+
+    <input
+type="email"
+id="email"
+placeholder="E-Mail eingeben"
+>
+    >
+  <input
+  type="password"
+  id="password"
+placeholder="Passwort"
+required 
+>
+<button type="submit">
+Registrieren
+</button>
+  </form>
+
+<hr style="margin:40px 0;">
+
+<h2>Anmelden</h2>
+
+<form id="loginForm">
+
+<input
+type="email"
+id="loginEmail"
+placeholder="E-Mail"
+required
+>
+
+<input
+type="password"
+id="loginPassword"
+placeholder="Passwort"
+required
+>
+
+<button type="submit">
+Anmelden
+</button>
+
+<p style="margin-top:15px;">
+<a href="#" id="forgotPassword">
+Passwort vergessen?
+</a>
+</p>
+
+
+<div id="resetBox" style="display:none;margin-top:20px;">
+
+<input
+type="email"
+id="resetEmail"
+placeholder="E-Mail eingeben"
+
+>
+
+<button id="resetButton">
+Link senden
+</button>
+
+</div>
+
+</form>
+
+<div id="userPanel" style="display:none;margin-top:30px;">
+</form>
+
+<div id="userPanel" style="display:none;margin-top:30px;">
+
+<h3 id="welcomeUser"></h3>
+
+<button id="logoutButton">
+Abmelden
+</button>
+
+</div>
+
+</div>
+<footer>
+
+<h2 style="color:white;margin-bottom:15px;">PingCar</h2>
+
+<p>
+
+QR-Code scannen • Fahrer benachrichtigen • Problem lösen
+
+</p>
+
+<br>
+
+<p>
+
+© 2026 PingCar. Alle Rechte vorbehalten.
+
+</p>
+
+</footer>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+async function registerPageVisit() {
+  try {
+    let visitorId = localStorage.getItem("pingcar_visitor_id");
+
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem("pingcar_visitor_id", visitorId);
+    }
+
+    await supabase
+      .from("page_visits")
+      .insert([
+        {
+          visitor_id: visitorId,
+          page: window.location.pathname
+        }
+      ]);
+
+  } catch (error) {
+    console.error("Page visit error:", error);
+  }
+}
+
+registerPageVisit();
+const firebaseConfig = {
+  apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
+  authDomain: "pingcar.firebaseapp.com",
+  projectId: "pingcar",
+  storageBucket: "pingcar.firebasestorage.app",
+  messagingSenderId: "133178961912",
+  appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const messaging = getMessaging(firebaseApp);
+
+const vapidKey = "BHoqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
+async function enablePushNotifications() {
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("Benachrichtigungen wurden nicht erlaubt.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js"
+    );
+
+    const token = await getToken(messaging, {
+      vapidKey: vapidKey,
+      serviceWorkerRegistration: registration
+    });
+
+    console.log("FCM Token:", token);
+
+    if (!token) {
+      alert("FCM Token konnte nicht erstellt werden.");
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Benutzer ist nicht eingeloggt.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("device_tokens")
+      .upsert({
+        user_id: user.id,
+        fcm_token: token
+      }, {
+        onConflict: "user_id"
+      });
+
+    if (error) {
+      console.error(error);
+      alert("Token konnte nicht gespeichert werden.");
+      return;
+    }
+
+    console.log("FCM Token gespeichert.");
+  } catch (error) {
+    console.error(error);
+    alert("Push-Benachrichtigungen konnten nicht aktiviert werden.");
+  }
+}
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail.");
+  }
+});
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const { error } = await supabase.auth.signInWithPassword({
+
+    email,
+    password
+
+  });
+
+if (error) {
+
+    alert(error.message);
+
+} else {
+
+    window.location.href = "dashboard.html";
+
+}
+
+});
+
+document.getElementById("logoutButton").addEventListener("click", async () => {
+
+  await supabase.auth.signOut();
+
+  alert("Sie wurden abgemeldet.");
+
+  location.reload();
+
+});
+document.getElementById("forgotPassword").addEventListener("click", function(e){
+
+e.preventDefault();
+
+document.getElementById("resetBox").style.display="block";
+
+});
+document.getElementById("resetButton").addEventListener("click", async function () {
+
+    const email = document.getElementById("resetEmail").value;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "https://pingcar.ch"
+    });
+
+    if (error) {
+        alert(error.message);
+    } else {
+        alert("Der Link zum Zurücksetzen wurde per E-Mail gesendet.");
+    }
+
+});
+
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY") {
+    const box = document.createElement("div");
+
+    box.innerHTML = `
+      <div style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.65);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:9999;
+      ">
+        <div style="
+          background:white;
+          padding:30px;
+          border-radius:15px;
+          width:90%;
+          max-width:400px;
+          box-shadow:0 10px 30px rgba(0,0,0,.3);
+        ">
+          <h2 style="margin-top:0;">Passwort zurücksetzen</h2>
+
+          <input
+            id="newPassword"
+            type="password"
+            placeholder="Neues Passwort"
+            style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;"
+          >
+
+          <input
+            id="newPassword2"
+            type="password"
+            placeholder="Passwort wiederholen"
+            style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;"
+          >
+
+          <button
+            id="saveNewPassword"
+            style="
+              width:100%;
+              padding:12px;
+              background:#1677ff;
+              color:white;
+              border:0;
+              border-radius:8px;
+              cursor:pointer;
+              margin-top:10px;
+            "
+          >
+            Passwort ändern
+          </button>
+
+          <p id="passwordMessage" style="margin-top:12px;"></p>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(box);
+
+    document
+      .getElementById("saveNewPassword")
+      .addEventListener("click", async () => {
+
+        const password = document.getElementById("newPassword").value;
+        const password2 = document.getElementById("newPassword2").value;
+        const message = document.getElementById("passwordMessage");
+
+        if (password.length < 6) {
+          message.textContent = "Das Passwort muss mindestens 6 Zeichen haben.";
+          return;
+        }
+
+        if (password !== password2) {
+          message.textContent = "Die Passwörter stimmen nicht überein.";
+          return;
+        }
+
+        const { error } = await supabase.auth.updateUser({
+          password: password
+        });
+
+        if (error) {
+          message.textContent = "Fehler: " + error.message;
+          return;
+        }
+
+        message.textContent = "Passwort erfolgreich geändert!";
+
+        setTimeout(() => {
+          window.location.href = "https://pingcar.ch/";
+        }, 1500);
+      });
+  }
+});
+const { data } = await supabase.auth.getSession();
+
+if (data.session) {
+
+
+
+  document.getElementById("userPanel").style.display = "block";
+
+  const user = data.session.user;
+
+  document.getElementById("welcomeUser").innerText =
+    "Willkommen " + user.email;
+}
+// ===============================
+// PingCar Language System
+// ===============================
+
+const translations = {
+
+  de: {
+    home: "Home",
+    qr: "QR",
+    contact: "Contact",
+    dashboard: "Dashboard",
+    messages: "Messages",
+
+    title: "PingCar",
+    description: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.",
+    available: "Bald verfügbar",
+
+    how: "So funktioniert PingCar",
+    afterScan: "Nach dem Scannen",
+
+    register: "Registrieren",
+    registerText: "Erstellen Sie kostenlos Ihr PingCar-Konto.",
+
+    getQr: "QR-Code erhalten",
+    getQrText: "Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.",
+
+    placeQr: "QR-Code anbringen",
+    placeQrText: "Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.",
+
+    scanQr: "QR-Code scannen",
+    scanQrText: "Eine andere Person scannt den QR-Code mit dem Smartphone.",
+
+    notification: "Benachrichtigung",
+    notificationText: "Sie erhalten sofort eine Nachricht in der PingCar-App.",
+
+    blocked: "Mein Fahrzeug wird blockiert",
+    lights: "Das Licht ist eingeschaltet",
+    damaged: "Fahrzeug beschädigt",
+    forgot: "Etwas vergessen",
+    otherMessage: "Andere Mitteilung",
+
+    noPhone: "Keine Telefonnummer",
+    noPersonalData: "Keine persönlichen Daten",
+    fastNotification: "Schnelle Benachrichtigung",
+    privacy: "Datenschutz",
+
+    discover: "Entdecke PingCar",
+
+    monthly: "Monatsabo",
+    yearly: "Jahresabo",
+    premiumText: "Teste alle Premium-Funktionen kostenlos.",
+    perMonth: "pro Monat",
+    perYear: "pro Jahr",
+
+    name: "Ihr Name",
+    email: "Ihre E-Mail-Adresse",
+    password: "Passwort",
+
+    login: "Anmelden",
+    forgotPassword: "Passwort vergessen?",
+    sendLink: "Link senden",
+    logout: "Abmelden",
+
+    contactTitle: "Kontakt",
+    footerText: "PingCar – die sichere Lösung für Fahrzeughalter.",
+    rights: "Alle Rechte vorbehalten."
+  },
+
+
+  fr: {
+    home: "Accueil",
+    qr: "QR",
+    contact: "Contact",
+    dashboard: "Tableau de bord",
+    messages: "Messages",
+
+    title: "PingCar",
+    description: "La solution sécurisée pour contacter le propriétaire d'un véhicule – sans numéro de téléphone et sans données personnelles.",
+    available: "Bientôt disponible",
+
+    how: "Comment fonctionne PingCar",
+    afterScan: "Après le scan",
+
+    register: "Inscription",
+    registerText: "Créez gratuitement votre compte PingCar.",
+
+    getQr: "Obtenir le code QR",
+    getQrText: "Vous recevez un code QR personnel pour votre véhicule.",
+
+    placeQr: "Placer le code QR",
+    placeQrText: "Fixez le code QR de manière bien visible sur votre véhicule.",
+
+    scanQr: "Scanner le code QR",
+    scanQrText: "Une autre personne scanne le code QR avec son smartphone.",
+
+    notification: "Notification",
+    notificationText: "Vous recevez immédiatement un message dans PingCar.",
+
+    blocked: "Mon véhicule est bloqué",
+    lights: "Les feux sont allumés",
+    damaged: "Véhicule endommagé",
+    forgot: "Vous avez oublié quelque chose",
+    otherMessage: "Autre message",
+
+    noPhone: "Aucun numéro de téléphone",
+    noPersonalData: "Aucune donnée personnelle",
+    fastNotification: "Notification rapide",
+    privacy: "Confidentialité",
+
+    discover: "Découvrir PingCar",
+
+    monthly: "Abonnement mensuel",
+    yearly: "Abonnement annuel",
+    premiumText: "Testez toutes les fonctions Premium gratuitement.",
+    perMonth: "par mois",
+    perYear: "par an",
+
+    name: "Votre nom",
+    email: "Votre adresse e-mail",
+    password: "Mot de passe",
+
+    login: "Connexion",
+    forgotPassword: "Mot de passe oublié ?",
+    sendLink: "Envoyer le lien",
+    logout: "Déconnexion",
+
+    contactTitle: "Contact",
+    footerText: "PingCar – la solution sécurisée pour les propriétaires de véhicules.",
+    rights: "Tous droits réservés."
+  },
+
+
+  it: {
+    home: "Home",
+    qr: "QR",
+    contact: "Contatti",
+    dashboard: "Dashboard",
+    messages: "Messaggi",
+
+    title: "PingCar",
+    description: "La soluzione sicura per contattare il proprietario di un veicolo – senza numero di telefono e senza dati personali.",
+    available: "Presto disponibile",
+
+    how: "Come funziona PingCar",
+    afterScan: "Dopo la scansione",
+
+    register: "Registrazione",
+    registerText: "Crea gratuitamente il tuo account PingCar.",
+
+    getQr: "Ottieni il codice QR",
+    getQrText: "Ricevi un codice QR personale per il tuo veicolo.",
+
+    placeQr: "Posiziona il codice QR",
+    placeQrText: "Fissa il codice QR in modo ben visibile sul tuo veicolo.",
+
+    scanQr: "Scansiona il codice QR",
+    scanQrText: "Un'altra persona scansiona il codice QR con lo smartphone.",
+
+    notification: "Notifica",
+    notificationText: "Ricevi immediatamente un messaggio in PingCar.",
+
+    blocked: "Il mio veicolo è bloccato",
+    lights: "Le luci sono accese",
+    damaged: "Veicolo danneggiato",
+    forgot: "Hai dimenticato qualcosa",
+    otherMessage: "Altro messaggio",
+
+    noPhone: "Nessun numero di telefono",
+    noPersonalData: "Nessun dato personale",
+    fastNotification: "Notifica rapida",
+    privacy: "Privacy",
+
+    discover: "Scopri PingCar",
+
+    monthly: "Abbonamento mensile",
+    yearly: "Abbonamento annuale",
+    premiumText: "Prova tutte le funzioni Premium gratuitamente.",
+    perMonth: "al mese",
+    perYear: "all'anno",
+
+    name: "Il tuo nome",
+    email: "Il tuo indirizzo e-mail",
+    password: "Password",
+
+    login: "Accedi",
+    forgotPassword: "Password dimenticata?",
+    sendLink: "Invia il link",
+    logout: "Esci",
+
+    contactTitle: "Contatti",
+    footerText: "PingCar – la soluzione sicura per i proprietari di veicoli.",
+    rights: "Tutti i diritti riservati."
+  },
+
+
+  en: {
+    home: "Home",
+    qr: "QR",
+    contact: "Contact",
+    dashboard: "Dashboard",
+    messages: "Messages",
+
+    title: "PingCar",
+    description: "The secure solution for contacting vehicle owners – without phone numbers and without personal data.",
+    available: "Coming soon",
+
+    how: "How PingCar works",
+    afterScan: "After scanning",
+
+    register: "Register",
+    registerText: "Create your PingCar account for free.",
+
+    getQr: "Get QR Code",
+    getQrText: "You receive a personal QR code for your vehicle.",
+
+    placeQr: "Place the QR Code",
+    placeQrText: "Attach the QR code clearly and visibly to your vehicle.",
+
+    scanQr: "Scan the QR Code",
+    scanQrText: "Another person scans the QR code with their smartphone.",
+
+    notification: "Notification",
+    notificationText: "You receive a message immediately through PingCar.",
+
+    blocked: "My vehicle is blocked",
+    lights: "The lights are on",
+    damaged: "Vehicle damaged",
+    forgot: "Forgot something",
+    otherMessage: "Other message",
+
+    noPhone: "No phone number",
+    noPersonalData: "No personal data",
+    fastNotification: "Fast notification",
+    privacy: "Privacy",
+
+    discover: "Discover PingCar",
+
+    monthly: "Monthly subscription",
+    yearly: "Annual subscription",
+    premiumText: "Test all premium features for free.",
+    perMonth: "per month",
+    perYear: "per year",
+
+    name: "Your name",
+    email: "Your email address",
+    password: "Password",
+
+    login: "Login",
+    forgotPassword: "Forgot password?",
+    sendLink: "Send link",
+    logout: "Logout",
+
+    contactTitle: "Contact",
+    footerText: "PingCar – the secure solution for vehicle owners.",
+    rights: "All rights reserved."
+  },
+
+
+  sq: {
+    home: "Ballina",
+    qr: "QR",
+    contact: "Kontakt",
+    dashboard: "Paneli",
+    messages: "Mesazhet",
+
+    title: "PingCar",
+    description: "Zgjidhja e sigurt për të kontaktuar pronarin e një automjeti – pa numër telefoni dhe pa të dhëna personale.",
+    available: "Së shpejti",
+
+    how: "Si funksionon PingCar",
+    afterScan: "Pas skanimit",
+
+    register: "Regjistrohu",
+    registerText: "Krijo falas llogarinë tënde në PingCar.",
+
+    getQr: "Merr QR-Code",
+    getQrText: "Merr një QR-Code personal për automjetin tënd.",
+
+    placeQr: "Vendos QR-Code",
+    placeQrText: "Vendose QR-Code në një vend të dukshëm në automjetin tënd.",
+
+    scanQr: "Skano QR-Code",
+    scanQrText: "Një person tjetër e skanon QR-Code me telefonin e tij.",
+
+    notification: "Njoftim",
+    notificationText: "Merr menjëherë një mesazh përmes PingCar.",
+
+    blocked: "Automjeti im është i bllokuar",
+    lights: "Dritat janë ndezur",
+    damaged: "Automjeti është dëmtuar",
+    forgot: "Ke harruar diçka",
+    otherMessage: "Mesazh tjetër",
+
+    noPhone: "Pa numër telefoni",
+    noPersonalData: "Pa të dhëna personale",
+    fastNotification: "Njoftim i shpejtë",
+    privacy: "Privatësia",
+
+    discover: "Zbulo PingCar",
+
+    monthly: "Abonimi mujor",
+    yearly: "Abonimi vjetor",
+    premiumText: "Testo të gjitha funksionet Premium falas.",
+    perMonth: "në muaj",
+    perYear: "në vit",
+
+    name: "Emri yt",
+    email: "Adresa jote e email-it",
+    password: "Fjalëkalimi",
+
+    login: "Hyr",
+    forgotPassword: "Ke harruar fjalëkalimin?",
+    sendLink: "Dërgo lidhjen",
+    logout: "Dil",
+
+    contactTitle: "Kontakt",
+    footerText: "PingCar – zgjidhja e sigurt për pronarët e automjeteve.",
+    rights: "Të gjitha të drejtat e rezervuara."
+  }
+
+};
+
+window.setLanguage = function(lang) {
+
+  const t = translations[lang];
+  if (!t) return;
+
+  localStorage.setItem("pingcar_language", lang);
+
+  // Navigation
+  const homeLink = document.querySelector('a[href="index.html"]');
+  const qrLink = document.querySelector('a[href="qr.html"]');
+  const contactLink = document.querySelector('a[href="contact.html"]');
+  const dashboardLink = document.querySelector('a[href="dashboard.html"]');
+  const messageLink = document.querySelector('a[href="message.html"]');
+
+  if (homeLink) homeLink.innerHTML = "🏠 " + t.home;
+  if (qrLink) qrLink.innerHTML = "📷 " + t.qr;
+  if (contactLink) contactLink.innerHTML = "💬 " + t.contact;
+  if (dashboardLink) dashboardLink.innerHTML = "👤 " + t.dashboard;
+  if (messageLink) messageLink.innerHTML = "🔔 " + t.messages;
+
+  // Header
+  const header = document.querySelector("header");
+
+  if (header) {
+
+    const headerP = header.querySelector("p");
+    if (headerP) headerP.textContent = t.description;
+
+    const button = header.querySelector("a.button");
+    if (button) button.textContent = t.available;
+  }
+
+  // Main titles
+  const h2 = document.querySelectorAll("main h2, body > .container h2");
+
+  h2.forEach(function(el) {
+
+    const text = el.textContent.trim();
+
+    if (
+      text.includes("So funktioniert PingCar") ||
+      text.includes("How PingCar works") ||
+      text.includes("Comment fonctionne PingCar") ||
+      text.includes("Come funziona PingCar") ||
+      text.includes("Si funksionon PingCar")
+    ) {
+      el.textContent = t.how;
+    }
+
+    if (
+      text.includes("Nach dem Scannen") ||
+      text.includes("After scanning") ||
+      text.includes("Après le scan") ||
+      text.includes("Dopo la scansione") ||
+      text.includes("Pas skanimit")
+    ) {
+      el.textContent = t.afterScan;
+    }
+
+    if (
+      text === "Kontakt" ||
+      text === "Contact" ||
+      text === "Contatti" ||
+      text === "Kontakt"
+    ) {
+      el.textContent = t.contactTitle;
+    }
+
+    if (
+      text === "Registrieren" ||
+      text === "Inscription" ||
+      text === "Registrazione" ||
+      text === "Regjistrohu"
+    ) {
+      el.textContent = t.register;
+    }
+
+    if (
+      text === "Anmelden" ||
+      text === "Connexion" ||
+      text === "Accedi" ||
+      text === "Hyr"
+    ) {
+      el.textContent = t.login;
+    }
+  });
+
+  // Step headings
+  document.querySelectorAll(".item h3").forEach(function(el) {
+
+    const text = el.textContent.trim();
+
+    if (text.includes("Registrieren") || text.includes("Register") || text.includes("Inscription") || text.includes("Registrazione") || text.includes("Regjistrohu")) {
+      el.textContent = "1. " + t.register;
+    }
+
+    else if (text.includes("QR-Code erhalten") || text.includes("Get QR Code") || text.includes("Obtenir le code QR") || text.includes("Ottieni il codice QR") || text.includes("Merr QR-Code")) {
+      el.textContent = "2. " + t.getQr;
+    }
+
+    else if (text.includes("QR-Code anbringen") || text.includes("Place the QR Code") || text.includes("Placer le code QR") || text.includes("Posiziona il codice QR") || text.includes("Vendos QR-Code")) {
+      el.textContent = "3. " + t.placeQr;
+    }
+
+    else if (text.includes("QR-Code scannen") || text.includes("Scan the QR Code") || text.includes("Scanner le code QR") || text.includes("Scansiona il codice QR") || text.includes("Skano QR-Code")) {
+      el.textContent = "4. " + t.scanQr;
+    }
+
+    else if (text.includes("Benachrichtigung") || text.includes("Notification") || text.includes("Notifica") || text.includes("Njoftim")) {
+      el.textContent = "5. " + t.notification;
+    }
+
+    else if (text.includes("Entdecke PingCar") || text.includes("Discover PingCar") || text.includes("Découvrir PingCar") || text.includes("Scopri PingCar") || text.includes("Zbulo PingCar")) {
+      el.textContent = "📱 " + t.discover;
+    }
+
+    else if (text.includes("Monatsabo") || text.includes("Monthly subscription") || text.includes("Abonnement mensuel") || text.includes("Abbonamento mensile") || text.includes("Abonimi mujor")) {
+      el.textContent = "📅 " + t.monthly;
+    }
+
+    else if (text.includes("Jahresabo") || text.includes("Annual subscription") || text.includes("Abonnement annuel") || text.includes("Abbonamento annuale") || text.includes("Abonimi vjetor")) {
+      el.textContent = "⭐ " + t.yearly;
+    }
+  });
+
+  // Step descriptions
+  document.querySelectorAll(".item p").forEach(function(el) {
+
+    const text = el.textContent.trim();
+
+    if (text.includes("Erstellen Sie kostenlos") || text.includes("Créez gratuitement") || text.includes("Crea gratuitamente") || text.includes("Create your PingCar") || text.includes("Krijo falas")) {
+      el.textContent = t.registerText;
+    }
+
+    else if (text.includes("Sie erhalten einen persönlichen") || text.includes("Vous recevez un code QR") || text.includes("Ricevi un codice QR") || text.includes("You receive a personal QR") || text.includes("Merr një QR-Code")) {
+      el.textContent = t.getQrText;
+    }
+
+    else if (text.includes("Befestigen Sie den QR-Code") || text.includes("Fixez le code QR") || text.includes("Fissa il codice QR") || text.includes("Attach the QR code") || text.includes("Vendose QR-Code")) {
+      el.textContent = t.placeQrText;
+    }
+
+    else if (text.includes("Eine andere Person scannt") || text.includes("Une autre personne scanne") || text.includes("Un'altra persona scansiona") || text.includes("Another person scans") || text.includes("Një person tjetër")) {
+      el.textContent = t.scanQrText;
+    }
+
+    else if (text.includes("Sie erhalten sofort eine Nachricht") || text.includes("Vous recevez immédiatement") || text.includes("Ricevi immediatamente") || text.includes("You receive a message immediately") || text.includes("Merr menjëherë")) {
+      el.textContent = t.notificationText;
+    }
+  });
+
+  // Scan / problem messages
+  const problemTexts = document.querySelectorAll(".item b");
+
+  problemTexts.forEach(function(el) {
+
+    const text = el.textContent.trim();
+
+    if (
+      text.includes("Mein Fahrzeug wird blockiert") ||
+      text.includes("My vehicle is blocked") ||
+      text.includes("Mon véhicule est bloqué") ||
+      text.includes("Il mio veicolo è bloccato") ||
+      text.includes("Automjeti im është bllokuar")
+    ) {
+      el.textContent = t.blocked;
+    }
+
+    else if (
+      text.includes("Das Licht ist eingeschaltet") ||
+      text.includes("The lights are on") ||
+      text.includes("Les feux sont allumés") ||
+      text.includes("Le luci sono accese") ||
+      text.includes("Dritat janë ndezur")
+    ) {
+      el.textContent = t.lights;
+    }
+
+    else if (
+      text.includes("Fahrzeug beschädigt") ||
+      text.includes("Vehicle damaged") ||
+      text.includes("Véhicule endommagé") ||
+      text.includes("Veicolo danneggiato") ||
+      text.includes("Automjeti është dëmtuar")
+    ) {
+      el.textContent = t.damaged;
+    }
+
+    else if (
+      text.includes("Etwas vergessen") ||
+      text.includes("Forgot something") ||
+      text.includes("Vous avez oublié quelque chose") ||
+      text.includes("Hai dimenticato qualcosa") ||
+      text.includes("Ke harruar diçka")
+    ) {
+      el.textContent = t.forgot;
+    }
+
+    else if (
+      text.includes("Andere Mitteilung") ||
+      text.includes("Other message") ||
+      text.includes("Autre message") ||
+      text.includes("Altro messaggio") ||
+      text.includes("Mesazh tjetër")
+    ) {
+      el.textContent = t.otherMessage;
+    }
+
+    else if (
+      text.includes("Keine Telefonnummer") ||
+      text.includes("No phone number") ||
+      text.includes("Aucun numéro de téléphone") ||
+      text.includes("Nessun numero di telefono") ||
+      text.includes("Pa numër telefoni")
+    ) {
+      el.textContent = t.noPhone;
+    }
+
+    else if (
+      text.includes("Keine persönlichen Daten") ||
+      text.includes("No personal data") ||
+      text.includes("Aucune donnée personnelle") ||
+      text.includes("Nessun dato personale") ||
+      text.includes("Pa të dhëna personale")
+    ) {
+      el.textContent = t.noPersonalData;
+    }
+
+    else if (
+      text.includes("Schnelle Benachrichtigung") ||
+      text.includes("Fast notification") ||
+      text.includes("Notification rapide") ||
+      text.includes("Notifica rapida") ||
+      text.includes("Njoftim i shpejtë")
+    ) {
+      el.textContent = t.fastNotification;
+    }
+
+    else if (
+      text.includes("Datenschutz") ||
+      text.includes("Privacy") ||
+      text.includes("Confidentialité") ||
+      text.includes("Privacy") ||
+      text.includes("Privatësia")
+    ) {
+      el.textContent = t.privacy;
+    }
+  });
+
+  // QR button
+  document.querySelectorAll('a[href="qr.html"]').forEach(function(el) {
+    if (!el.closest("nav")) {
+      el.textContent = "📱 " + t.scanQr;
+    }
+  });
+
+  // Subscription section
+  document.querySelectorAll("body p").forEach(function(el) {
+
+    const text = el.textContent.trim();
+
+    if (text === "Teste alle Premium-Funktionen kostenlos." ||
+        text === "Test all premium features for free." ||
+        text === "Testez toutes les fonctions Premium gratuitement." ||
+        text === "Prova tutte le funzioni Premium gratuitamente." ||
+        text === "Testo të gjitha funksionet Premium falas.") {
+      el.textContent = t.premiumText;
+    }
+
+    if (text === "pro Monat" || text === "per month" || text === "par mois" || text === "al mese" || text === "në muaj") {
+      el.textContent = t.perMonth;
+    }
+
+    if (text === "pro Jahr" || text === "per year" || text === "par an" || text === "all'anno" || text === "në vit") {
+      el.textContent = t.perYear;
+    }
+  });
+
+  // Forms
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const loginEmail = document.getElementById("loginEmail");
+  const loginPassword = document.getElementById("loginPassword");
+  const resetEmail = document.getElementById("resetEmail");
+
+  if (nameInput) nameInput.placeholder = t.name;
+  if (emailInput) emailInput.placeholder = t.email;
+  if (passwordInput) passwordInput.placeholder = t.password;
+  if (loginEmail) loginEmail.placeholder = t.email;
+  if (loginPassword) loginPassword.placeholder = t.password;
+  if (resetEmail) resetEmail.placeholder = t.email;
+
+  const registerButton = document.querySelector("#registerForm button");
+  if (registerButton) registerButton.textContent = t.register;
+
+  const loginButton = document.querySelector("#loginForm button");
+  if (loginButton) loginButton.textContent = t.login;
+
+  const forgotPassword = document.getElementById("forgotPassword");
+  if (forgotPassword) forgotPassword.textContent = t.forgotPassword;
+
+  const resetButton = document.getElementById("resetButton");
+  if (resetButton) resetButton.textContent = t.sendLink;
+
+  const logoutButton = document.getElementById("logoutButton");
+  if (logoutButton) logoutButton.textContent = t.logout;
+
+  // Footer
+  const footer = document.querySelector("footer");
+
+  if (footer) {
+    const footerP = footer.querySelector("p");
+
+    if (footerP) {
+      footerP.textContent = t.footerText;
+    }
+
+    const footerPs = footer.querySelectorAll("p");
+
+    if (footerPs.length > 1) {
+      footerPs[1].textContent = "© 2026 PingCar. " + t.rights;
+    }
+  }
+
+};
+
+// Load saved language
+document.addEventListener("DOMContentLoaded", function() {
+
+  const savedLanguage =
+    localStorage.getItem("pingcar_language") || "de";
+
+  setLanguage(savedLanguage);
+
+});
+    
+</script>
+</body>
+</html>
