@@ -227,7 +227,7 @@ async function loadAllVisits() {
   while (true) {
     const { data, error } = await db
       .from("page_visits")
-      .select("visitor_id, visited_at")
+      .select("visitor_id, visited_at, country")
       .range(from, from + PAGE_SIZE - 1);
 
     if (error) throw error;
@@ -776,6 +776,18 @@ async function showStats() {
     document.getElementById("statsTotalVisits").textContent = "!";
     document.getElementById("statsTodayVisits").textContent = "!";
     document.getElementById("statsUniqueVisitors").textContent = "!";
+    document.getElementById("statsUniqueVisitors").textContent =
+  uniqueVisitors.size;
+      const countryCounts = {};
+
+    allVisits.forEach(visit => {
+      if (visit.country) {
+        countryCounts[visit.country] =
+          (countryCounts[visit.country] || 0) + 1;
+      }
+    });
+
+    console.log("Besucher nach Ländern:", countryCounts);
   }
 }
 
