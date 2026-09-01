@@ -772,17 +772,7 @@ async function showStats() {
 
     document.getElementById("statsUniqueVisitors").textContent =
       uniqueVisitors.size;
-
-  } catch (error) {
-
-    console.error("Statistik Fehler:", error);
-
-    document.getElementById("statsTotalVisits").textContent = "!";
-    document.getElementById("statsTodayVisits").textContent = "!";
-    document.getElementById("statsUniqueVisitors").textContent = "!";
-    document.getElementById("statsUniqueVisitors").textContent =
-  uniqueVisitors.size;
-      const countryCounts = {};
+    const countryCounts = {};
 
     allVisits.forEach(visit => {
       if (visit.country) {
@@ -792,12 +782,23 @@ async function showStats() {
     });
 
     console.log("Besucher nach Ländern:", countryCounts);
-        const countryStats = document.getElementById("countryStats");
+
+    const countryStats = document.getElementById("countryStats");
 
     countryStats.innerHTML = Object.entries(countryCounts)
       .sort((a, b) => b[1] - a[1])
       .map(([country, count]) => `<p>🌍 ${country}: <strong>${count}</strong></p>`)
       .join("");
+  } catch (error) {
+
+    console.error("Statistik Fehler:", error);
+
+    document.getElementById("statsTotalVisits").textContent = "!";
+    document.getElementById("statsTodayVisits").textContent = "!";
+    document.getElementById("statsUniqueVisitors").textContent = "!";
+    
+  
+    
   }
 }
 
