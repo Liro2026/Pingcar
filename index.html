@@ -203,6 +203,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('hu'); return false;"><span class="flag">🇭🇺</span> Magyar (HU)</a>
     <a href="#" onclick="PingCarLanguage.set('pt'); return false;"><span class="flag">🇵🇹</span> Português (PT)</a>
     <a href="#" onclick="PingCarLanguage.set('mk'); return false;"><span class="flag">🇲🇰</span> Македонски (MK)</a>
+    <a href="#" onclick="PingCarLanguage.set('nl'); return false;"><span class="flag">🇳🇱</span> Nederlands (NL)</a>
   </div>
 </div>
 
@@ -1807,7 +1808,191 @@ mk: {
   rights: "Сите права се задржани."
 
 },
+nl: {
 
+  home: "Home",
+
+  qr: "QR",
+
+  contact: "Contact",
+
+  dashboard: "Dashboard",
+
+  messages: "Berichten",
+
+  title: "PingCar",
+
+  description: "Een veilige manier om contact op te nemen met voertuigeigenaren zonder telefoonnummer of persoonlijke gegevens.",
+
+  available: "Gratis registratie",
+
+  how: "Hoe werkt PingCar",
+
+  afterScan: "Na het scannen",
+
+  register: "Registratie",
+
+  registerText: "Maak gratis uw PingCar-account aan.",
+
+  getQr: "Ontvang een QR-code",
+
+  getQrText: "U ontvangt een persoonlijke QR-code voor uw voertuig.",
+
+  placeQr: "Plaats de QR-code",
+
+  placeQrText: "Plaats de QR-code op een goed zichtbare plaats op uw voertuig.",
+
+  scanQr: "Scan een QR-code",
+
+  scanQrText: "Een andere persoon scant de QR-code met zijn of haar smartphone.",
+
+  notification: "Melding",
+
+  notificationText: "U ontvangt onmiddellijk een bericht via PingCar.",
+
+  blocked: "Mijn voertuig blokkeert de doorgang",
+
+  lights: "De lichten staan aan",
+
+  damaged: "Het voertuig is beschadigd",
+
+  forgot: "Er is iets achtergelaten",
+
+  otherMessage: "Ander bericht",
+
+  noPhone: "Zonder telefoonnummer",
+
+  noPersonalData: "Zonder persoonlijke gegevens",
+
+  fastNotification: "Snelle melding",
+
+  privacy: "Privacy",
+
+  discover: "Ontdek PingCar",
+
+  monthly: "Maandabonnement",
+
+  yearly: "Jaarabonnement",
+
+  premiumText: "Probeer alle Premium-functies gratis uit.",
+
+  perMonth: "per maand",
+
+  perYear: "per jaar",
+
+  name: "Uw naam",
+
+  email: "Uw e-mailadres",
+
+  password: "Wachtwoord",
+
+  login: "Inloggen",
+
+  forgotPassword: "Wachtwoord vergeten?",
+
+  sendLink: "Link verzenden",
+
+  logout: "Uitloggen",
+
+  contactTitle: "Contact",
+
+  footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
+
+  rights: "Alle rechten voorbehouden."
+
+},nl: {
+
+  home: "Home",
+
+  qr: "QR",
+
+  contact: "Contact",
+
+  dashboard: "Dashboard",
+
+  messages: "Berichten",
+
+  title: "PingCar",
+
+  description: "Een veilige manier om contact op te nemen met voertuigeigenaren zonder telefoonnummer of persoonlijke gegevens.",
+
+  available: "Gratis registratie",
+
+  how: "Hoe werkt PingCar",
+
+  afterScan: "Na het scannen",
+
+  register: "Registratie",
+
+  registerText: "Maak gratis uw PingCar-account aan.",
+
+  getQr: "Ontvang een QR-code",
+
+  getQrText: "U ontvangt een persoonlijke QR-code voor uw voertuig.",
+
+  placeQr: "Plaats de QR-code",
+
+  placeQrText: "Plaats de QR-code op een goed zichtbare plaats op uw voertuig.",
+
+  scanQr: "Scan een QR-code",
+
+  scanQrText: "Een andere persoon scant de QR-code met zijn of haar smartphone.",
+
+  notification: "Melding",
+
+  notificationText: "U ontvangt onmiddellijk een bericht via PingCar.",
+
+  blocked: "Mijn voertuig blokkeert de doorgang",
+
+  lights: "De lichten staan aan",
+
+  damaged: "Het voertuig is beschadigd",
+
+  forgot: "Er is iets achtergelaten",
+
+  otherMessage: "Ander bericht",
+
+  noPhone: "Zonder telefoonnummer",
+
+  noPersonalData: "Zonder persoonlijke gegevens",
+
+  fastNotification: "Snelle melding",
+
+  privacy: "Privacy",
+
+  discover: "Ontdek PingCar",
+
+  monthly: "Maandabonnement",
+
+  yearly: "Jaarabonnement",
+
+  premiumText: "Probeer alle Premium-functies gratis uit.",
+
+  perMonth: "per maand",
+
+  perYear: "per jaar",
+
+  name: "Uw naam",
+
+  email: "Uw e-mailadres",
+
+  password: "Wachtwoord",
+
+  login: "Inloggen",
+
+  forgotPassword: "Wachtwoord vergeten?",
+
+  sendLink: "Link verzenden",
+
+  logout: "Uitloggen",
+
+  contactTitle: "Contact",
+
+  footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
+
+  rights: "Alle rechten voorbehouden."
+
+},
 };
 
 
@@ -1833,7 +2018,8 @@ const languageFlags = {
   hr: "HR",
   hu: "HU",
   pt: "PT",
-  mk: "MK"
+  mk: "MK",
+  nl: "NL"
   
 };
 
@@ -1859,7 +2045,8 @@ const languageNames = {
   hr: "HR",
   hu: "HU",
   pt: "PT",
-  mk: "MK"
+  mk: "MK",
+  nl: "NL"
 
   
   
@@ -1914,7 +2101,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Kako PingCar funkcionira")||
       text.includes("Hogyan működik a PingCar") ||
       text.includes("Como funciona o PingCar")||
-      text.includes("Како функционира PingCar")
+      text.includes("Како функционира PingCar")||
+      text.includes("Hoe werkt PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -1932,7 +2120,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Nakon skeniranja")||
       text.includes("Hogyan működik a PingCar") ||
       text.includes("Após a leitura")||
-      text.includes("По скенирањето")
+      text.includes("По скенирањето")||
+      text.includes("Na het scannen")
     ) {
       el.textContent = t.afterScan;
     }
@@ -1965,7 +2154,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Registriraj se"||
   text === "Regisztráció"||
   text === "Registar"||
-  text === "Регистрација"
+  text === "Регистрација"||
+  text === "Registratie"
     ) {
       el.textContent = t.register;
     }
@@ -1983,7 +2173,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Prijava" ||
   text === "Bejelentkezés"||
   text === "Iniciar sessão"||
-  text === "Најава"
+  text === "Најава"||
+  text === "Inloggen"
   
     ) {
       el.textContent = t.login;
@@ -2074,7 +2265,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Moje vozilo je blokirano") ||
       text.includes("A járművem akadályozza a forgalmat")||
       text.includes("O meu veículo está a bloquear a passagem")||
-      text.includes("Моето возило го блокира преминот")
+      text.includes("Моето возило го блокира преминот")||
+      text.includes("Mijn voertuig blokkeert de doorgang")
     ) {
       el.textContent = t.blocked;
     }
@@ -2092,7 +2284,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Svjetla su uključena") ||
       text.includes("A lámpák égve maradtak")||
       text.includes("As luzes estão acesas")||
-      text.includes("Светлата се вклучени")
+      text.includes("Светлата се вклучени")||
+      text.includes("De lichten staan aan")
     ) {
       el.textContent = t.lights;
     }
@@ -2110,7 +2303,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Vozilo je oštećeno") ||
       text.includes("A jármű megsérült")||
       text.includes("O veículo está danificado")||
-      text.includes("Возилото е оштетено")
+      text.includes("Возилото е оштетено")||
+      text.includes("Het voertuig is beschadigd")
     ) {
       el.textContent = t.damaged;
     }
@@ -2128,7 +2322,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Nešto je zaboravljeno") ||
       text.includes("Valami ott maradt")||
       text.includes("Algo foi esquecido")||
-      text.includes("Нешто е заборавено")
+      text.includes("Нешто е заборавено")||
+      text.includes("Er is iets vergeten")
     ) {
       el.textContent = t.forgot;
     }
@@ -2146,7 +2341,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Druga poruka") ||
       text.includes("Egyéb üzenet")||
       text.includes("Outra mensagem")||
-      text.includes("Друга порака")
+      text.includes("Друга порака")||
+      text.includes("Ander bericht")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -2164,7 +2360,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bez telefonskog broja") ||
       text.includes("Telefonszám nélkül")||
       text.includes("Sem número de telefone")||
-      text.includes("Без телефонски број")
+      text.includes("Без телефонски број")||
+      text.includes("Zonder telefoonnummer")
     ) {
       el.textContent = t.noPhone;
     }
@@ -2182,7 +2379,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bez osobnih podataka") ||
       text.includes("Személyes adatok nélkül")||
       text.includes("Sem dados pessoais")||
-      text.includes("Без лични податоци")
+      text.includes("Без лични податоци")||
+      text.includes("Zonder persoonlijke gegevens")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -2200,7 +2398,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text.includes("Brza obavijest") ||
         text.includes("Gyors értesítés") ||
         text.includes("Notificação rápida")||
-        text.includes("Брзо известување")
+        text.includes("Брзо известување")||
+        text.includes("Snelle melding")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -2218,7 +2417,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Privatnost") ||
       text.includes("Adatvédelem")||
       text.includes("Privacidade")||
-      text.includes("Приватност")
+      text.includes("Приватност")||
+      text.includes("Privacy")
     ) {
       el.textContent = t.privacy;
     }
@@ -2248,7 +2448,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Isprobajte sve Premium funkcije besplatno."||
         text === "Próbálja ki az összes Premium funkciót ingyen."||
         text === "Experimente todas as funcionalidades Premium gratuitamente."||
-        text === "Испробајте ги сите Premium функции бесплатно."
+        text === "Испробајте ги сите Premium функции бесплатно."||
+        text === "Probeer alle Premium-functies gratis uit." 
         ) {
       el.textContent = t.premiumText;
     }
