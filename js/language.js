@@ -15,7 +15,8 @@
     "hr",
     "hu",
     "pt",
-    "mk"
+    "mk",
+    "nl"
   ];
 
   const defaultLanguage = "de";
@@ -65,7 +66,8 @@
     HR: "hr",
     HU: "hu",
     PT: "pt",
-    MK: "mk"
+    MK: "mk",
+    NL: "nl"
     
   };
 
