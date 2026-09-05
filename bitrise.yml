@@ -1,0 +1,362 @@
+format_version: '13'
+
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+project_type: ios
+
+workflows:
+  build:
+    title: PingCar iOS Build
+    description: PingCar iOS App Store Build
+
+    steps:
+
+    - git-clone@8: {}
+
+    - script@1:
+        title: Prepare PingCar iOS
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e
+
+            echo "========================================"
+            echo "PINGCAR iOS BUILD PREPARATION"
+            echo "========================================"
+
+            echo ""
+            echo "=== Checking repository ==="
+
+            pwd
+
+            if [ ! -f "package.json" ]; then
+              echo "ERROR: package.json is missing."
+              exit 1
+            fi
+
+            if [ ! -d "ios/App/App.xcodeproj" ]; then
+              echo "ERROR: ios/App/App.xcodeproj is missing."
+              exit 1
+            fi
+
+            if [ ! -d "web-source" ]; then
+              echo "ERROR: web-source directory is missing."
+              exit 1
+            fi
+
+            echo "Repository: OK"
+            echo "Xcode project: OK"
+            echo "iOS web-source: OK"
+
+            echo ""
+            echo "=== Installing Node.js 22 ==="
+
+            NODE_VERSION="22.22.1"
+
+            case "$(uname -m)" in
+              arm64)
+                NODE_PACKAGE="node-v${NODE_VERSION}-darwin-arm64.tar.gz"
+                ;;
+              x86_64)
+                NODE_PACKAGE="node-v${NODE_VERSION}-darwin-x64.tar.gz"
+                ;;
+              *)
+                echo "ERROR: Unsupported architecture."
+                exit 1
+                ;;
+            esac
+
+            rm -rf "$HOME/node22"
+            mkdir -p "$HOME/node22"
+
+            curl -fL \
+              "https://nodejs.org/dist/v${NODE_VERSION}/${NODE_PACKAGE}" \
+              -o "$HOME/node22.tar.gz"
+
+            tar -xzf "$HOME/node22.tar.gz" \
+              -C "$HOME/node22" \
+              --strip-components=1
+
+            export PATH="$HOME/node22/bin:$PATH"
+
+            hash -r
+
+            echo "Node: $(node --version)"
+            echo "NPM: $(npm --version)"
+
+            NODE_MAJOR="$(node -p "process.versions.node.split('.')[0]")"
+
+            if [ "$NODE_MAJOR" -lt 22 ]; then
+              echo "ERROR: Node.js 22 or newer is required."
+              exit 1
+            fi
+
+            echo "Node.js 22 OK."
+
+            echo ""
+            echo "=== Installing npm dependencies ==="
+
+            npm install --legacy-peer-deps
+
+            echo ""
+            echo "=== Preparing language system ==="
+
+            rm -rf www/js
+            mkdir -p www/js/languages
+
+            curl -fL \
+              "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/language.js" \
+              -o "www/js/language.js"
+
+            for lang in de en es fr hr hu it mk nl pt sk sq sr tr
+            do
+              echo "Downloading $lang..."
+
+              curl -fL \
+                "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/languages/$lang.js" \
+                -o "www/js/languages/$lang.js"
+            done
+
+            echo "Language system downloaded."
+
+            echo ""
+            echo "=== Restoring iOS Storyboards ==="
+
+            BASE_LPROJ="ios/App/App/Base.lproj"
+
+            if [ ! -f "$BASE_LPROJ/Main.storyboard.xml" ]; then
+              echo "ERROR: Main.storyboard.xml is missing."
+              exit 1
+            fi
+
+            if [ ! -f "$BASE_LPROJ/LaunchScreen.storyboard.xml" ]; then
+              echo "ERROR: LaunchScreen.storyboard.xml is missing."
+              exit 1
+            fi
+
+            cp "$BASE_LPROJ/Main.storyboard.xml" \
+               "$BASE_LPROJ/Main.storyboard"
+
+            cp "$BASE_LPROJ/LaunchScreen.storyboard.xml" \
+               "$BASE_LPROJ/LaunchScreen.storyboard"
+
+            echo "Main.storyboard: OK"
+            echo "LaunchScreen.storyboard: OK"
+
+            echo ""
+            echo "========================================"
+            echo "PREPARING DEDICATED iOS WEB SOURCE"
+            echo "========================================"
+
+            IOS_PUBLIC="ios/App/App/public"
+
+            rm -rf "$IOS_PUBLIC"
+            mkdir -p "$IOS_PUBLIC"
+
+            echo ""
+            echo "=== Copying web-source to iOS public ==="
+
+            cp -R "web-source/." "$IOS_PUBLIC/"
+
+            echo "Dedicated iOS source copied."
+
+            echo ""
+            echo "=== Copying language system ==="
+
+            mkdir -p "$IOS_PUBLIC/js/languages"
+
+            cp "www/js/language.js" \
+               "$IOS_PUBLIC/js/language.js"
+
+            for lang in de en es fr hr hu it mk nl pt sk sq sr tr
+            do
+              cp "www/js/languages/$lang.js" \
+                 "$IOS_PUBLIC/js/languages/$lang.js"
+            done
+
+            echo "Language system copied."
+
+            echo ""
+            echo "========================================"
+            echo "VERIFYING iOS PUBLIC SOURCE"
+            echo "========================================"
+
+            REQUIRED_FILES=(
+              "index.html"
+              "qr.html"
+              "contact.html"
+              "dashboard.html"
+              "message.html"
+              "admin.html"
+              "firebase-messaging-sw.js"
+              "js/language.js"
+              "js/languages/de.js"
+              "js/languages/en.js"
+              "js/languages/es.js"
+              "js/languages/fr.js"
+              "js/languages/hr.js"
+              "js/languages/hu.js"
+              "js/languages/it.js"
+              "js/languages/mk.js"
+              "js/languages/nl.js"
+              "js/languages/pt.js"
+              "js/languages/sk.js"
+              "js/languages/sq.js"
+              "js/languages/sr.js"
+              "js/languages/tr.js"
+            )
+
+            for file in "${REQUIRED_FILES[@]}"
+            do
+              if [ ! -f "$IOS_PUBLIC/$file" ]; then
+                echo "ERROR: Missing iOS file:"
+                echo "$IOS_PUBLIC/$file"
+                exit 1
+              fi
+
+              echo "OK: $file"
+            done
+
+            echo ""
+            echo "=== Checking iOS navigation ==="
+
+            grep -q 'href="qr.html"' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q 'href="contact.html"' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q 'href="dashboard.html"' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q 'href="message.html"' \
+              "$IOS_PUBLIC/index.html"
+
+            echo "QR navigation: OK"
+            echo "Contact navigation: OK"
+            echo "Dashboard navigation: OK"
+            echo "Messages navigation: OK"
+
+            echo ""
+            echo "=== Checking page sizes ==="
+
+            for page in index qr contact dashboard message admin
+            do
+              SIZE=$(wc -c < "$IOS_PUBLIC/$page.html")
+
+              if [ "$SIZE" -lt 500 ]; then
+                echo "ERROR: $page.html is suspiciously small."
+                exit 1
+              fi
+
+              echo "$page.html: $SIZE bytes"
+            done
+
+            echo ""
+            echo "=== Checking language files ==="
+
+            for lang in de en es fr hr hu it mk nl pt sk sq sr tr
+            do
+              SIZE=$(wc -c < "$IOS_PUBLIC/js/languages/$lang.js")
+
+              if [ "$SIZE" -lt 50 ]; then
+                echo "ERROR: Language file $lang.js is suspiciously small."
+                exit 1
+              fi
+
+              echo "$lang.js: $SIZE bytes"
+            done
+
+            echo ""
+            echo "========================================"
+            echo "NO CAPACITOR SYNC"
+            echo "========================================"
+
+            echo "npx cap sync ios is NOT executed."
+            echo "www/index.html will NOT overwrite iOS public."
+            echo "Dedicated web-source remains the iOS source."
+
+            echo ""
+            echo "=== Checking Xcode project ==="
+
+            PROJECT_FILE="ios/App/App.xcodeproj/project.pbxproj"
+
+            if [ ! -f "$PROJECT_FILE" ]; then
+              echo "ERROR: Xcode project not found."
+              exit 1
+            fi
+
+            echo "Xcode project: OK"
+
+            echo ""
+            echo "=== Setting Build Number 20 ==="
+
+            sed -i '' -E \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 20;/g' \
+              "$PROJECT_FILE"
+
+            if ! grep -q "CURRENT_PROJECT_VERSION = 20;" "$PROJECT_FILE"
+            then
+              echo "ERROR: Build number 20 was not set."
+              exit 1
+            fi
+
+            echo "Build Number: 20"
+
+            echo ""
+            echo "=== Checking Bundle ID ==="
+
+            if ! grep -q "PRODUCT_BUNDLE_IDENTIFIER = ch.pingcar.app;" \
+              "$PROJECT_FILE"
+            then
+              echo "ERROR: Bundle ID is incorrect."
+              exit 1
+            fi
+
+            echo "Bundle ID: ch.pingcar.app"
+
+            echo ""
+            echo "========================================"
+            echo "PINGCAR PREPARATION COMPLETE"
+            echo "========================================"
+            echo "Node.js: $(node --version)"
+            echo "iOS source: web-source"
+            echo "iOS public: READY"
+            echo "Navigation: VERIFIED"
+            echo "Languages: 14 OK"
+            echo "Build Number: 20"
+            echo "Bundle ID: ch.pingcar.app"
+            echo "========================================"
+
+    - manage-ios-code-signing@2:
+        inputs:
+        - apple_service_connection: api-key
+        - distribution_method: app-store
+        - project_path: ios/App/App.xcodeproj
+        - scheme: App
+        - sign_uitest_targets: 'no'
+        - register_test_devices: 'no'
+
+    - xcode-archive@6:
+        inputs:
+        - project_path: ios/App/App.xcodeproj
+        - scheme: App
+        - distribution_method: app-store
+        - automatic_code_signing: api-key
+        - register_test_devices: 'no'
+        - testflight_internal_testing_only: 'no'
+        - export_all_dsyms: 'yes'
+        - output_dir: "$BITRISE_DEPLOY_DIR"
+
+    - deploy-to-bitrise-io@2: {}
+
+    - deploy-to-itunesconnect-application-loader@2:
+        inputs:
+        - connection: api_key
+        - ipa_path: "$BITRISE_IPA_PATH"
+        - bundle_id: ch.pingcar.app
+        - platform: ios
+
+meta:
+  bitrise.io:
+    stack: osx-xcode-latest-stable
