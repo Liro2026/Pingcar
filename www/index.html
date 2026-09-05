@@ -185,15 +185,27 @@ margin-top:50px;
 
     </nav>
 
-    <div style="display:flex;gap:4px;align-items:center;">
-
-<button id="lang-de" onclick="setLanguage('de')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇩🇪 DE</button>
-<button id="lang-fr" onclick="setLanguage('fr')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇫🇷 FR</button>
-<button id="lang-it" onclick="setLanguage('it')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇮🇹 IT</button>
-<button id="lang-en" onclick="setLanguage('en')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇬🇧 EN</button>
-<button id="lang-sq" onclick="setLanguage('sq')" style="border:0;border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;">🇦🇱 SQ</button>    
-
-    </div>
+ <div class="lang-dropdown">
+  <button class="lang-btn" id="current-lang-btn" type="button">
+    <span id="current-flag">🇨🇭</span> <span id="current-lang-text">DE</span> <span class="arrow">▾</span>
+  </button>
+  <div class="lang-menu" id="lang-menu">
+    <a href="#" onclick="PingCarLanguage.set('de'); return false;"><span class="flag">🇨🇭</span> Deutsch (DE)</a>
+    <a href="#" onclick="PingCarLanguage.set('fr'); return false;"><span class="flag">🇫🇷</span> Français (FR)</a>
+    <a href="#" onclick="PingCarLanguage.set('it'); return false;"><span class="flag">🇮🇹</span> Italiano (IT)</a>
+    <a href="#" onclick="PingCarLanguage.set('en'); return false;"><span class="flag">🇬🇧</span> English (EN)</a>
+    <a href="#" onclick="PingCarLanguage.set('sq'); return false;"><span class="flag">🇦🇱</span> Shqip (SQ)</a>
+    <a href="#" onclick="PingCarLanguage.set('sr'); return false;"><span class="flag">🇷🇸</span> Srpski (SR)</a>
+   <a href="#" onclick="window.PingCarLanguage.set('es'); return false;"><span class="flag">🇪🇸</span> Español (ES)</a>
+    <a href="#" onclick="PingCarLanguage.set('tr'); return false;"><span class="flag">🇹🇷</span> Türkçe (TR)</a>
+    <a href="#" onclick="PingCarLanguage.set('sk'); return false;"><span class="flag">🇸🇰</span> Slovenčina (SK)</a>
+    <a href="#" onclick="PingCarLanguage.set('hr'); return false;"><span class="flag">🇭🇷</span> Hrvatski (HR)</a>
+    <a href="#" onclick="PingCarLanguage.set('hu'); return false;"><span class="flag">🇭🇺</span> Magyar (HU)</a>
+    <a href="#" onclick="PingCarLanguage.set('pt'); return false;"><span class="flag">🇵🇹</span> Português (PT)</a>
+    <a href="#" onclick="PingCarLanguage.set('mk'); return false;"><span class="flag">🇲🇰</span> Македонски (MK)</a>
+    <a href="#" onclick="PingCarLanguage.set('nl'); return false;"><span class="flag">🇳🇱</span> Nederlands (NL)</a>
+  </div>
+</div>
 
   </div>
 
@@ -206,9 +218,9 @@ margin-top:50px;
     ohne Telefonnummer und ohne persönliche Daten.
   </p>
 
-  <a href="#" class="button">
-    Bald verfügbar
-  </a>
+ <a href="#registerForm" class="button">
+    🚗 Jetzt kostenlos registrieren
+</a>
 
 </header>
 
@@ -402,29 +414,35 @@ Entwickelt mit Fokus auf Datenschutz.
 <div class="card">
   <h2>Registrieren</h2>
 
-  <form id="registerForm">
+ <form id="registerForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 
-    <input
-      type="text"
-      id="name"
-      placeholder="Ihr Name"
-      required
-    >
+   <input
+    type="text"
+    id="name"
+    placeholder="Ihr Name"
+    required
+    style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;"
+>
 
-    <input
-type="email"
-id="email"
-placeholder="E-Mail eingeben"
+<input
+    type="email"
+    id="email"
+    placeholder="E-Mail eingeben"
+    style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;"
 >
-    >
-  <input
-  type="password"
-  id="password"
-placeholder="Passwort"
-required 
+    
+<input
+    type="password"
+    id="password"
+    placeholder="Passwort"
+    required
+    style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;"
 >
-<button type="submit">
-Registrieren
+<button
+    type="submit"
+    style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;"
+>
+    Kostenlos registrieren
 </button>
   </form>
 
@@ -432,13 +450,13 @@ Registrieren
 
 <h2>Anmelden</h2>
 
-<form id="loginForm">
-
+<form id="loginForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 <input
 type="email"
 id="loginEmail"
 placeholder="E-Mail"
 required
+style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;"
 >
 
 <input
@@ -446,9 +464,13 @@ type="password"
 id="loginPassword"
 placeholder="Passwort"
 required
+style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;"
 >
 
-<button type="submit">
+<button
+type="submit"
+style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;"
+>
 Anmelden
 </button>
 
@@ -528,20 +550,48 @@ async function registerPageVisit() {
       localStorage.setItem("pingcar_visitor_id", visitorId);
     }
 
-    await supabase
+    let country = null;
+
+    try {
+      const response = await fetch("https://ipapi.co/json/");
+
+      if (!response.ok) {
+        throw new Error("IP API error: " + response.status);
+      }
+
+      const geo = await response.json();
+
+      country = geo.country_name || null;
+
+      console.log("Detected country:", country);
+    } catch (geoError) {
+      console.error("Country detection failed:", geoError);
+    }
+
+    const { error } = await supabase
       .from("page_visits")
       .insert([
         {
           visitor_id: visitorId,
-          page: window.location.pathname
+          page: window.location.pathname,
+          country: country
         }
       ]);
+
+    if (error) {
+      console.error("Supabase page visit error:", error);
+    } else {
+      console.log("Page visit saved:", {
+        visitor_id: visitorId,
+        page: window.location.pathname,
+        country: country
+      });
+    }
 
   } catch (error) {
     console.error("Page visit error:", error);
   }
 }
-
 registerPageVisit();
 const firebaseConfig = {
   apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
@@ -808,7 +858,7 @@ const translations = {
 
     title: "PingCar",
     description: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.",
-    available: "Bald verfügbar",
+    available: "Jetzt kostenlos registrieren",
 
     how: "So funktioniert PingCar",
     afterScan: "Nach dem Scannen",
@@ -871,7 +921,7 @@ const translations = {
 
     title: "PingCar",
     description: "La solution sécurisée pour contacter le propriétaire d'un véhicule – sans numéro de téléphone et sans données personnelles.",
-    available: "Bientôt disponible",
+   available: "Inscrivez-vous gratuitement maintenant",
 
     how: "Comment fonctionne PingCar",
     afterScan: "Après le scan",
@@ -934,7 +984,7 @@ const translations = {
 
     title: "PingCar",
     description: "La soluzione sicura per contattare il proprietario di un veicolo – senza numero di telefono e senza dati personali.",
-    available: "Presto disponibile",
+    available: "Registrati gratuitamente ora",
 
     how: "Come funziona PingCar",
     afterScan: "Dopo la scansione",
@@ -997,7 +1047,7 @@ const translations = {
 
     title: "PingCar",
     description: "The secure solution for contacting vehicle owners – without phone numbers and without personal data.",
-    available: "Coming soon",
+    available: "Register for free now",
 
     how: "How PingCar works",
     afterScan: "After scanning",
@@ -1060,7 +1110,7 @@ const translations = {
 
     title: "PingCar",
     description: "Zgjidhja e sigurt për të kontaktuar pronarin e një automjeti – pa numër telefoni dhe pa të dhëna personale.",
-    available: "Së shpejti",
+    available: "Regjistrohu falas tani",
 
     how: "Si funksionon PingCar",
     afterScan: "Pas skanimit",
@@ -1111,9 +1161,840 @@ const translations = {
     contactTitle: "Kontakt",
     footerText: "PingCar – zgjidhja e sigurt për pronarët e automjeteve.",
     rights: "Të gjitha të drejtat e rezervuara."
-  }
+  },
+    es: {
+    home: "Inicio",
+    qr: "QR",
+    contact: "Contacto",
+    dashboard: "Panel",
+    messages: "Mensajes",
 
+    title: "PingCar",
+    description: "La solución segura para contactar con el propietario de un vehículo – sin número de teléfono y sin datos personales.",
+    available: "Regístrate gratis ahora",
+
+    how: "Cómo funciona PingCar",
+    afterScan: "Después de escanear",
+
+    register: "Registrarse",
+    registerText: "Crea tu cuenta de PingCar gratis.",
+
+    getQr: "Obtener código QR",
+    getQrText: "Recibirás un código QR personal para tu vehículo.",
+
+    placeQr: "Colocar el código QR",
+    placeQrText: "Coloca el código QR en un lugar visible de tu vehículo.",
+
+    scanQr: "Escanear el código QR",
+    scanQrText: "Otra persona escanea el código QR con su smartphone.",
+
+    notification: "Notificación",
+    notificationText: "Recibirás inmediatamente un mensaje en la aplicación PingCar.",
+
+    blocked: "Mi vehículo está bloqueado",
+    lights: "Las luces están encendidas",
+    damaged: "Vehículo dañado",
+    forgot: "Has olvidado algo",
+    otherMessage: "Otro mensaje",
+
+    noPhone: "Sin número de teléfono",
+    noPersonalData: "Sin datos personales",
+    fastNotification: "Notificación rápida",
+    privacy: "Privacidad",
+
+    discover: "Descubre PingCar",
+    monthly: "Suscripción mensual",
+    yearly: "Suscripción anual",
+    premiumText: "Prueba todas las funciones Premium gratis.",
+    perMonth: "al mes",
+    perYear: "al año",
+
+    name: "Tu nombre",
+    email: "Tu dirección de correo electrónico",
+    password: "Contraseña",
+
+    login: "Iniciar sesión",
+    forgotPassword: "¿Has olvidado tu contraseña?",
+    sendLink: "Enviar enlace",
+    logout: "Cerrar sesión",
+
+    contactTitle: "Contacto",
+    footerText: "PingCar – la solución segura para los propietarios de vehículos.",
+    rights: "Todos los derechos reservados."
+  },
+ sr: {
+    home: "Početna",
+    qr: "QR",
+    contact: "Kontakt",
+    dashboard: "Kontrolna tabla",
+    messages: "Poruke",
+
+    title: "PingCar",
+    description: "Sigurno rešenje za kontaktiranje vlasnika vozila – bez broja telefona i bez ličnih podataka.",
+    available: "Registrujte se besplatno",
+
+    how: "Kako funkcioniše PingCar",
+    afterScan: "Nakon skeniranja",
+
+    register: "Registracija",
+    registerText: "Kreirajte svoj PingCar nalog besplatno.",
+
+    getQr: "Preuzmite QR kod",
+    getQrText: "Dobijate lični QR kod za vaše vozilo.",
+
+    placeQr: "Postavite QR kod",
+    placeQrText: "Postavite QR kod na vidno mesto na vašem vozilu.",
+
+    scanQr: "Skenirajte QR kod",
+    scanQrText: "Druga osoba skenira QR kod pametnim telefonom.",
+
+    notification: "Obaveštenje",
+    notificationText: "Odmah dobijate poruku u PingCar aplikaciji.",
+
+    blocked: "Moje vozilo je blokirano",
+    lights: "Svetlo je uključeno",
+    damaged: "Vozilo je oštećeno",
+    forgot: "Nešto je zaboravljeno",
+    otherMessage: "Druga poruka",
+
+    noPhone: "Bez broja telefona",
+    noPersonalData: "Bez ličnih podataka",
+    fastNotification: "Brzo obaveštenje",
+    privacy: "Zaštita podataka",
+
+    discover: "Otkrijte PingCar",
+
+    monthly: "Mesečna pretplata",
+    yearly: "Godišnja pretplata",
+    premiumText: "Isprobajte sve Premium funkcije besplatno.",
+    perMonth: "mesečno",
+    perYear: "godišnje",
+
+    name: "Vaše ime",
+    email: "Vaša e-mail adresa",
+    password: "Lozinka",
+
+    login: "Prijava",
+    forgotPassword: "Zaboravili ste lozinku?",
+    sendLink: "Pošaljite link",
+    logout: "Odjava",
+
+    contactTitle: "Kontakt",
+    footerText: "PingCar – siguran način za kontaktiranje vlasnika vozila.",
+    rights: "Sva prava zadržana."
+  },
+tr: {
+  home: "Ana Sayfa",
+  qr: "QR",
+  contact: "İletişim",
+  dashboard: "Kontrol Paneli",
+  messages: "Mesajlar",
+
+  title: "PingCar",
+  description: "Araç sahipleriyle telefon numarası veya kişisel bilgiler olmadan iletişim kurmanın güvenli yolu.",
+  available: "Ücretsiz kaydol",
+
+  how: "PingCar nasıl çalışır",
+  afterScan: "Taramadan sonra",
+
+  register: "Kayıt Ol",
+  registerText: "PingCar hesabınızı ücretsiz oluşturun.",
+
+  getQr: "QR Kodunu Al",
+  getQrText: "Aracınız için kişisel bir QR kodu alacaksınız.",
+
+  placeQr: "QR Kodunu Yerleştir",
+  placeQrText: "QR kodunu aracınızda görünür bir yere yerleştirin.",
+
+  scanQr: "QR Kodunu Tara",
+  scanQrText: "Başka bir kişi QR kodunu akıllı telefonuyla tarar.",
+
+  notification: "Bildirim",
+  notificationText: "PingCar üzerinden hemen bir mesaj alırsınız.",
+
+  blocked: "Aracım engellenmiş",
+  lights: "Işıklar açık",
+  damaged: "Araç hasarlı",
+  forgot: "Bir şey unutuldu",
+  otherMessage: "Diğer mesaj",
+
+  noPhone: "Telefon numarası olmadan",
+  noPersonalData: "Kişisel veri olmadan",
+  fastNotification: "Hızlı bildirim",
+  privacy: "Gizlilik",
+
+  discover: "PingCar'ı Keşfet",
+  monthly: "Aylık abonelik",
+  yearly: "Yıllık abonelik",
+  premiumText: "Tüm Premium özellikleri ücretsiz deneyin.",
+  perMonth: "aylık",
+  perYear: "yıllık",
+
+  name: "Adınız",
+  email: "E-posta adresiniz",
+  password: "Şifre",
+
+  login: "Giriş Yap",
+  forgotPassword: "Şifrenizi mi unuttunuz?",
+  sendLink: "Bağlantıyı Gönder",
+  logout: "Çıkış Yap",
+
+  contactTitle: "İletişim",
+  footerText: "PingCar – araç sahipleri için güvenli çözüm.",
+  rights: "Tüm hakları saklıdır."
+},
+sk: {
+
+  home: "Domov",
+
+  qr: "QR",
+
+  contact: "Kontakt",
+
+  dashboard: "Ovládací panel",
+
+  messages: "Správy",
+
+  title: "PingCar",
+
+  description: "Bezpečný spôsob, ako kontaktovať majiteľov vozidiel bez telefónneho čísla alebo osobných údajov.",
+
+  available: "Zaregistrovať sa zdarma",
+
+  how: "Ako PingCar funguje",
+
+  afterScan: "Po naskenovaní",
+
+  register: "Zaregistrovať sa",
+
+  registerText: "Vytvorte si účet PingCar zdarma.",
+
+  getQr: "Získať QR kód",
+
+  getQrText: "Pre svoje vozidlo získate osobný QR kód.",
+
+  placeQr: "Umiestniť QR kód",
+
+  placeQrText: "Umiestnite QR kód na viditeľné miesto vo svojom vozidle.",
+
+  scanQr: "Naskenovať QR kód",
+
+  scanQrText: "Iná osoba naskenuje QR kód pomocou svojho smartfónu.",
+
+  notification: "Oznámenie",
+
+  notificationText: "Okamžite dostanete správu cez PingCar.",
+
+  blocked: "Moje vozidlo je zablokované",
+
+  lights: "Svetlá sú zapnuté",
+
+  damaged: "Vozidlo je poškodené",
+
+  forgot: "Niečo bolo zabudnuté",
+
+  otherMessage: "Iná správa",
+
+  noPhone: "Bez telefónneho čísla",
+
+  noPersonalData: "Bez osobných údajov",
+
+  fastNotification: "Rýchle oznámenie",
+
+  privacy: "Súkromie",
+
+  discover: "Objavte PingCar",
+
+  monthly: "Mesačné predplatné",
+
+  yearly: "Ročné predplatné",
+
+  premiumText: "Vyskúšajte všetky prémiové funkcie zdarma.",
+
+  perMonth: "mesačne",
+
+  perYear: "ročne",
+
+  name: "Vaše meno",
+
+  email: "Vaša e-mailová adresa",
+
+  password: "Heslo",
+
+  login: "Prihlásiť sa",
+
+  forgotPassword: "Zabudli ste heslo?",
+
+  sendLink: "Odoslať odkaz",
+
+  logout: "Odhlásiť sa",
+
+  contactTitle: "Kontakt",
+
+  footerText: "PingCar – bezpečné riešenie pre majiteľov vozidiel.",
+
+  rights: "Všetky práva vyhradené."
+
+},
+hr: {
+
+  home: "Početna",
+
+  qr: "QR",
+
+  contact: "Kontakt",
+
+  dashboard: "Nadzorna ploča",
+
+  messages: "Poruke",
+
+  title: "PingCar",
+
+  description: "Siguran način kontaktiranja vlasnika vozila bez telefonskog broja ili osobnih podataka.",
+
+  available: "Besplatna registracija",
+
+  how: "Kako PingCar funkcionira",
+
+  afterScan: "Nakon skeniranja",
+
+  register: "Registriraj se",
+
+  registerText: "Besplatno izradite svoj PingCar račun.",
+
+  getQr: "Preuzmi QR kod",
+
+  getQrText: "Za svoje vozilo dobit ćete osobni QR kod.",
+
+  placeQr: "Postavi QR kod",
+
+  placeQrText: "Postavite QR kod na vidljivo mjesto u svom vozilu.",
+
+  scanQr: "Skeniraj QR kod",
+
+  scanQrText: "Druga osoba skenira QR kod svojim pametnim telefonom.",
+
+  notification: "Obavijest",
+
+  notificationText: "Odmah ćete primiti poruku putem PingCara.",
+
+  blocked: "Moje vozilo je blokirano",
+
+  lights: "Svjetla su uključena",
+
+  damaged: "Vozilo je oštećeno",
+
+  forgot: "Nešto je zaboravljeno",
+
+  otherMessage: "Druga poruka",
+
+  noPhone: "Bez telefonskog broja",
+
+  noPersonalData: "Bez osobnih podataka",
+
+  fastNotification: "Brza obavijest",
+
+  privacy: "Privatnost",
+
+  discover: "Otkrijte PingCar",
+
+  monthly: "Mjesečna pretplata",
+
+  yearly: "Godišnja pretplata",
+
+  premiumText: "Isprobajte sve Premium funkcije besplatno.",
+
+  perMonth: "mjesečno",
+
+  perYear: "godišnje",
+
+  name: "Vaše ime",
+
+  email: "Vaša e-mail adresa",
+
+  password: "Lozinka",
+
+  login: "Prijava",
+
+  forgotPassword: "Zaboravili ste lozinku?",
+
+  sendLink: "Pošalji poveznicu",
+
+  logout: "Odjava",
+
+  contactTitle: "Kontakt",
+
+  footerText: "PingCar – sigurno rješenje za vlasnike vozila.",
+
+  rights: "Sva prava pridržana."
+
+},
+hu: {
+
+  home: "Kezdőlap",
+
+  qr: "QR",
+
+  contact: "Kapcsolat",
+
+  dashboard: "Vezérlőpult",
+
+  messages: "Üzenetek",
+
+  title: "PingCar",
+
+  description: "Biztonságos módja a járműtulajdonosokkal való kapcsolatfelvételnek telefonszám vagy személyes adatok nélkül.",
+
+  available: "Ingyenes regisztráció",
+
+  how: "Hogyan működik a PingCar",
+
+  afterScan: "Szkennelés után",
+
+  register: "Regisztráció",
+
+  registerText: "Hozza létre ingyenes PingCar-fiókját.",
+
+  getQr: "QR-kód lekérése",
+
+  getQrText: "Saját QR-kódot kap járművéhez.",
+
+  placeQr: "QR-kód elhelyezése",
+
+  placeQrText: "Helyezze a QR-kódot jól látható helyre a járművén.",
+
+  scanQr: "QR-kód beolvasása",
+
+  scanQrText: "Egy másik személy okostelefonjával beolvassa a QR-kódot.",
+
+  notification: "Értesítés",
+
+  notificationText: "Azonnal üzenetet kap a PingCaron keresztül.",
+
+  blocked: "A járművem akadályozza a forgalmat",
+
+  lights: "A lámpák égve maradtak",
+
+  damaged: "A jármű megsérült",
+
+  forgot: "Valami ott maradt",
+
+  otherMessage: "Egyéb üzenet",
+
+  noPhone: "Telefonszám nélkül",
+
+  noPersonalData: "Személyes adatok nélkül",
+
+  fastNotification: "Gyors értesítés",
+
+  privacy: "Adatvédelem",
+
+  discover: "Fedezze fel a PingCart",
+
+  monthly: "Havi előfizetés",
+
+  yearly: "Éves előfizetés",
+
+  premiumText: "Próbálja ki az összes Premium funkciót ingyen.",
+
+  perMonth: "havonta",
+
+  perYear: "évente",
+
+  name: "Az Ön neve",
+
+  email: "Az Ön e-mail-címe",
+
+  password: "Jelszó",
+
+  login: "Bejelentkezés",
+
+  forgotPassword: "Elfelejtette a jelszavát?",
+
+  sendLink: "Link küldése",
+
+  logout: "Kijelentkezés",
+
+  contactTitle: "Kapcsolat",
+
+  footerText: "PingCar – biztonságos megoldás járműtulajdonosok számára.",
+
+  rights: "Minden jog fenntartva."
+
+},
+pt: {
+
+  home: "Início",
+
+  qr: "QR",
+
+  contact: "Contacto",
+
+  dashboard: "Painel",
+
+  messages: "Mensagens",
+
+  title: "PingCar",
+
+  description: "Uma forma segura de contactar proprietários de veículos sem número de telefone ou dados pessoais.",
+
+  available: "Registo gratuito",
+
+  how: "Como funciona o PingCar",
+
+  afterScan: "Após a leitura",
+
+  register: "Registar",
+
+  registerText: "Crie gratuitamente a sua conta PingCar.",
+
+  getQr: "Obter código QR",
+
+  getQrText: "Receberá um código QR pessoal para o seu veículo.",
+
+  placeQr: "Colocar código QR",
+
+  placeQrText: "Coloque o código QR num local visível do seu veículo.",
+
+  scanQr: "Ler código QR",
+
+  scanQrText: "Outra pessoa lê o código QR com o seu smartphone.",
+
+  notification: "Notificação",
+
+  notificationText: "Receberá imediatamente uma mensagem através do PingCar.",
+
+  blocked: "O meu veículo está a bloquear a passagem",
+
+  lights: "As luzes estão acesas",
+
+  damaged: "O veículo está danificado",
+
+  forgot: "Algo foi esquecido",
+
+  otherMessage: "Outra mensagem",
+
+  noPhone: "Sem número de telefone",
+
+  noPersonalData: "Sem dados pessoais",
+
+  fastNotification: "Notificação rápida",
+
+  privacy: "Privacidade",
+
+  discover: "Descubra o PingCar",
+
+  monthly: "Subscrição mensal",
+
+  yearly: "Subscrição anual",
+
+  premiumText: "Experimente todas as funcionalidades Premium gratuitamente.",
+
+  perMonth: "por mês",
+
+  perYear: "por ano",
+
+  name: "O seu nome",
+
+  email: "O seu endereço de e-mail",
+
+  password: "Palavra-passe",
+
+  login: "Iniciar sessão",
+
+  forgotPassword: "Esqueceu-se da palavra-passe?",
+
+  sendLink: "Enviar ligação",
+
+  logout: "Terminar sessão",
+
+  contactTitle: "Contacto",
+
+  footerText: "PingCar – uma solução segura para proprietários de veículos.",
+
+  rights: "Todos os direitos reservados."
+
+},
+mk: {
+
+  home: "Почетна",
+
+  qr: "QR",
+
+  contact: "Контакт",
+
+  dashboard: "Контролна табла",
+
+  messages: "Пораки",
+
+  title: "PingCar",
+
+  description: "Безбеден начин за контакт со сопствениците на возила без телефонски број или лични податоци.",
+
+  available: "Бесплатна регистрација",
+
+  how: "Како функционира PingCar",
+
+  afterScan: "По скенирањето",
+
+  register: "Регистрација",
+
+  registerText: "Креирајте ја вашата PingCar сметка бесплатно.",
+
+  getQr: "Добијте QR-код",
+
+  getQrText: "Ќе добиете личен QR-код за вашето возило.",
+
+  placeQr: "Поставете QR-код",
+
+  placeQrText: "Поставете го QR-кодот на видливо место на вашето возило.",
+
+  scanQr: "Скенирајте QR-код",
+
+  scanQrText: "Друго лице го скенира QR-кодот со својот паметен телефон.",
+
+  notification: "Известување",
+
+  notificationText: "Веднаш ќе добиете порака преку PingCar.",
+
+  blocked: "Моето возило го блокира преминот",
+
+  lights: "Светлата се вклучени",
+
+  damaged: "Возилото е оштетено",
+
+  forgot: "Нешто е заборавено",
+
+  otherMessage: "Друга порака",
+
+  noPhone: "Без телефонски број",
+
+  noPersonalData: "Без лични податоци",
+
+  fastNotification: "Брзо известување",
+
+  privacy: "Приватност",
+
+  discover: "Откријте го PingCar",
+
+  monthly: "Месечна претплата",
+
+  yearly: "Годишна претплата",
+
+  premiumText: "Испробајте ги сите Premium функции бесплатно.",
+
+  perMonth: "месечно",
+
+  perYear: "годишно",
+
+  name: "Вашето име",
+
+  email: "Вашата е-пошта",
+
+  password: "Лозинка",
+
+  login: "Најава",
+
+  forgotPassword: "Ја заборавивте лозинката?",
+
+  sendLink: "Испрати линк",
+
+  logout: "Одјавување",
+
+  contactTitle: "Контакт",
+
+  footerText: "PingCar – безбедно решение за сопствениците на возила.",
+
+  rights: "Сите права се задржани."
+
+},
+nl: {
+
+  home: "Home",
+
+  qr: "QR",
+
+  contact: "Contact",
+
+  dashboard: "Dashboard",
+
+  messages: "Berichten",
+
+  title: "PingCar",
+
+  description: "Een veilige manier om contact op te nemen met voertuigeigenaren zonder telefoonnummer of persoonlijke gegevens.",
+
+  available: "Gratis registratie",
+
+  how: "Hoe werkt PingCar",
+
+  afterScan: "Na het scannen",
+
+  register: "Registratie",
+
+  registerText: "Maak gratis uw PingCar-account aan.",
+
+  getQr: "Ontvang een QR-code",
+
+  getQrText: "U ontvangt een persoonlijke QR-code voor uw voertuig.",
+
+  placeQr: "Plaats de QR-code",
+
+  placeQrText: "Plaats de QR-code op een goed zichtbare plaats op uw voertuig.",
+
+  scanQr: "Scan een QR-code",
+
+  scanQrText: "Een andere persoon scant de QR-code met zijn of haar smartphone.",
+
+  notification: "Melding",
+
+  notificationText: "U ontvangt onmiddellijk een bericht via PingCar.",
+
+  blocked: "Mijn voertuig blokkeert de doorgang",
+
+  lights: "De lichten staan aan",
+
+  damaged: "Het voertuig is beschadigd",
+
+  forgot: "Er is iets achtergelaten",
+
+  otherMessage: "Ander bericht",
+
+  noPhone: "Zonder telefoonnummer",
+
+  noPersonalData: "Zonder persoonlijke gegevens",
+
+  fastNotification: "Snelle melding",
+
+  privacy: "Privacy",
+
+  discover: "Ontdek PingCar",
+
+  monthly: "Maandabonnement",
+
+  yearly: "Jaarabonnement",
+
+  premiumText: "Probeer alle Premium-functies gratis uit.",
+
+  perMonth: "per maand",
+
+  perYear: "per jaar",
+
+  name: "Uw naam",
+
+  email: "Uw e-mailadres",
+
+  password: "Wachtwoord",
+
+  login: "Inloggen",
+
+  forgotPassword: "Wachtwoord vergeten?",
+
+  sendLink: "Link verzenden",
+
+  logout: "Uitloggen",
+
+  contactTitle: "Contact",
+
+  footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
+
+  rights: "Alle rechten voorbehouden."
+
+},nl: {
+
+  home: "Home",
+
+  qr: "QR",
+
+  contact: "Contact",
+
+  dashboard: "Dashboard",
+
+  messages: "Berichten",
+
+  title: "PingCar",
+
+  description: "Een veilige manier om contact op te nemen met voertuigeigenaren zonder telefoonnummer of persoonlijke gegevens.",
+
+  available: "Gratis registratie",
+
+  how: "Hoe werkt PingCar",
+
+  afterScan: "Na het scannen",
+
+  register: "Registratie",
+
+  registerText: "Maak gratis uw PingCar-account aan.",
+
+  getQr: "Ontvang een QR-code",
+
+  getQrText: "U ontvangt een persoonlijke QR-code voor uw voertuig.",
+
+  placeQr: "Plaats de QR-code",
+
+  placeQrText: "Plaats de QR-code op een goed zichtbare plaats op uw voertuig.",
+
+  scanQr: "Scan een QR-code",
+
+  scanQrText: "Een andere persoon scant de QR-code met zijn of haar smartphone.",
+
+  notification: "Melding",
+
+  notificationText: "U ontvangt onmiddellijk een bericht via PingCar.",
+
+  blocked: "Mijn voertuig blokkeert de doorgang",
+
+  lights: "De lichten staan aan",
+
+  damaged: "Het voertuig is beschadigd",
+
+  forgot: "Er is iets achtergelaten",
+
+  otherMessage: "Ander bericht",
+
+  noPhone: "Zonder telefoonnummer",
+
+  noPersonalData: "Zonder persoonlijke gegevens",
+
+  fastNotification: "Snelle melding",
+
+  privacy: "Privacy",
+
+  discover: "Ontdek PingCar",
+
+  monthly: "Maandabonnement",
+
+  yearly: "Jaarabonnement",
+
+  premiumText: "Probeer alle Premium-functies gratis uit.",
+
+  perMonth: "per maand",
+
+  perYear: "per jaar",
+
+  name: "Uw naam",
+
+  email: "Uw e-mailadres",
+
+  password: "Wachtwoord",
+
+  login: "Inloggen",
+
+  forgotPassword: "Wachtwoord vergeten?",
+
+  sendLink: "Link verzenden",
+
+  logout: "Uitloggen",
+
+  contactTitle: "Contact",
+
+  footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
+
+  rights: "Alle rechten voorbehouden."
+
+},
 };
+
 
 window.setLanguage = function(lang) {
 
@@ -1121,7 +2002,59 @@ window.setLanguage = function(lang) {
   if (!t) return;
 
   localStorage.setItem("pingcar_language", lang);
+const currentFlag = document.getElementById("current-flag");
+const currentLangText = document.getElementById("current-lang-text");
 
+const languageFlags = {
+  de: "CH",
+  fr: "FR",
+  it: "IT",
+  en: "GB",
+  sq: "AL",
+  sr: "RS",
+  es: "ES",
+  tr: "TR",
+  sk: "SK",
+  hr: "HR",
+  hu: "HU",
+  pt: "PT",
+  mk: "MK",
+  nl: "NL"
+  
+};
+
+const languageNames = {
+  de: "DE",
+  fr: "FR",
+  it: "IT",
+  en: "EN",
+  sq: "SQ",
+  sr: "SR",
+  es: "ES",
+  tr: "TR",
+  sk: "SK",
+  de: "DE",
+  fr: "FR",
+  it: "IT",
+  en: "EN",
+  sq: "SQ",
+  sr: "SR",
+  es: "ES",
+  tr: "TR",
+  sk: "SK",
+  hr: "HR",
+  hu: "HU",
+  pt: "PT",
+  mk: "MK",
+  nl: "NL"
+
+  
+  
+  
+};
+
+if (currentFlag) currentFlag.textContent = languageFlags[lang] || "CH";
+if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   // Navigation
   const homeLink = document.querySelector('a[href="index.html"]');
   const qrLink = document.querySelector('a[href="qr.html"]');
@@ -1134,6 +2067,7 @@ window.setLanguage = function(lang) {
   if (contactLink) contactLink.innerHTML = "💬 " + t.contact;
   if (dashboardLink) dashboardLink.innerHTML = "👤 " + t.dashboard;
   if (messageLink) messageLink.innerHTML = "🔔 " + t.messages;
+
 
   // Header
   const header = document.querySelector("header");
@@ -1159,7 +2093,16 @@ window.setLanguage = function(lang) {
       text.includes("How PingCar works") ||
       text.includes("Comment fonctionne PingCar") ||
       text.includes("Come funziona PingCar") ||
-      text.includes("Si funksionon PingCar")
+      text.includes("Si funksionon PingCar") ||
+      text.includes("Kako PingCar funkcioniše") ||
+      text.includes("Cómo funciona PingCar") ||
+      text.includes("PingCar nasıl çalışır") ||
+      text.includes("Ako funguje PingCar") ||
+      text.includes("Kako PingCar funkcionira")||
+      text.includes("Hogyan működik a PingCar") ||
+      text.includes("Como funciona o PingCar")||
+      text.includes("Како функционира PingCar")||
+      text.includes("Hoe werkt PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -1169,7 +2112,16 @@ window.setLanguage = function(lang) {
       text.includes("After scanning") ||
       text.includes("Après le scan") ||
       text.includes("Dopo la scansione") ||
-      text.includes("Pas skanimit")
+      text.includes("Pas skanimit") ||
+      text.includes("Nakon skeniranja") ||
+      text.includes("Después de escanear") ||
+      text.includes("Taradıktan sonra") ||
+      text.includes("Po skenovaní") ||
+      text.includes("Nakon skeniranja")||
+      text.includes("Hogyan működik a PingCar") ||
+      text.includes("Após a leitura")||
+      text.includes("По скенирањето")||
+      text.includes("Na het scannen")
     ) {
       el.textContent = t.afterScan;
     }
@@ -1178,25 +2130,52 @@ window.setLanguage = function(lang) {
       text === "Kontakt" ||
       text === "Contact" ||
       text === "Contatti" ||
-      text === "Kontakt"
+      text === "Kontakt" ||
+      text === "Kontaktirajte nas" ||
+      text === "Contacto" ||
+      text === "İletişim" ||
+      text === "Kapcsolat"||
+      text === "Contacto"||
+      text === "Контакт"
     ) {
       el.textContent = t.contactTitle;
     }
 
     if (
-      text === "Registrieren" ||
-      text === "Inscription" ||
-      text === "Registrazione" ||
-      text === "Regjistrohu"
+  text === "Registrieren" ||
+  text === "Inscription" ||
+  text === "Registrazione" ||
+  text === "Regjistrohu" ||
+  text === "Registrarse" ||
+  text === "Registracija" ||
+  text === "Registo" ||
+  text === "Kayıt Ol" ||
+  text === "Registrovať sa" ||
+  text === "Registriraj se"||
+  text === "Regisztráció"||
+  text === "Registar"||
+  text === "Регистрација"||
+  text === "Registratie"
     ) {
       el.textContent = t.register;
     }
 
     if (
-      text === "Anmelden" ||
-      text === "Connexion" ||
-      text === "Accedi" ||
-      text === "Hyr"
+  text === "Anmelden" ||
+  text === "Connexion" ||
+  text === "Accedi" ||
+  text === "Hyr" ||
+  text === "Iniciar sesión" ||
+  text === "Prijava" ||
+  text === "Iniciar sessão" ||
+  text === "Giriş Yap" ||
+  text === "Prihlásiť sa" ||
+  text === "Prijava" ||
+  text === "Bejelentkezés"||
+  text === "Iniciar sessão"||
+  text === "Најава"||
+  text === "Inloggen"
+  
     ) {
       el.textContent = t.login;
     }
@@ -1278,7 +2257,16 @@ window.setLanguage = function(lang) {
       text.includes("My vehicle is blocked") ||
       text.includes("Mon véhicule est bloqué") ||
       text.includes("Il mio veicolo è bloccato") ||
-      text.includes("Automjeti im është bllokuar")
+      text.includes("Automjeti im është bllokuar") ||
+      text.includes("Moje vozilo je blokirano") ||
+      text.includes("Mi vehículo está bloqueado") ||
+      text.includes("Aracım engellenmiş") ||
+      text.includes("Moje vozidlo je zablokované") ||
+      text.includes("Moje vozilo je blokirano") ||
+      text.includes("A járművem akadályozza a forgalmat")||
+      text.includes("O meu veículo está a bloquear a passagem")||
+      text.includes("Моето возило го блокира преминот")||
+      text.includes("Mijn voertuig blokkeert de doorgang")
     ) {
       el.textContent = t.blocked;
     }
@@ -1288,7 +2276,16 @@ window.setLanguage = function(lang) {
       text.includes("The lights are on") ||
       text.includes("Les feux sont allumés") ||
       text.includes("Le luci sono accese") ||
-      text.includes("Dritat janë ndezur")
+      text.includes("Dritat janë ndezur") ||
+      text.includes("Svetla su uključena") ||
+      text.includes("Las luces están encendidas") ||
+      text.includes("Işıklar açık") ||
+      text.includes("Svetlá sú zapnuté") ||
+      text.includes("Svjetla su uključena") ||
+      text.includes("A lámpák égve maradtak")||
+      text.includes("As luzes estão acesas")||
+      text.includes("Светлата се вклучени")||
+      text.includes("De lichten staan aan")
     ) {
       el.textContent = t.lights;
     }
@@ -1298,7 +2295,16 @@ window.setLanguage = function(lang) {
       text.includes("Vehicle damaged") ||
       text.includes("Véhicule endommagé") ||
       text.includes("Veicolo danneggiato") ||
-      text.includes("Automjeti është dëmtuar")
+      text.includes("Automjeti është dëmtuar") ||
+      text.includes("Vozilo je oštećeno") ||
+      text.includes("Vehículo dañado") ||
+      text.includes("Araç hasarlı") ||
+      text.includes("Vozidlo je poškodené") ||
+      text.includes("Vozilo je oštećeno") ||
+      text.includes("A jármű megsérült")||
+      text.includes("O veículo está danificado")||
+      text.includes("Возилото е оштетено")||
+      text.includes("Het voertuig is beschadigd")
     ) {
       el.textContent = t.damaged;
     }
@@ -1308,7 +2314,16 @@ window.setLanguage = function(lang) {
       text.includes("Forgot something") ||
       text.includes("Vous avez oublié quelque chose") ||
       text.includes("Hai dimenticato qualcosa") ||
-      text.includes("Ke harruar diçka")
+      text.includes("Ke harruar diçka") ||
+      text.includes("Nešto je zaboravljeno") ||
+      text.includes("Algo olvidado") ||
+      text.includes("Bir şey unutuldu") ||
+      text.includes("Niečo bolo zabudnuté") ||
+      text.includes("Nešto je zaboravljeno") ||
+      text.includes("Valami ott maradt")||
+      text.includes("Algo foi esquecido")||
+      text.includes("Нешто е заборавено")||
+      text.includes("Er is iets vergeten")
     ) {
       el.textContent = t.forgot;
     }
@@ -1318,7 +2333,16 @@ window.setLanguage = function(lang) {
       text.includes("Other message") ||
       text.includes("Autre message") ||
       text.includes("Altro messaggio") ||
-      text.includes("Mesazh tjetër")
+      text.includes("Mesazh tjetër") ||
+      text.includes("Druga poruka") ||
+      text.includes("Otro mensaje") ||
+      text.includes("Diğer mesaj") ||
+      text.includes("Iná správa") ||
+      text.includes("Druga poruka") ||
+      text.includes("Egyéb üzenet")||
+      text.includes("Outra mensagem")||
+      text.includes("Друга порака")||
+      text.includes("Ander bericht")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -1328,7 +2352,16 @@ window.setLanguage = function(lang) {
       text.includes("No phone number") ||
       text.includes("Aucun numéro de téléphone") ||
       text.includes("Nessun numero di telefono") ||
-      text.includes("Pa numër telefoni")
+      text.includes("Pa numër telefoni") ||
+      text.includes("Bez telefonskog broja") ||
+      text.includes("Sin número de teléfono") ||
+      text.includes("Telefon numarası olmadan") ||
+      text.includes("Bez telefónneho čísla") ||
+      text.includes("Bez telefonskog broja") ||
+      text.includes("Telefonszám nélkül")||
+      text.includes("Sem número de telefone")||
+      text.includes("Без телефонски број")||
+      text.includes("Zonder telefoonnummer")
     ) {
       el.textContent = t.noPhone;
     }
@@ -1338,7 +2371,16 @@ window.setLanguage = function(lang) {
       text.includes("No personal data") ||
       text.includes("Aucune donnée personnelle") ||
       text.includes("Nessun dato personale") ||
-      text.includes("Pa të dhëna personale")
+      text.includes("Pa të dhëna personale") ||
+      text.includes("Bez ličnih podataka") ||
+      text.includes("Sin datos personales") ||
+      text.includes("Kişisel veri olmadan") ||
+      text.includes("Bez osobných údajov") ||
+      text.includes("Bez osobnih podataka") ||
+      text.includes("Személyes adatok nélkül")||
+      text.includes("Sem dados pessoais")||
+      text.includes("Без лични податоци")||
+      text.includes("Zonder persoonlijke gegevens")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -1348,7 +2390,16 @@ window.setLanguage = function(lang) {
       text.includes("Fast notification") ||
       text.includes("Notification rapide") ||
       text.includes("Notifica rapida") ||
-      text.includes("Njoftim i shpejtë")
+      text.includes("Njoftim i shpejtë") ||
+      text.includes("Brzo obaveštenje") ||
+      text.includes("Notificación rápida") ||
+       text.includes("Hızlı bildirim") ||
+        text.includes("Rýchle oznámenie") ||
+        text.includes("Brza obavijest") ||
+        text.includes("Gyors értesítés") ||
+        text.includes("Notificação rápida")||
+        text.includes("Брзо известување")||
+        text.includes("Snelle melding")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -1358,7 +2409,16 @@ window.setLanguage = function(lang) {
       text.includes("Privacy") ||
       text.includes("Confidentialité") ||
       text.includes("Privacy") ||
-      text.includes("Privatësia")
+      text.includes("Privatësia") ||
+      text.includes("Privatnost") ||
+      text.includes("Privacidad") ||
+      text.includes("Gizlilik") ||
+      text.includes("Súkromie") ||
+      text.includes("Privatnost") ||
+      text.includes("Adatvédelem")||
+      text.includes("Privacidade")||
+      text.includes("Приватност")||
+      text.includes("Privacy")
     ) {
       el.textContent = t.privacy;
     }
@@ -1380,7 +2440,17 @@ window.setLanguage = function(lang) {
         text === "Test all premium features for free." ||
         text === "Testez toutes les fonctions Premium gratuitement." ||
         text === "Prova tutte le funzioni Premium gratuitamente." ||
-        text === "Testo të gjitha funksionet Premium falas.") {
+        text === "Testo të gjitha funksionet Premium falas." ||
+        text === "Testirajte sve Premium funkcije besplatno." ||
+        text === "Prueba todas las funciones Premium gratis." ||
+        text === "Tüm Premium özellikleri ücretsiz deneyin." ||
+        text === "Vyskúšajte všetky prémiové funkcie zdarma."||
+        text === "Isprobajte sve Premium funkcije besplatno."||
+        text === "Próbálja ki az összes Premium funkciót ingyen."||
+        text === "Experimente todas as funcionalidades Premium gratuitamente."||
+        text === "Испробајте ги сите Premium функции бесплатно."||
+        text === "Probeer alle Premium-functies gratis uit." 
+        ) {
       el.textContent = t.premiumText;
     }
 
@@ -1441,17 +2511,101 @@ window.setLanguage = function(lang) {
   }
 
 };
-
+function setLanguage(lang) {
+    localStorage.setItem("pingcar_language", lang);
+    
+}
 // Load saved language
 document.addEventListener("DOMContentLoaded", function() {
 
   const savedLanguage =
     localStorage.getItem("pingcar_language") || "de";
 
-  setLanguage(savedLanguage);
+  window.setLanguage(savedLanguage);
 
 });
     
 </script>
+
+<script type="module" src="/js/language.js"></script>
+<style>
+ .lang-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+  }
+
+  .lang-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+@media (max-width: 600px) {
+  .lang-btn {
+    padding: 9px 14px;
+    font-size: 15px;
+    min-width: 88px;
+    min-height: 44px;
+    gap: 7px;
+  }
+}
+  .lang-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 115%;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 9999;
+  }
+
+  .lang-menu a {
+    color: #333333 !important;
+    padding: 10px 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .lang-menu a:hover {
+    background-color: #f1f5f9;
+  }
+
+  .lang-dropdown.active .lang-menu {
+    display: block;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('current-lang-btn');
+    var dropdown = document.querySelector('.lang-dropdown');
+
+    if (btn && dropdown) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+      });
+
+      document.addEventListener('click', function() {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+</script>  
 </body>
 </html>
