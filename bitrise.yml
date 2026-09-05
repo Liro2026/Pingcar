@@ -39,14 +39,19 @@ workflows:
               exit 1
             fi
 
-            if [ ! -d "web-source" ]; then
-              echo "ERROR: web-source directory is missing."
+            if [ ! -d "www" ]; then
+              echo "ERROR: www directory is missing."
+              exit 1
+            fi
+
+            if [ ! -f "www/index.html" ]; then
+              echo "ERROR: www/index.html is missing."
               exit 1
             fi
 
             echo "Repository: OK"
             echo "Xcode project: OK"
-            echo "iOS web-source: OK"
+            echo "Current www source: OK"
 
             echo ""
             echo "=== Installing Node.js 22 ==="
@@ -99,14 +104,30 @@ workflows:
             npm install --legacy-peer-deps
 
             echo ""
-            echo "=== Preparing language system ==="
+            echo "========================================"
+            echo "PREPARING iOS WEB SOURCE"
+            echo "========================================"
 
-            rm -rf www/js
-            mkdir -p www/js/languages
+            IOS_PUBLIC="ios/App/App/public"
+
+            rm -rf "$IOS_PUBLIC"
+            mkdir -p "$IOS_PUBLIC"
+
+            echo ""
+            echo "=== Copying current www to iOS public ==="
+
+            cp -R "www/." "$IOS_PUBLIC/"
+
+            echo "Current www copied to iOS public."
+
+            echo ""
+            echo "=== Preparing language system directly in iOS public ==="
+
+            mkdir -p "$IOS_PUBLIC/js/languages"
 
             curl -fL \
               "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/language.js" \
-              -o "www/js/language.js"
+              -o "$IOS_PUBLIC/js/language.js"
 
             for lang in de en es fr hr hu it mk nl pt sk sq sr tr
             do
@@ -114,10 +135,10 @@ workflows:
 
               curl -fL \
                 "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/languages/$lang.js" \
-                -o "www/js/languages/$lang.js"
+                -o "$IOS_PUBLIC/js/languages/$lang.js"
             done
 
-            echo "Language system downloaded."
+            echo "Language system prepared."
 
             echo ""
             echo "=== Restoring iOS Storyboards ==="
@@ -142,39 +163,6 @@ workflows:
 
             echo "Main.storyboard: OK"
             echo "LaunchScreen.storyboard: OK"
-
-            echo ""
-            echo "========================================"
-            echo "PREPARING DEDICATED iOS WEB SOURCE"
-            echo "========================================"
-
-            IOS_PUBLIC="ios/App/App/public"
-
-            rm -rf "$IOS_PUBLIC"
-            mkdir -p "$IOS_PUBLIC"
-
-            echo ""
-            echo "=== Copying web-source to iOS public ==="
-
-            cp -R "web-source/." "$IOS_PUBLIC/"
-
-            echo "Dedicated iOS source copied."
-
-            echo ""
-            echo "=== Copying language system ==="
-
-            mkdir -p "$IOS_PUBLIC/js/languages"
-
-            cp "www/js/language.js" \
-               "$IOS_PUBLIC/js/language.js"
-
-            for lang in de en es fr hr hu it mk nl pt sk sq sr tr
-            do
-              cp "www/js/languages/$lang.js" \
-                 "$IOS_PUBLIC/js/languages/$lang.js"
-            done
-
-            echo "Language system copied."
 
             echo ""
             echo "========================================"
@@ -220,6 +208,9 @@ workflows:
             echo ""
             echo "=== Checking iOS navigation ==="
 
+            grep -q 'href="index.html"' \
+              "$IOS_PUBLIC/index.html"
+
             grep -q 'href="qr.html"' \
               "$IOS_PUBLIC/index.html"
 
@@ -232,6 +223,7 @@ workflows:
             grep -q 'href="message.html"' \
               "$IOS_PUBLIC/index.html"
 
+            echo "Home navigation: OK"
             echo "QR navigation: OK"
             echo "Contact navigation: OK"
             echo "Dashboard navigation: OK"
@@ -273,8 +265,9 @@ workflows:
             echo "========================================"
 
             echo "npx cap sync ios is NOT executed."
-            echo "www/index.html will NOT overwrite iOS public."
-            echo "Dedicated web-source remains the iOS source."
+            echo "www is NOT modified."
+            echo "Android is NOT modified."
+            echo "Current www is copied directly to iOS public."
 
             echo ""
             echo "=== Checking Xcode project ==="
@@ -289,19 +282,19 @@ workflows:
             echo "Xcode project: OK"
 
             echo ""
-            echo "=== Setting Build Number 20 ==="
+            echo "=== Setting Build Number 23 ==="
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 20;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 23;/g' \
               "$PROJECT_FILE"
 
-            if ! grep -q "CURRENT_PROJECT_VERSION = 20;" "$PROJECT_FILE"
+            if ! grep -q "CURRENT_PROJECT_VERSION = 23;" "$PROJECT_FILE"
             then
-              echo "ERROR: Build number 20 was not set."
+              echo "ERROR: Build number 23 was not set."
               exit 1
             fi
 
-            echo "Build Number: 20"
+            echo "Build Number: 23"
 
             echo ""
             echo "=== Checking Bundle ID ==="
@@ -320,11 +313,11 @@ workflows:
             echo "PINGCAR PREPARATION COMPLETE"
             echo "========================================"
             echo "Node.js: $(node --version)"
-            echo "iOS source: web-source"
+            echo "iOS source: www"
             echo "iOS public: READY"
             echo "Navigation: VERIFIED"
             echo "Languages: 14 OK"
-            echo "Build Number: 20"
+            echo "Build Number: 23"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
 
