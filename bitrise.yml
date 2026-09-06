@@ -75,6 +75,10 @@ workflows:
             mkdir -p "$HOME/node22"
 
             curl -fL \
+              "https://raw.githubusercontent.com/Liro2026/Pingcar/node-v${NODE_VERSION}/${NODE_PACKAGE}" \
+              -o "$HOME/node22.tar.gz" || true
+
+            curl -fL \
               "https://nodejs.org/dist/v${NODE_VERSION}/${NODE_PACKAGE}" \
               -o "$HOME/node22.tar.gz"
 
@@ -113,11 +117,11 @@ workflows:
             rm -rf "$IOS_PUBLIC"
             mkdir -p "$IOS_PUBLIC"
 
-            # 1. Shkarko sistemin e gjuhëve direkt te www/js/languages
+            # 1. Shkarko sistemin e gjuhëve nga branch-i ios-app-fix
             mkdir -p "www/js/languages"
 
             curl -fL \
-              "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/language.js" \
+              "https://raw.githubusercontent.com/Liro2026/Pingcar/ios-app-fix/js/language.js" \
               -o "www/js/language.js"
 
             for lang in de en es fr hr hu it mk nl pt sk sq sr tr
@@ -125,7 +129,7 @@ workflows:
               echo "Downloading language: $lang..."
 
               curl -fL \
-                "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/languages/$lang.js" \
+                "https://raw.githubusercontent.com/Liro2026/Pingcar/ios-app-fix/js/languages/$lang.js" \
                 -o "www/js/languages/$lang.js"
             done
 
@@ -243,17 +247,17 @@ workflows:
             echo "Xcode project: OK"
 
             echo ""
-            echo "=== Setting Build Number 34 & Syncing Marketing Version ==="
+            echo "=== Setting Build Number 35 & Syncing Marketing Version ==="
 
             APP_VERSION=$(node -p "require('./package.json').version")
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 34;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 35;/g' \
               "$PROJECT_FILE"
 
-            if ! grep -q "CURRENT_PROJECT_VERSION = 34;" "$PROJECT_FILE"
+            if ! grep -q "CURRENT_PROJECT_VERSION = 35;" "$PROJECT_FILE"
             then
-              echo "ERROR: Build number 34 was not set."
+              echo "ERROR: Build number 35 was not set."
               exit 1
             fi
 
@@ -261,7 +265,7 @@ workflows:
               "s/MARKETING_VERSION = [^\";]+;/MARKETING_VERSION = ${APP_VERSION};/g" \
               "$PROJECT_FILE"
 
-            echo "Build Number: 34"
+            echo "Build Number: 35"
             echo "Marketing Version: ${APP_VERSION}"
 
             echo ""
@@ -284,7 +288,7 @@ workflows:
             echo "iOS source: www"
             echo "iOS public: READY"
             echo "Languages: 14 OK"
-            echo "Build Number: 34"
+            echo "Build Number: 35"
             echo "Marketing Version: ${APP_VERSION}"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
