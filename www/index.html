@@ -2,141 +2,192 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="capacitor.js"></script>
-<!-- Importimi i Supabase JS SDK per WebView/iOS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>PingCar</title>
 
 <style>
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body{
-background:#f5f7fb;
-color:#222;
-line-height:1.6;
+  background:#f5f7fb;
+  color:#222;
+  line-height:1.6;
 }
 
 header{
-background:linear-gradient(135deg,#0066ff,#00bfff);
-color:white;
-text-align:center;
-padding:18px 15px 25px;
+  background:linear-gradient(135deg,#0066ff,#00bfff);
+  color:white;
+  text-align:center;
+  padding: calc(env(safe-area-inset-top) + 18px) 15px 25px;
+  position: relative;
+  z-index: 10;
 }
 
 .button{
-display:inline-block;
-margin-top:35px;
-padding:18px 40px;
-background:white;
-color:#0066ff;
-border-radius:40px;
-text-decoration:none;
-font-size:20px;
-font-weight:bold;
-cursor:pointer;
+  display:inline-block;
+  margin-top:35px;
+  padding:18px 40px;
+  background:white;
+  color:#0066ff;
+  border-radius:40px;
+  text-decoration:none;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .container{
-max-width:1200px;
-margin:auto;
-padding:60px 20px;
+  max-width:1200px;
+  margin:auto;
+  padding:60px 20px;
 }
 
 .card{
-background:white;
-border-radius:18px;
-padding:35px;
-margin-bottom:30px;
-box-shadow:0 8px 20px rgba(0,0,0,.08);
+  background:white;
+  border-radius:18px;
+  padding:35px;
+  margin-bottom:30px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
 h2{
-color:#0066ff;
-margin-bottom:20px;
-font-size:34px;
+  color:#0066ff;
+  margin-bottom:20px;
+  font-size:34px;
 }
 
 .grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:20px;
 }
 
 .item{
-background:#eef6ff;
-padding:20px;
-border-radius:14px;
+  background:#eef6ff;
+  padding:20px;
+  border-radius:14px;
 }
 
 footer{
-background:#111;
-color:white;
-text-align:center;
-padding:35px;
-margin-top:50px;
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:35px;
+  margin-top:50px;
 }
 
 .lang-dropdown {
-position: relative;
-display: inline-block;
+  position: relative;
+  display: inline-block;
+  z-index: 9999;
 }
 
 .lang-btn {
-background: rgba(255,255,255,0.2);
-color: white;
-padding: 8px 14px;
-border: 1px solid rgba(255,255,255,0.4);
-border-radius: 8px;
-cursor: pointer;
-font-size: 14px;
-font-weight: bold;
-display: flex;
-align-items: center;
-gap: 6px;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .lang-menu {
-display: none;
-position: absolute;
-right: 0;
-background: white;
-min-width: 170px;
-box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-border-radius: 10px;
-z-index: 1000;
-overflow: hidden;
-margin-top: 5px;
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  min-width: 190px;
+  max-height: 350px;
+  overflow-y: auto;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+  border-radius: 10px;
+  z-index: 10000;
+  margin-top: 5px;
+  border: 1px solid #e5e7eb;
 }
 
 .lang-menu.show {
-display: block;
+  display: block !important;
 }
 
-.lang-menu a {
-color: #333;
-padding: 10px 15px;
-text-decoration: none;
-display: flex;
-align-items: center;
-gap: 10px;
-font-size: 14px;
-border-bottom: 1px solid #eee;
-cursor: pointer;
+.lang-option {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #333;
+  padding: 10px 14px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  -webkit-appearance: none;
 }
 
-.lang-menu a:hover {
-background-color: #f1f1f1;
+.lang-option:last-child {
+  border-bottom: none;
+}
+
+.lang-option:active {
+  background-color: #eef6ff;
+}
+
+.lang-code {
+  font-weight: bold;
+  font-size: 11px;
+  color: #666;
+  width: 20px;
+  text-align: center;
+}
+
+.back-btn-global {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 99999;
+  background: #0066ff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-btn-global:active {
+  transform: scale(0.96);
+  background: #0052cc;
 }
 </style>
 </head>
 
 <body>
+
+<!-- Butoni Back i fiksuar në këndin e majtë -->
+<button class="back-btn-global" type="button" onclick="window.history.back()">
+  ⬅️ <span id="t-back-btn">Zurück</span>
+</button>
 
 <header>
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;max-width:1100px;margin:auto;">
@@ -153,17 +204,24 @@ background-color: #f1f1f1;
     </nav>
 
     <div class="lang-dropdown">
-      <button class="lang-btn" id="current-lang-btn" type="button" onclick="toggleLangMenu()">
-        <span id="current-flag">🇨🇭</span> <span id="current-lang-text">DE</span> <span class="arrow">▾</span>
+      <button class="lang-btn" id="current-lang-btn" type="button" onclick="toggleLangMenu(event)">
+        <span class="lang-code" id="current-code">CH</span> <span id="current-lang-text">Deutsch (DE)</span> <span class="arrow">▾</span>
       </button>
       <div class="lang-menu" id="lang-menu">
-        <a onclick="setLanguage('de')"><span class="flag">🇨🇭</span> Deutsch (DE)</a>
-        <a onclick="setLanguage('fr')"><span class="flag">🇫🇷</span> Français (FR)</a>
-        <a onclick="setLanguage('it')"><span class="flag">🇮🇹</span> Italiano (IT)</a>
-        <a onclick="setLanguage('en')"><span class="flag">🇬🇧</span> English (EN)</a>
-        <a onclick="setLanguage('sq')"><span class="flag">🇦🇱</span> Shqip (SQ)</a>
-        <a onclick="setLanguage('sr')"><span class="flag">🇷🇸</span> Srpski (SR)</a>
-        <a onclick="setLanguage('es')"><span class="flag">🇪🇸</span> Español (ES)</a>
+        <button type="button" class="lang-option" onclick="setLanguage('de', event)"><span class="lang-code">CH</span> Deutsch (DE)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('fr', event)"><span class="lang-code">FR</span> Français (FR)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('it', event)"><span class="lang-code">IT</span> Italiano (IT)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('en', event)"><span class="lang-code">GB</span> English (EN)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('sq', event)"><span class="lang-code">AL</span> Shqip (SQ)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('sr', event)"><span class="lang-code">RS</span> Srpski (SR)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('es', event)"><span class="lang-code">ES</span> Español (ES)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('tr', event)"><span class="lang-code">TR</span> Türkçe (TR)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('sk', event)"><span class="lang-code">SK</span> Slovenčina (SK)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('hr', event)"><span class="lang-code">HR</span> Hrvatski (HR)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('hu', event)"><span class="lang-code">HU</span> Magyar (HU)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('pt', event)"><span class="lang-code">PT</span> Português (PT)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('mk', event)"><span class="lang-code">MK</span> Македонски (MK)</button>
+        <button type="button" class="lang-option" onclick="setLanguage('nl', event)"><span class="lang-code">NL</span> Nederlands (NL)</button>
       </div>
     </div>
   </div>
@@ -245,7 +303,6 @@ background-color: #f1f1f1;
 </footer>
 
 <script>
-// Supabase Setup
 const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -291,68 +348,58 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
   location.reload();
 });
 
-// Menynja e Gjuhëve
-function toggleLangMenu() {
-  document.getElementById("lang-menu").classList.toggle("show");
+function toggleLangMenu(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById("lang-menu");
+  menu.classList.toggle("show");
 }
 
-const translations = {
-  de: {
-    heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.",
-    registerBtn: "🚗 Jetzt kostenlos registrieren",
-    howItWorks: "So funktioniert PingCar",
-    step1Title: "1. Registrieren",
-    step1Desc: "Erstellen Sie kostenlos Ihr PingCar-Konto.",
-    step2Title: "2. QR-Code erhalten",
-    step2Desc: "Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.",
-    step3Title: "3. QR-Code anbringen",
-    step3Desc: "Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.",
-    step4Title: "4. QR-Code scannen",
-    step4Desc: "Eine andere Person scannt den QR-Code mit dem Smartphone.",
-    step5Title: "5. Benachrichtigung",
-    step5Desc: "Sie erhalten sofort eine Nachricht in der PingCar-App."
-  },
-  sq: {
-    heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.",
-    registerBtn: "🚗 Regjistrohu falas tani",
-    howItWorks: "Si funksionon PingCar",
-    step1Title: "1. Regjistrohu",
-    step1Desc: "Krijo llogarinë tënde PingCar falas.",
-    step2Title: "2. Merr QR-Kodin",
-    step2Desc: "Do të marrësh një QR-kod personal për mjetin tënd.",
-    step3Title: "3. Vendos QR-Kodin",
-    step3Desc: "Vendose QR-kodin në një vend të dukshëm në mjet.",
-    step4Title: "4. Skano QR-Kodin",
-    step4Desc: "Një person tjetër skanon QR-kodin me telefon.",
-    step5Title: "5. Njoftimi",
-    step5Desc: "Do të marrësh menjëherë njoftim në aplikacionin PingCar."
-  },
-  en: {
-    heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.",
-    registerBtn: "🚗 Register now for free",
-    howItWorks: "How PingCar works",
-    step1Title: "1. Register",
-    step1Desc: "Create your free PingCar account.",
-    step2Title: "2. Get QR Code",
-    step2Desc: "Get your personal QR code for your vehicle.",
-    step3Title: "3. Attach QR Code",
-    step3Desc: "Attach the QR code visibly to your vehicle.",
-    step4Title: "4. Scan QR Code",
-    step4Desc: "Another person scans the QR code with a smartphone.",
-    step5Title: "5. Notification",
-    step5Desc: "Instantly receive a notification in the PingCar app."
-  }
+const langDetails = {
+  de: { code: 'CH', name: 'Deutsch (DE)' },
+  fr: { code: 'FR', name: 'Français (FR)' },
+  it: { code: 'IT', name: 'Italiano (IT)' },
+  en: { code: 'GB', name: 'English (EN)' },
+  sq: { code: 'AL', name: 'Shqip (SQ)' },
+  sr: { code: 'RS', name: 'Srpski (SR)' },
+  es: { code: 'ES', name: 'Español (ES)' },
+  tr: { code: 'TR', name: 'Türkçe (TR)' },
+  sk: { code: 'SK', name: 'Slovenčina (SK)' },
+  hr: { code: 'HR', name: 'Hrvatski (HR)' },
+  hu: { code: 'HU', name: 'Magyar (HU)' },
+  pt: { code: 'PT', name: 'Português (PT)' },
+  mk: { code: 'MK', name: 'Македонски (MK)' },
+  nl: { code: 'NL', name: 'Nederlands (NL)' }
 };
 
-function setLanguage(lang) {
-  const flags = { de: '🇨🇭', fr: '🇫🇷', it: '🇮🇹', en: '🇬🇧', sq: '🇦🇱', sr: '🇷🇸', es: '🇪🇸' };
-  document.getElementById("current-flag").innerText = flags[lang] || '🇨🇭';
-  document.getElementById("current-lang-text").innerText = lang.toUpperCase();
+const translations = {
+  de: { backBtn: "Zurück", heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.", registerBtn: "🚗 Jetzt kostenlos registrieren", howItWorks: "So funktioniert PingCar", step1Title: "1. Registrieren", step1Desc: "Erstellen Sie kostenlos Ihr PingCar-Konto." },
+  sq: { backBtn: "Prapa", heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.", registerBtn: "🚗 Regjistrohu falas tani", howItWorks: "Si funksionon PingCar", step1Title: "1. Regjistrohu", step1Desc: "Krijo llogarinë tënde PingCar falas." },
+  en: { backBtn: "Back", heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.", registerBtn: "🚗 Register now for free", howItWorks: "How PingCar works", step1Title: "1. Register", step1Desc: "Create your free PingCar account." },
+  fr: { backBtn: "Retour", heroDesc: "La solution sécurisée pour contacter le propriétaire du véhicule – sans numéro de téléphone.", registerBtn: "🚗 Inscrivez-vous gratuitement", howItWorks: "Comment fonctionne PingCar", step1Title: "1. S'inscrire", step1Desc: "Créez votre compte PingCar gratuit." },
+  it: { backBtn: "Indietro", heroDesc: "La soluzione sicura per contattare il proprietario del veicolo – senza numero di telefono.", registerBtn: "🚗 Registrati ora gratuitamente", howItWorks: "Come funziona PingCar", step1Title: "1. Registrati", step1Desc: "Crea il tuo account PingCar gratuito." },
+  sr: { backBtn: "Nazad", heroDesc: "Sigurno rešenje za kontaktiranje vlasnika vozila – bez broja telefona i ličnih podataka.", registerBtn: "🚗 Registrujte se besplatno", howItWorks: "Kako PingCar funkcioniše", step1Title: "1. Registracija", step1Desc: "Kreirajte besplatan PingCar nalog." },
+  es: { backBtn: "Atrás", heroDesc: "La solución segura para contactar al propietario del vehículo – sin número de teléfono.", registerBtn: "🚗 Regístrate gratis ahora", howItWorks: "Cómo funciona PingCar", step1Title: "1. Registrarse", step1Desc: "Crea tu cuenta PingCar gratuita." },
+  tr: { backBtn: "Geri", heroDesc: "Araç sahibine ulaşmanın güvenli yolu – telefon numarası ve kişisel veri olmadan.", registerBtn: "🚗 Şimdi ücretsiz kaydolun", howItWorks: "PingCar nasıl çalışır", step1Title: "1. Kaydolun", step1Desc: "Ücretsiz PingCar hesabınızı oluşturun." },
+  sk: { backBtn: "Späť", heroDesc: "Bezpečné riešenie na kontaktovanie vlastníka vozidla – bez telefónneho čísla.", registerBtn: "🚗 Zaregistrujte sa zadarmo", howItWorks: "Ako PingCar funguje", step1Title: "1. Registrácia", step1Desc: "Vytvorte si bezplatný účet PingCar." },
+  hr: { backBtn: "Natrag", heroDesc: "Sigurno rješenje za kontaktiranje vlasnika vozila – bez broja telefona.", registerBtn: "🚗 Registrirajte se besplatno", howItWorks: "Kako PingCar radi", step1Title: "1. Registracija", step1Desc: "Izradite besplatni PingCar račun." },
+  hu: { backBtn: "Vissza", heroDesc: "A biztonságos megoldás a járműtulajdonosok elérésére – telefonszám nélkül.", registerBtn: "🚗 Regisztráljon ingyenesen", howItWorks: "Hogyan működik a PingCar", step1Title: "1. Regisztráció", step1Desc: "Hozza létre ingyenes PingCar fiókját." },
+  pt: { backBtn: "Voltar", heroDesc: "A solução segura para contactar o proprietário do veículo – sem número de telefone.", registerBtn: "🚗 Registe-se gratuitamente", howItWorks: "Como funciona o PingCar", step1Title: "1. Registo", step1Desc: "Crie a sua conta PingCar gratuita." },
+  mk: { backBtn: "Назад", heroDesc: "Безбедно решение за контактирање на сопственикот на возилото – без телефонски број.", registerBtn: "🚗 Регистрирајте се бесплатно", howItWorks: "Како функционира PingCar", step1Title: "1. Регистрирај се", step1Desc: "Креирајте ја вашата бесплатна сметка за PingCar." },
+  nl: { backBtn: "Terug", heroDesc: "De veilige oplossing om contact op te nemen met voertuigeigenaren – zonder telefoonnummer.", registerBtn: "🚗 Nu gratis registreren", howItWorks: "Hoe PingCar werkt", step1Title: "1. Registreren", step1Desc: "Maak uw gratis PingCar-account aan." }
+};
+
+function setLanguage(lang, e) {
+  if (e) e.stopPropagation();
+  
+  const detail = langDetails[lang] || langDetails['de'];
+  document.getElementById("current-code").innerText = detail.code;
+  document.getElementById("current-lang-text").innerText = detail.name;
   document.getElementById("lang-menu").classList.remove("show");
   localStorage.setItem("pingcar_lang", lang);
 
   const t = translations[lang] || translations['de'];
   if(t) {
+    if(document.getElementById("t-back-btn")) document.getElementById("t-back-btn").innerText = t.backBtn;
     if(document.getElementById("t-hero-desc")) document.getElementById("t-hero-desc").innerText = t.heroDesc;
     if(document.getElementById("t-register-btn")) document.getElementById("t-register-btn").innerText = t.registerBtn;
     if(document.getElementById("t-how-it-works")) document.getElementById("t-how-it-works").innerText = t.howItWorks;
@@ -361,20 +408,13 @@ function setLanguage(lang) {
   }
 }
 
-// Mbyll menune e gjuheve kur klikohet jashte
-window.onclick = function(event) {
-  if (!event.target.matches('.lang-btn') && !event.target.matches('.lang-btn *')) {
-    var dropdowns = document.getElementsByClassName("lang-menu");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
+document.addEventListener('click', function(event) {
+  const dropdown = document.querySelector('.lang-dropdown');
+  if (dropdown && !dropdown.contains(event.target)) {
+    document.getElementById("lang-menu").classList.remove("show");
   }
-}
+});
 
-// Ngarko gjuhen e ruajtur ne fillim
 const savedLang = localStorage.getItem("pingcar_lang") || "de";
 setLanguage(savedLang);
 </script>
