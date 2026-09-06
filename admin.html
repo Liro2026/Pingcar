@@ -810,11 +810,11 @@ async function showSubscriptions() {
       <div style="display: flex; gap: 15px; margin-top: 15px;">
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
           <small>Aktive Abos</small>
-          <h3 id="active-subs-count" style="margin: 5px 0; color: #28a745;">Lade...</h3>
+          <h3 id="active-subs-count" style="margin: 5px 0; color: #28a745;">0</h3>
         </div>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
           <small>MRR (Umsatz)</small>
-          <h3 id="mrr-amount" style="margin: 5px 0; color: #007bff;">Lade...</h3>
+          <h3 id="mrr-amount" style="margin: 5px 0; color: #007bff;">CHF 0.00</h3>
         </div>
       </div>
 
@@ -838,15 +838,18 @@ async function showSubscriptions() {
   `;
 
   try {
-    let { data: subs, error } = await supabaseClient
+    const client = window.supabaseClient || window.supabase;
+    if (!client) return;
+
+    let { data: subs, error } = await client
       .from('subscriptions')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) {
-  console.error("Supabase Error:", error);
-  subs = [];
-}
+      console.error("Supabase Error:", error);
+      subs = [];
+    }
 
     const tbody = document.getElementById("subs-table-body");
     
@@ -860,7 +863,7 @@ async function showSubscriptions() {
     let activeCount = 0;
     let totalMRR = 0;
 
-    tbody.innerHTML = subs.map(sub => {
+    const rows = subs.map(sub => {
       const isActive = sub.status === 'active';
       if (isActive) {
         activeCount++;
@@ -888,11 +891,6 @@ async function showSubscriptions() {
     document.getElementById("mrr-amount").textContent = `CHF ${totalMRR.toFixed(2)}`;
   } catch (err) {
     console.error("JS Error:", err);
-  }
-}
-  } catch (err) {
-    console.error("Fehler beim Laden der Abonnements:", err);
-    document.getElementById("subs-table-body").innerHTML = `<tr><td colspan="4" style="padding: 10px; text-align: center; color: red;">Fehler beim Laden der Daten</td></tr>`;
   }
 }
 
