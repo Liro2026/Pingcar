@@ -213,7 +213,7 @@ workflows:
               fi
 
               echo "OK: $file"
-            do
+            done
 
             echo ""
             echo "=== Checking page sizes ==="
