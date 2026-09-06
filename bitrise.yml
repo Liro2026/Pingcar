@@ -105,7 +105,7 @@ workflows:
 
             echo ""
             echo "========================================"
-            echo "PREPARING iOS WEB SOURCE"
+            echo "PREPARING iOS WEB SOURCE & LANGUAGES"
             echo "========================================"
 
             IOS_PUBLIC="ios/App/App/public"
@@ -113,30 +113,28 @@ workflows:
             rm -rf "$IOS_PUBLIC"
             mkdir -p "$IOS_PUBLIC"
 
-            echo ""
-            echo "=== Copying current www to iOS public ==="
-
-            cp -R "www/." "$IOS_PUBLIC/"
-
-            echo "Current www copied to iOS public."
-
-            echo ""
-            echo "=== Preparing language system directly in iOS public ==="
-
-            mkdir -p "$IOS_PUBLIC/js/languages"
+            # 1. Shkarko sistemin e gjuhëve direkt te www/js/languages së pari
+            mkdir -p "www/js/languages"
 
             curl -fL \
               "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/language.js" \
-              -o "$IOS_PUBLIC/js/language.js"
+              -o "www/js/language.js"
 
             for lang in de en es fr hr hu it mk nl pt sk sq sr tr
             do
-              echo "Downloading $lang..."
+              echo "Downloading language: $lang..."
 
               curl -fL \
                 "https://raw.githubusercontent.com/Liro2026/Pingcar/main/js/languages/$lang.js" \
-                -o "$IOS_PUBLIC/js/languages/$lang.js"
+                -o "www/js/languages/$lang.js"
             done
+
+            echo ""
+            echo "=== Copying updated www to iOS public ==="
+
+            cp -R "www/." "$IOS_PUBLIC/"
+
+            echo "Current www with all 14 languages copied to iOS public."
 
             echo ""
             echo "=== Applying iOS-only runtime patch ==="
@@ -241,7 +239,6 @@ workflows:
             echo "Messages navigation: OK"
 
             echo ""
-                        echo ""
             echo "=== Verifying iOS runtime patch ==="
 
             grep -q 'id="pingcar-ios-toolbar-style"' \
@@ -328,19 +325,26 @@ workflows:
             echo "Xcode project: OK"
 
             echo ""
-            echo "=== Setting Build Number 29 ==="
+            echo "=== Setting Build Number 30 & Syncing Marketing Version ==="
+
+            APP_VERSION=$(node -p "require('./package.json').version")
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 29;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 30;/g' \
               "$PROJECT_FILE"
 
-            if ! grep -q "CURRENT_PROJECT_VERSION = 29;" "$PROJECT_FILE"
+            if ! grep -q "CURRENT_PROJECT_VERSION = 30;" "$PROJECT_FILE"
             then
-              echo "ERROR: Build number 29 was not set."
+              echo "ERROR: Build number 30 was not set."
               exit 1
             fi
 
-            echo "Build Number: 29"
+            sed -i '' -E \
+              "s/MARKETING_VERSION = [^\";]+;/MARKETING_VERSION = ${APP_VERSION};/g" \
+              "$PROJECT_FILE"
+
+            echo "Build Number: 30"
+            echo "Marketing Version: ${APP_VERSION}"
 
             echo ""
             echo "=== Checking Bundle ID ==="
@@ -364,7 +368,8 @@ workflows:
             echo "Navigation: VERIFIED"
             echo "Languages: 14 OK"
             echo "Runtime patch: VERIFIED"
-            echo "Build Number: 29"
+            echo "Build Number: 30"
+            echo "Marketing Version: ${APP_VERSION}"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
 
