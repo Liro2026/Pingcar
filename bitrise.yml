@@ -395,12 +395,11 @@ workflows:
 
     - deploy-to-bitrise-io@2: {}
 
-    - deploy-to-itunesconnect-application-loader@2:
+    - deploy-to-apple-app-store@2:
         inputs:
         - connection: api_key
         - ipa_path: "$BITRISE_IPA_PATH"
         - bundle_id: ch.pingcar.app
-        - platform: ios
 
 meta:
   bitrise.io:
