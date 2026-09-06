@@ -75,5 +75,17 @@ export default {
   resetPassword: "Passwort zurücksetzen",
 
   noPersonalDataRequired: "Keine persönlichen Daten erforderlich",
-  noPhoneNumberRequired: "Keine Telefonnummer erforderlich"
+  noPhoneNumberRequired: "Keine Telefonnummer erforderlich",
+  trial_heading: "🚀 7 Tage kostenlos testen.",
+  trial_subheading: "Teste alle Premium-Funktionen kostenlos.",
+  now_new: "⭐ Jetzt neu:",
+  trial_bullet_1: "7 Tage kostenlos testen.",
+  trial_bullet_2: "Keine Zahlung heute.",
+  trial_bullet_3: "Jederzeit kündbar.",
+  monthly_plan: "📅 Monatsabo",
+  yearly_plan: "⭐ Jahresabo",
+  per_month: "pro Monat",
+  per_year: "pro Jahr",
+  select_monthly: "Monatsabo wählen",
+  select_yearly: "Jahresabo wählen"
 };
