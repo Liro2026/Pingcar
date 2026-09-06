@@ -802,7 +802,7 @@ async function showStats() {
     
   }
 }
-function showSubscriptions() {
+async function showSubscriptions() {
   const content = document.getElementById("content");
   content.innerHTML = `
     <div class="card">
@@ -810,11 +810,11 @@ function showSubscriptions() {
       <div style="display: flex; gap: 15px; margin-top: 15px;">
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
           <small>Aktive Abos</small>
-          <h3 id="active-subs-count" style="margin: 5px 0; color: #28a745;">0</h3>
+          <h3 id="active-subs-count" style="margin: 5px 0; color: #28a745;">Lade...</h3>
         </div>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
           <small>MRR (Umsatz)</small>
-          <h3 id="mrr-amount" style="margin: 5px 0; color: #007bff;">CHF 0.00</h3>
+          <h3 id="mrr-amount" style="margin: 5px 0; color: #007bff;">Lade...</h3>
         </div>
       </div>
 
@@ -822,19 +822,71 @@ function showSubscriptions() {
       <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
         <thead>
           <tr style="text-align: left; border-bottom: 2px solid #ddd; padding-bottom: 8px;">
-            <th>Benutzer</th>
-            <th>Status</th>
-            <th>Ablaufdatum</th>
+            <th style="padding: 10px;">Benutzer</th>
+            <th style="padding: 10px;">Plan</th>
+            <th style="padding: 10px;">Status</th>
+            <th style="padding: 10px;">Ablaufdatum</th>
           </tr>
         </thead>
         <tbody id="subs-table-body">
           <tr>
-            <td colspan="3" style="padding: 10px; text-align: center; color: #666;">Keine Daten vorhanden</td>
+            <td colspan="4" style="padding: 10px; text-align: center; color: #666;">Daten werden geladen...</td>
           </tr>
         </tbody>
       </table>
     </div>
   `;
+
+  try {
+    const { data: subs, error } = await supabaseClient
+      .from('subscriptions')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const tbody = document.getElementById("subs-table-body");
+    
+    if (!subs || subs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="padding: 10px; text-align: center; color: #666;">Keine Abonnements vorhanden</td></tr>`;
+      document.getElementById("active-subs-count").textContent = "0";
+      document.getElementById("mrr-amount").textContent = "CHF 0.00";
+      return;
+    }
+
+    let activeCount = 0;
+    let totalMRR = 0;
+
+    tbody.innerHTML = subs.map(sub => {
+      const isActive = sub.status === 'active';
+      if (isActive) {
+        activeCount++;
+        totalMRR += Number(sub.amount || 0);
+      }
+
+      const expiryDate = sub.expires_at ? new Date(sub.expires_at).toLocaleDateString('de-CH') : 'Unbefristet';
+
+      return `
+        <tr style="border-bottom: 1px solid #eee;">
+          <td style="padding: 10px;">${sub.email || 'Unbekannt'}</td>
+          <td style="padding: 10px;">${sub.plan_name || 'Pro'}</td>
+          <td style="padding: 10px;">
+            <span style="background: ${isActive ? '#d4edda' : '#f8d7da'}; color: ${isActive ? '#155724' : '#721c24'}; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+              ${sub.status || 'inactive'}
+            </span>
+          </td>
+          <td style="padding: 10px;">${expiryDate}</td>
+        </tr>
+      `;
+    }).join('');
+
+    document.getElementById("active-subs-count").textContent = activeCount;
+    document.getElementById("mrr-amount").textContent = `CHF ${totalMRR.toFixed(2)}`;
+
+  } catch (err) {
+    console.error("Fehler beim Laden der Abonnements:", err);
+    document.getElementById("subs-table-body").innerHTML = `<tr><td colspan="4" style="padding: 10px; text-align: center; color: red;">Fehler beim Laden der Daten</td></tr>`;
+  }
 }
 
 requireAdmin().then(isAdmin => {
