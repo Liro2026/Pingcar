@@ -838,11 +838,13 @@ async function showSubscriptions() {
   `;
 
   try {
-   const client = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
-if (!client || typeof client.from !== 'function') {
-  console.error("Supabase client is not properly initialized!");
-  return;
-}
+// Kontrollojmë të gjitha emërtimet e mundshme të klientit të Supabase
+    const client = window.supabase || window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+
+    if (!client || typeof client.from !== 'function') {
+      console.error("Supabase client is not loaded or missing .from() method:", client);
+      return;
+    }
 
     let { data: subs, error } = await client
       .from('subscriptions')
