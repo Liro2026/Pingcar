@@ -838,8 +838,11 @@ async function showSubscriptions() {
   `;
 
   try {
-    const client = window.supabaseClient || window.supabase;
-    if (!client) return;
+    const client = window.supabaseClient || window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+    if (!client) {
+      console.error("Supabase client is not defined!");
+      return;
+    }
 
     let { data: subs, error } = await client
       .from('subscriptions')
