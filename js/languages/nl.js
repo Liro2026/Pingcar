@@ -88,6 +88,18 @@ export default {
 
   footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
 
-  rights: "Alle rechten voorbehouden."
+  rights: "Alle rechten voorbehouden.",
+  trial_heading: "🚀 Probeer 7 dagen gratis.",
+  trial_subheading: "Test alle Premium-functies gratis.",
+  now_new: "⭐ Nu nieuw:",
+  trial_bullet_1: "7 dagen gratis proefperiode.",
+  trial_bullet_2: "Geen betaling vandaag.",
+  trial_bullet_3: "Elk moment opzegbaar.",
+  monthly_plan: "📅 Maandelijks abonnement",
+  yearly_plan: "⭐ Jaarlijks abonnement",
+  per_month: "per maand",
+  per_year: "per jaar",
+  select_monthly: "Kies maandabonnement",
+  select_yearly: "Kies jaarabonnement"
 
 };
