@@ -241,15 +241,22 @@ workflows:
             echo "Messages navigation: OK"
 
             echo ""
+                        echo ""
             echo "=== Verifying iOS runtime patch ==="
 
-            grep -q '__pingcarIOSNavigationInstalled' \
+            grep -q 'id="pingcar-ios-toolbar-style"' \
               "$IOS_PUBLIC/index.html"
 
-            grep -q '__pingcarIOSBackInstalled' \
+            grep -q 'id="pingcar-ios-toolbar-script"' \
               "$IOS_PUBLIC/index.html"
 
-            grep -q '__iosOverrideInstalled' \
+            grep -q 'id="pingcar-ios-language-script"' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q 'pingcar-ios-toolbar' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q 'pingcar-ios-language' \
               "$IOS_PUBLIC/index.html"
 
             if grep -q 'getMessaging(firebaseApp)' "$IOS_PUBLIC/index.html"; then
@@ -263,10 +270,10 @@ workflows:
             fi
 
             echo "iOS runtime patch: VERIFIED"
-            echo "Firebase Messaging startup: REMOVED"
+            echo "Unified iOS toolbar: VERIFIED"
+            echo "Unified iOS language script: VERIFIED"
             echo "iOS Back button: VERIFIED"
-            echo "iOS navigation handler: VERIFIED"
-            echo "iOS language override: VERIFIED"
+            echo "Firebase Messaging startup: REMOVED"
 
             echo ""
             echo "=== Checking page sizes ==="
