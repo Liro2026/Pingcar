@@ -45,5 +45,18 @@ export default {
   resetPassword: "Rivendos fjalëkalimin",
 
   noPersonalData: "Nuk kërkohen të dhëna personale",
-  noPhoneNumber: "Nuk kërkohet numër telefoni"
+  noPhoneNumber: "Nuk kërkohet numër telefoni",
+
+  trial_heading: "🚀 Provo 7 ditë falas.",
+  trial_subheading: "Provo të gjitha funksionet Premium pa pagesë.",
+  now_new: "⭐ Tani e re:",
+  trial_bullet_1: "7 ditë provë pa pagesë.",
+  trial_bullet_2: "Asnjë pagesë sot.",
+  trial_bullet_3: "Anulohet në çdo kohë.",
+  monthly_plan: "📅 Abonim Muajor",
+  yearly_plan: "⭐ Abonim Vjetor",
+  per_month: "në muaj",
+  per_year: "në vit",
+  select_monthly: "Zgjidh abonimin muajor",
+  select_yearly: "Zgjidh abonimin vjetor"
 };
