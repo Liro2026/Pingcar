@@ -855,6 +855,16 @@ def repair_dashboard(text):
                 text[end + 3:]
             )
 
+    # 3. FIX FOR RAW JS LEAKING ON SCREEN (downloadQR / printQR / shareQR)
+    # E mbyll saktë tagun <script> dhe e rihap për funksionet e QR
+    raw_js_pattern = r'(printWindow\.document\.close\(\);\s*\}\;?)\s*(async\s+function\s+downloadQR)'
+    text = re.sub(
+        raw_js_pattern,
+        r'\1\n</script>\n<script>\n\2',
+        text,
+        flags=re.S
+    )
+
     return text
 
 
@@ -971,6 +981,7 @@ print(",".join(SUPPORTED))
 print("")
 print("Dashboard print-template protection: ON")
 print("Dashboard EN/SR repair: ON")
+print("Dashboard QR JS leakage fix: ON")
 print("Firebase Messaging startup removal: ON")
 print("iOS Back button: ON")
 print("iOS tabs: ON")
