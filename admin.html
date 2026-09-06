@@ -167,6 +167,7 @@ PingCar Administrator
 <a onclick="showPush()">🔔 Push-Benachrichtigungen</a>
 
 <a onclick="showStats()">📈 Statistik</a>
+<a onclick="showSubscriptions()">💳 Abonnemente</a>
 
 </nav>
 
@@ -800,6 +801,40 @@ async function showStats() {
   
     
   }
+}
+function showSubscriptions() {
+  const content = document.getElementById("content");
+  content.innerHTML = `
+    <div class="card">
+      <h2>💳 Abonnemente & Stripe</h2>
+      <div style="display: flex; gap: 15px; margin-top: 15px;">
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
+          <small>Aktive Abos</small>
+          <h3 id="active-subs-count" style="margin: 5px 0; color: #28a745;">0</h3>
+        </div>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
+          <small>MRR (Umsatz)</small>
+          <h3 id="mrr-amount" style="margin: 5px 0; color: #007bff;">CHF 0.00</h3>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 25px;">Abonnierte Benutzer</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+          <tr style="text-align: left; border-bottom: 2px solid #ddd; padding-bottom: 8px;">
+            <th>Benutzer</th>
+            <th>Status</th>
+            <th>Ablaufdatum</th>
+          </tr>
+        </thead>
+        <tbody id="subs-table-body">
+          <tr>
+            <td colspan="3" style="padding: 10px; text-align: center; color: #666;">Keine Daten vorhanden</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 requireAdmin().then(isAdmin => {
