@@ -80,6 +80,18 @@ export default {
 
   footerText: "PingCar – bezpečný spôsob, ako kontaktovať majiteľa vozidla.",
 
-  rights: "Všetky práva vyhradené."
+  rights: "Všetky práva vyhradené.",
+  trial_heading: "🚀 Vyskúšajte na 7 dní zadarmo.",
+  trial_subheading: "Otestujte všetky Premium funkcie bezplatne.",
+  now_new: "⭐ Novinka:",
+  trial_bullet_1: "7 dní skúšobná doba zadarmo.",
+  trial_bullet_2: "Dnes žiadna platba.",
+  trial_bullet_3: "Kedykoľvek zrušiteľné.",
+  monthly_plan: "📅 Mesačné predplatné",
+  yearly_plan: "⭐ Ročné predplatné",
+  per_month: "za mesiac",
+  per_year: "za rok",
+  select_monthly: "Vybrať mesačné predplatné",
+  select_yearly: "Vybrať ročné predplatné"
 
 };
