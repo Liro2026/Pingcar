@@ -272,54 +272,49 @@
       });
 
   }
-
+}
   // --------------------------------------------------
   // 8. Central PingCar language object
   // --------------------------------------------------
 
   window.PingCarLanguage = {
 
-  current: null,
+    current: null,
 
-  get: function () {
-    return (
-      localStorage.getItem("pingcar_language") || defaultLanguage
-    );
-  },
+    get: function () {
+      return (
+        localStorage.getItem("pingcar_language") || defaultLanguage
+      );
+    },
 
-  set: async function (language) {
-    if (!supportedLanguages.includes(language)) {
-      console.warn("Unsupported PingCar language:", language);
-      return;
-    }
+    set: function (language) {
+      if (!supportedLanguages.includes(language)) {
+        console.warn("Unsupported PingCar language:", language);
+        return;
+      }
 
-    localStorage.setItem("pingcar_language", language);
-    window.PingCarLanguage.current = language;
+      localStorage.setItem("pingcar_language", language);
+      window.PingCarLanguage.current = language;
 
-    await loadLanguage(language);
+      loadLanguage(language);
 
-    if (typeof window.setLanguage === "function") {
-      window.setLanguage(language);
-    }
-  },
+      if (typeof window.setLanguage === "function") {
+        window.setLanguage(language);
+      }
+    },
 
-  supported: supportedLanguages,
+    supported: supportedLanguages,
 
-  translations: function () {
-    return window.PingCarTranslations || {};
-  },
+    translations: function () {
+      return window.PingCarTranslations || {};
+    },
 
-  translate: function (key) {
-    const translations = window.PingCarTranslations || {};
-    return translations[key] || key;
-  }
-
-};
-
+    translate: function (key) {
+      const translations = window.PingCarTranslations || {};
+      return translations[key] || key;
     }
 
   };
-
   // --------------------------------------------------
   // 9. Start PingCar language system
   // --------------------------------------------------
