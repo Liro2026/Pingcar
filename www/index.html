@@ -2588,24 +2588,46 @@ document.addEventListener("DOMContentLoaded", function() {
   .lang-dropdown.active .lang-menu {
     display: block;
   }
+  .lang-dropdown, .lang-dropdown *, [data-lang], #current-lang-btn {
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent;
+  }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var btn = document.getElementById('current-lang-btn');
-    var dropdown = document.querySelector('.lang-dropdown');
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('current-lang-btn');
+  var dropdown = document.querySelector('.lang-dropdown');
 
-    if (btn && dropdown) {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        dropdown.classList.toggle('active');
-      });
+  // 1. Hapja dhe mbyllja e dropdown-it
+  if (btn && dropdown) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('active');
+    });
 
-      document.addEventListener('click', function() {
-        dropdown.classList.remove('active');
-      });
-    }
+    document.addEventListener('click', function() {
+      dropdown.classList.remove('active');
+    });
+  }
+
+  // 2. Kapja e klikimeve mbi secilën gjuhë
+  var langOptions = document.querySelectorAll('.lang-dropdown [data-lang]');
+  langOptions.forEach(function(opt) {
+    opt.addEventListener('click', function(e) {
+      e.preventDefault();
+      var selectedLang = this.getAttribute('data-lang');
+
+      if (window.PingCarLanguage && typeof window.PingCarLanguage.set === 'function') {
+        window.PingCarLanguage.set(selectedLang);
+      } else if (typeof setLanguage === 'function') {
+        setLanguage(selectedLang);
+      }
+
+      if (dropdown) dropdown.classList.remove('active');
+    });
   });
-</script>  
+});
+</script>
 </body>
 </html>
