@@ -45,5 +45,17 @@ export default {
   resetPassword: "Reimposta la password",
 
   noPersonalData: "Nessun dato personale richiesto",
-  noPhoneNumber: "Nessun numero di telefono richiesto"
+  noPhoneNumber: "Nessun numero di telefono richiesto",
+  trial_heading: "🚀 Prova gratis per 7 giorni.",
+  trial_subheading: "Prova tutte le funzionalità Premium gratuitamente.",
+  now_new: "⭐ Novità:",
+  trial_bullet_1: "7 giorni di prova gratuita.",
+  trial_bullet_2: "Nessun pagamento oggi.",
+  trial_bullet_3: "Annullabile in qualsiasi momento.",
+  monthly_plan: "📅 Abbonamento mensile",
+  yearly_plan: "⭐ Abbonamento annuale",
+  per_month: "al mese",
+  per_year: "all'anno",
+  select_monthly: "Scegli l'abbonamento mensile",
+  select_yearly: "Scegli l'abbonamento annuale"
 };
