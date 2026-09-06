@@ -395,7 +395,7 @@ workflows:
 
     - deploy-to-bitrise-io@2: {}
 
-    - deploy-to-apple-app-store@2:
+    - deploy-to-itunesconnect-deliver@2:
         inputs:
         - connection: api_key
         - ipa_path: "$BITRISE_IPA_PATH"
