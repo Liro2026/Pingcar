@@ -372,6 +372,7 @@ workflows:
             echo "Marketing Version: ${APP_VERSION}"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
+            npx cap sync ios
 
     - manage-ios-code-signing@2:
         inputs:
