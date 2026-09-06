@@ -279,67 +279,42 @@
 
   window.PingCarLanguage = {
 
-    current: null,
+  current: null,
 
-    get: function () {
+  get: function () {
+    return (
+      localStorage.getItem("pingcar_language") || defaultLanguage
+    );
+  },
 
-      return (
-        localStorage.getItem(
-          "pingcar_language"
-        ) || defaultLanguage
-      );
+  set: async function (language) {
+    if (!supportedLanguages.includes(language)) {
+      console.warn("Unsupported PingCar language:", language);
+      return;
+    }
 
-    },
+    localStorage.setItem("pingcar_language", language);
+    window.PingCarLanguage.current = language;
 
-    set: function (language) {
+    await loadLanguage(language);
 
-      if (
-        !supportedLanguages.includes(language)
-      ) {
-        console.warn(
-          "Unsupported PingCar language:",
-          language
-        );
+    if (typeof window.setLanguage === "function") {
+      window.setLanguage(language);
+    }
+  },
 
-        return;
-      }
+  supported: supportedLanguages,
 
-      localStorage.setItem(
-        "pingcar_language",
-        language
-      );
+  translations: function () {
+    return window.PingCarTranslations || {};
+  },
 
-      window.PingCarLanguage.current =
-        language;
-if (typeof window.setLanguage === "function") {
-  window.setLanguage(language);
-  return;
-}
-   
+  translate: function (key) {
+    const translations = window.PingCarTranslations || {};
+    return translations[key] || key;
+  }
 
-loadLanguage(language);
-
-    },
-
-    supported:
-      supportedLanguages,
-
-    translations: function () {
-
-      return (
-        window.PingCarTranslations || {}
-      );
-
-    },
-
-    translate: function (key) {
-
-      const translations =
-        window.PingCarTranslations || {};
-
-      return (
-        translations[key] || key
-      );
+};
 
     }
 
