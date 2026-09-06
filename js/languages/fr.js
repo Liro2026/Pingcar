@@ -45,5 +45,17 @@ export default {
   resetPassword: "Réinitialiser le mot de passe",
 
   noPersonalData: "Aucune donnée personnelle requise",
-  noPhoneNumber: "Aucun numéro de téléphone requis"
+  noPhoneNumber: "Aucun numéro de téléphone requis",
+  trial_heading: "🚀 Essayez gratuitement pendant 7 jours.",
+  trial_subheading: "Essayez toutes les fonctionnalités Premium gratuitement.",
+  now_new: "⭐ Nouveau :",
+  trial_bullet_1: "7 jours d'essai gratuit.",
+  trial_bullet_2: "Aucun paiement aujourd'hui.",
+  trial_bullet_3: "Annulable à tout moment.",
+  monthly_plan: "📅 Abonnement mensuel",
+  yearly_plan: "⭐ Abonnement annuel",
+  per_month: "par mois",
+  per_year: "par an",
+  select_monthly: "Choisir l'abonnement mensuel",
+  select_yearly: "Choisir l'abonnement annuel"
 };
