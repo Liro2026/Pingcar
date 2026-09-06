@@ -838,12 +838,15 @@ async function showSubscriptions() {
   `;
 
   try {
-    const { data: subs, error } = await supabaseClient
+    let { data: subs, error } = await supabaseClient
       .from('subscriptions')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+  console.error("Supabase Error:", error);
+  subs = [];
+}
 
     const tbody = document.getElementById("subs-table-body");
     
@@ -880,9 +883,13 @@ async function showSubscriptions() {
       `;
     }).join('');
 
+    tbody.innerHTML = rows;
     document.getElementById("active-subs-count").textContent = activeCount;
     document.getElementById("mrr-amount").textContent = `CHF ${totalMRR.toFixed(2)}`;
-
+  } catch (err) {
+    console.error("JS Error:", err);
+  }
+}
   } catch (err) {
     console.error("Fehler beim Laden der Abonnements:", err);
     document.getElementById("subs-table-body").innerHTML = `<tr><td colspan="4" style="padding: 10px; text-align: center; color: red;">Fehler beim Laden der Daten</td></tr>`;
