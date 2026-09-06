@@ -44,6 +44,18 @@ export default {
   welcome: "Üdvözöljük a PingCarnál",
   contactTitle: "Kapcsolat",
   footerText: "PingCar – biztonságos módja a járműtulajdonosok elérésének.",
-  rights: "Minden jog fenntartva."
+  rights: "Minden jog fenntartva.",
+  trial_heading: "🚀 Próbálja ki 7 napig ingyen.",
+  trial_subheading: "Tesztelje az összes Premium funkciót ingyenesen.",
+  now_new: "⭐ Új funkció:",
+  trial_bullet_1: "7 napos ingyenes próbaidőszak.",
+  trial_bullet_2: "Nincs fizetés ma.",
+  trial_bullet_3: "Bármikor lemondható.",
+  monthly_plan: "📅 Havi előfizetés",
+  yearly_plan: "⭐ Éves előfizetés",
+  per_month: "havonta",
+  per_year: "évente",
+  select_monthly: "Havi csomag kiválasztása",
+  select_yearly: "Éves csomag kiválasztása"
 
 };
