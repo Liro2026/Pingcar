@@ -321,19 +321,19 @@ workflows:
             echo "Xcode project: OK"
 
             echo ""
-            echo "=== Setting Build Number 27 ==="
+            echo "=== Setting Build Number 28 ==="
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 27;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 28;/g' \
               "$PROJECT_FILE"
 
-            if ! grep -q "CURRENT_PROJECT_VERSION = 27;" "$PROJECT_FILE"
+            if ! grep -q "CURRENT_PROJECT_VERSION = 28;" "$PROJECT_FILE"
             then
-              echo "ERROR: Build number 27 was not set."
+              echo "ERROR: Build number 28 was not set."
               exit 1
             fi
 
-            echo "Build Number: 27"
+            echo "Build Number: 28"
 
             echo ""
             echo "=== Checking Bundle ID ==="
@@ -357,7 +357,7 @@ workflows:
             echo "Navigation: VERIFIED"
             echo "Languages: 14 OK"
             echo "Runtime patch: VERIFIED"
-            echo "Build Number: 27"
+            echo "Build Number: 28"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
 
