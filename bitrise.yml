@@ -26,6 +26,19 @@ workflows:
             mkdir -p "$IOS_PUBLIC"
             cp -R "www/." "$IOS_PUBLIC/"
 
+            echo "=== Restoring Storyboard files for Xcode ==="
+            BASE_LPROJ="ios/App/App/Base.lproj"
+
+            if [ -f "$BASE_LPROJ/Main.storyboard.xml" ]; then
+              cp "$BASE_LPROJ/Main.storyboard.xml" "$BASE_LPROJ/Main.storyboard"
+              echo "Main.storyboard restored."
+            fi
+
+            if [ -f "$BASE_LPROJ/LaunchScreen.storyboard.xml" ]; then
+              cp "$BASE_LPROJ/LaunchScreen.storyboard.xml" "$BASE_LPROJ/LaunchScreen.storyboard"
+              echo "LaunchScreen.storyboard restored."
+            fi
+
             echo "=== Setting Build Number 35 ==="
             PROJECT_FILE="ios/App/App.xcodeproj/project.pbxproj"
             APP_VERSION=$(node -p "require('./package.json').version")
@@ -38,7 +51,7 @@ workflows:
               "s/MARKETING_VERSION = [^\";]+;/MARKETING_VERSION = ${APP_VERSION};/g" \
               "$PROJECT_FILE"
 
-            echo "Done! Direct copy complete."
+            echo "Done! Preparation complete."
 
     - manage-ios-code-signing@2:
         inputs:
