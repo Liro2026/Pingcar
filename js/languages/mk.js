@@ -88,6 +88,18 @@ export default {
 
   footerText: "PingCar – безбедно решение за сопствениците на возила.",
 
-  rights: "Сите права се задржани."
+  rights: "Сите права се задржани.",
+  trial_heading: "🚀 Пробајте 7 дена бесплатно.",
+  trial_subheading: "Тестирајте ги сите Premium функции бесплатно.",
+  now_new: "⭐ Ново:",
+  trial_bullet_1: "7 дена бесплатен пробен период.",
+  trial_bullet_2: "Без плаќање денес.",
+  trial_bullet_3: "Откажете во секое време.",
+  monthly_plan: "📅 Месечна претплата",
+  yearly_plan: "⭐ Годишна претплата",
+  per_month: "месечно",
+  per_year: "годишно",
+  select_monthly: "Избери месечна претплата",
+  select_yearly: "Избери годишна претплата"
 
 };
