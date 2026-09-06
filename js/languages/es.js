@@ -36,6 +36,18 @@ export default {
   registerFree: "Registrarse gratis",
   resetPassword: "Restablecer contraseña",
   noPersonalData: "No se requieren datos personales",
-  noPhoneNumber: "No se requiere número de teléfono"
+  noPhoneNumber: "No se requiere número de teléfono",
+  trial_heading: "🚀 Pruébalo gratis durante 7 días.",
+  trial_subheading: "Prueba todas las funciones Premium gratis.",
+  now_new: "⭐ Novedad:",
+  trial_bullet_1: "Prueba gratuita de 7 días.",
+  trial_bullet_2: "Sin pagos hoy.",
+  trial_bullet_3: "Cancela en cualquier momento.",
+  monthly_plan: "📅 Suscripción mensual",
+  yearly_plan: "⭐ Suscripción anual",
+  per_month: "al mes",
+  per_year: "al año",
+  select_monthly: "Elegir plan mensual",
+  select_yearly: "Elegir plan anual"
 
 };
