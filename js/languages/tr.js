@@ -44,5 +44,17 @@ export default {
   
   contactTitle: "İletişim",
   footerText: "PingCar – araç sahibine ulaşmanın güvenli yolu.",
-  rights: "Tüm hakları saklıdır."
+  rights: "Tüm hakları saklıdır.",
+  trial_heading: "🚀 7 gün ücretsiz deneyin.",
+  trial_subheading: "Tüm Premium özellikleri ücretsiz test edin.",
+  now_new: "⭐ Şimdi yeni:",
+  trial_bullet_1: "7 gün ücretsiz deneme.",
+  trial_bullet_2: "Bugün ödeme yok.",
+  trial_bullet_3: "İstediğiniz zaman iptal edin.",
+  monthly_plan: "📅 Aylık Abonelik",
+  yearly_plan: "⭐ Yıllık Abonelik",
+  per_month: "aylık",
+  per_year: "yıllık",
+  select_monthly: "Aylık planı seç",
+  select_yearly: "Yıllık planı seç"
 };
