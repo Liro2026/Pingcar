@@ -325,17 +325,17 @@ workflows:
             echo "Xcode project: OK"
 
             echo ""
-            echo "=== Setting Build Number 31 & Syncing Marketing Version ==="
+            echo "=== Setting Build Number 32 & Syncing Marketing Version ==="
 
             APP_VERSION=$(node -p "require('./package.json').version")
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 31;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 32;/g' \
               "$PROJECT_FILE"
 
-            if ! grep -q "CURRENT_PROJECT_VERSION = 31;" "$PROJECT_FILE"
+            if ! grep -q "CURRENT_PROJECT_VERSION = 32;" "$PROJECT_FILE"
             then
-              echo "ERROR: Build number 31 was not set."
+              echo "ERROR: Build number 32 was not set."
               exit 1
             fi
 
@@ -343,7 +343,7 @@ workflows:
               "s/MARKETING_VERSION = [^\";]+;/MARKETING_VERSION = ${APP_VERSION};/g" \
               "$PROJECT_FILE"
 
-            echo "Build Number: 31"
+            echo "Build Number: 32"
             echo "Marketing Version: ${APP_VERSION}"
 
             echo ""
@@ -368,7 +368,7 @@ workflows:
             echo "Navigation: VERIFIED"
             echo "Languages: 14 OK"
             echo "Runtime patch: VERIFIED"
-            echo "Build Number: 31"
+            echo "Build Number: 32"
             echo "Marketing Version: ${APP_VERSION}"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
