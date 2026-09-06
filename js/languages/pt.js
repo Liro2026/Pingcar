@@ -84,6 +84,18 @@ export default {
 
   footerText: "PingCar – uma solução segura para proprietários de veículos.",
 
-  rights: "Todos os direitos reservados."
+  rights: "Todos os direitos reservados.",
+  trial_heading: "🚀 Experimente grátis por 7 dias.",
+  trial_subheading: "Teste todas as funcionalidades Premium gratuitamente.",
+  now_new: "⭐ Novo:",
+  trial_bullet_1: "7 dias de teste grátis.",
+  trial_bullet_2: "Sem pagamento hoje.",
+  trial_bullet_3: "Cancele a qualquer momento.",
+  monthly_plan: "📅 Subscrição Mensal",
+  yearly_plan: "⭐ Subscrição Anual",
+  per_month: "por mês",
+  per_year: "por ano",
+  select_monthly: "Escolher plano mensal",
+  select_yearly: "Escolher plano anual"
 
 };
