@@ -838,11 +838,20 @@ async function showSubscriptions() {
   `;
 
   try {
-// Kontrollojmë të gjitha emërtimet e mundshme të klientit të Supabase
-    const client = window.supabase || window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+// Përdorim klientin e inicializuar ose e krijojmë nëse nuk ekziston
+    let client = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
 
     if (!client || typeof client.from !== 'function') {
-      console.error("Supabase client is not loaded or missing .from() method:", client);
+      const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+      const SUPABASE_ANON_KEY = "anon-key-jot-këtu"; // Vendos këtu Anon Key tënd
+      
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    }
+
+    if (!client || typeof client.from !== 'function') {
+      console.error("Nuk u mundësua inicializimi i Supabase client");
       return;
     }
 
