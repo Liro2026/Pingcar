@@ -138,6 +138,17 @@ workflows:
                 -o "$IOS_PUBLIC/js/languages/$lang.js"
             done
 
+            echo ""
+            echo "=== Applying iOS-only runtime patch ==="
+
+            if [ ! -f "ios/App/App/ios-web-patch.py" ]; then
+              echo "ERROR: iOS patch script is missing."
+              exit 1
+            fi
+
+            python3 "ios/App/App/ios-web-patch.py"
+
+            echo "iOS-only runtime patch applied."
             echo "Language system prepared."
 
             echo ""
@@ -230,6 +241,34 @@ workflows:
             echo "Messages navigation: OK"
 
             echo ""
+            echo "=== Verifying iOS runtime patch ==="
+
+            grep -q '__pingcarIOSNavigationInstalled' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q '__pingcarIOSBackInstalled' \
+              "$IOS_PUBLIC/index.html"
+
+            grep -q '__iosOverrideInstalled' \
+              "$IOS_PUBLIC/index.html"
+
+            if grep -q 'getMessaging(firebaseApp)' "$IOS_PUBLIC/index.html"; then
+              echo "ERROR: Firebase Messaging startup is still present."
+              exit 1
+            fi
+
+            if grep -q 'firebase-messaging.js' "$IOS_PUBLIC/index.html"; then
+              echo "ERROR: firebase-messaging.js import is still present."
+              exit 1
+            fi
+
+            echo "iOS runtime patch: VERIFIED"
+            echo "Firebase Messaging startup: REMOVED"
+            echo "iOS Back button: VERIFIED"
+            echo "iOS navigation handler: VERIFIED"
+            echo "iOS language override: VERIFIED"
+
+            echo ""
             echo "=== Checking page sizes ==="
 
             for page in index qr contact dashboard message admin
@@ -282,19 +321,19 @@ workflows:
             echo "Xcode project: OK"
 
             echo ""
-            echo "=== Setting Build Number 23 ==="
+            echo "=== Setting Build Number 26 ==="
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 23;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 26;/g' \
               "$PROJECT_FILE"
 
-            if ! grep -q "CURRENT_PROJECT_VERSION = 23;" "$PROJECT_FILE"
+            if ! grep -q "CURRENT_PROJECT_VERSION = 26;" "$PROJECT_FILE"
             then
-              echo "ERROR: Build number 23 was not set."
+              echo "ERROR: Build number 26 was not set."
               exit 1
             fi
 
-            echo "Build Number: 23"
+            echo "Build Number: 26"
 
             echo ""
             echo "=== Checking Bundle ID ==="
@@ -317,7 +356,8 @@ workflows:
             echo "iOS public: READY"
             echo "Navigation: VERIFIED"
             echo "Languages: 14 OK"
-            echo "Build Number: 23"
+            echo "Runtime patch: VERIFIED"
+            echo "Build Number: 26"
             echo "Bundle ID: ch.pingcar.app"
             echo "========================================"
 
