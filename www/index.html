@@ -2,7 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- FIX PËR IOS: viewport-fit=cover kërkohet për safe area -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <script src="capacitor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>PingCar</title>
@@ -26,7 +27,11 @@ header{
   background:linear-gradient(135deg,#0066ff,#00bfff);
   color:white;
   text-align:center;
-  padding: calc(env(safe-area-inset-top) + 18px) 15px 25px;
+  /* FIX PËR IOS DYNAMIC ISLAND / NOTCH */
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-bottom: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
   position: relative;
   z-index: 10;
 }
@@ -156,9 +161,10 @@ footer{
   text-align: center;
 }
 
+/* FIX PËR BUTONIN BACK NË IOS MOBIL */
 .back-btn-global {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
   left: 20px;
   z-index: 99999;
   background: #0066ff;
@@ -179,13 +185,40 @@ footer{
   transform: scale(0.96);
   background: #0052cc;
 }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 999999;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.close-btn {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #888;
+}
 </style>
 </head>
 
 <body>
 
-<!-- Butoni Back i fiksuar në këndin e majtë -->
-<button class="back-btn-global" type="button" onclick="window.history.back()">
+<!-- BUTONI BACK PËR IOS MOBILE -->
+<button class="back-btn-global" id="globalBackBtn" type="button" onclick="handleGoBack()">
   ⬅️ <span id="t-back-btn">Zurück</span>
 </button>
 
@@ -255,12 +288,10 @@ footer{
     <h3 id="t-step4-title">4. QR-Code scannen</h3>
     <p id="t-step4-desc">Eine andere Person scannt den QR-Code mit dem Smartphone.</p>
   </div>
-  <div class="item">
+  <div class="item" style="cursor:pointer;" onclick="openQrModal()">
     <h3>📱 Entdecke PingCar</h3>
-    <p>Scanne den QR-Code und öffne direkt PingCar.ch.</p>
-    <a href="https://www.pingcar.ch/" target="_blank">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar QR-Code" style="width:180px;display:block;margin:15px auto;">
-    </a>
+    <p>Klicke hier oder scanne den QR-Code, um PingCar.ch zu öffnen.</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar QR-Code" style="width:180px;display:block;margin:15px auto;">
     <p><strong>www.pingcar.ch</strong></p>
   </div>
   <div class="item">
@@ -268,6 +299,61 @@ footer{
     <p id="t-step5-desc">Sie erhalten sofort eine Nachricht in der PingCar-App.</p>
   </div>
 </div>
+</div>
+
+<!-- SEKCIONI I ABONIMEVE I PLOTË -->
+<div class="card" id="pricing">
+  <h2 style="text-align:center; margin-bottom: 10px;">Unsere Abonnements</h2>
+  <p style="text-align:center; color: #666; margin-bottom: 30px;">Wählen Sie den passenden Plan für Ihre Bedürfnisse.</p>
+  
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+    
+    <!-- GRATIS -->
+    <div class="item" style="background: #fff; border: 2px solid #eef6ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3 style="font-size: 24px; color: #333;">Gratis</h3>
+        <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 0.- <span style="font-size: 14px; color: #888;">/ Monat</span></div>
+        <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
+          <li>✅ Basic QR-Code Aktivierung</li>
+          <li>✅ Benachrichtigungen erhalten</li>
+          <li>❌ Keine Prioritäts-Support</li>
+        </ul>
+      </div>
+      <a href="#registerForm" class="button" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #eef6ff; color: #0066ff;">Kostenlos Starten</a>
+    </div>
+
+    <!-- STANDARD -->
+    <div class="item" style="background: #fff; border: 2px solid #0066ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 10px 25px rgba(0,102,255,0.15);">
+      <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #0066ff; color: white; padding: 4px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">Beliebt</div>
+      <div>
+        <h3 style="font-size: 24px; color: #333;">Standard</h3>
+        <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 4.90 <span style="font-size: 14px; color: #888;">/ Monat</span></div>
+        <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
+          <li>✅ Alles aus Gratis</li>
+          <li>✅ 1x Physischer QR-Sticker inklusive</li>
+          <li>✅ Direkter In-App Chat</li>
+          <li>✅ Prioritäts-Benachrichtigung</li>
+        </ul>
+      </div>
+      <button onclick="subscribe('standard')" class="button" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #0066ff; color: white; border: none;">Abonnieren</button>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="item" style="background: #fff; border: 2px solid #eef6ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3 style="font-size: 24px; color: #333;">Premium</h3>
+        <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 9.90 <span style="font-size: 14px; color: #888;">/ Monat</span></div>
+        <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
+          <li>✅ Mehrere Fahrzeuge (bis zu 3)</li>
+          <li>✅ 3x Hochwertige QR-Sticker</li>
+          <li>✅ VIP 24/7 Support</li>
+          <li>✅ Anonyme Anrufe weiterleiten</li>
+        </ul>
+      </div>
+      <button onclick="subscribe('premium')" class="button" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #111; color: white; border: none;">Abonnieren</button>
+    </div>
+
+  </div>
 </div>
 
 <div class="card">
@@ -293,6 +379,16 @@ footer{
   <button id="logoutButton" style="padding:10px 20px;background:#dc3545;color:white;border:0;border-radius:8px;cursor:pointer;margin-top:10px;">Abmelden</button>
 </div>
 </div>
+</div>
+
+<!-- Modal i QR Code -->
+<div id="qrModal" class="modal-overlay" onclick="closeQrModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close-btn" onclick="closeQrModal()">&times;</span>
+    <h3 style="margin-bottom:15px; color:#0066ff;">PingCar.ch</h3>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar Big QR" style="width:220px; height:220px; margin:auto; display:block;">
+    <p style="margin-top:15px; font-size:14px; color:#555;">Scanne diesen Code mit deiner Kamera, um auf die Website zu gelangen.</p>
+  </div>
 </div>
 
 <footer>
@@ -354,6 +450,27 @@ function toggleLangMenu(e) {
   menu.classList.toggle("show");
 }
 
+/* LOGJIKA E BUTONIT BACK PËR APP MOBILE */
+function handleGoBack() {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = "index.html";
+  }
+}
+
+function openQrModal() {
+  document.getElementById("qrModal").style.display = "flex";
+}
+
+function closeQrModal(e) {
+  document.getElementById("qrModal").style.display = "none";
+}
+
+function subscribe(plan) {
+  alert("Vielen Dank! Sie haben den Plan gewählt: " + plan.toUpperCase() + ". Weiterleitung zur Zahlung...");
+}
+
 const langDetails = {
   de: { code: 'CH', name: 'Deutsch (DE)' },
   fr: { code: 'FR', name: 'Français (FR)' },
@@ -372,29 +489,35 @@ const langDetails = {
 };
 
 const translations = {
-  de: { backBtn: "Zurück", heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.", registerBtn: "🚗 Jetzt kostenlos registrieren", howItWorks: "So funktioniert PingCar", step1Title: "1. Registrieren", step1Desc: "Erstellen Sie kostenlos Ihr PingCar-Konto." },
-  sq: { backBtn: "Prapa", heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.", registerBtn: "🚗 Regjistrohu falas tani", howItWorks: "Si funksionon PingCar", step1Title: "1. Regjistrohu", step1Desc: "Krijo llogarinë tënde PingCar falas." },
-  en: { backBtn: "Back", heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.", registerBtn: "🚗 Register now for free", howItWorks: "How PingCar works", step1Title: "1. Register", step1Desc: "Create your free PingCar account." },
-  fr: { backBtn: "Retour", heroDesc: "La solution sécurisée pour contacter le propriétaire du véhicule – sans numéro de téléphone.", registerBtn: "🚗 Inscrivez-vous gratuitement", howItWorks: "Comment fonctionne PingCar", step1Title: "1. S'inscrire", step1Desc: "Créez votre compte PingCar gratuit." },
-  it: { backBtn: "Indietro", heroDesc: "La soluzione sicura per contattare il proprietario del veicolo – senza numero di telefono.", registerBtn: "🚗 Registrati ora gratuitamente", howItWorks: "Come funziona PingCar", step1Title: "1. Registrati", step1Desc: "Crea il tuo account PingCar gratuito." },
-  sr: { backBtn: "Nazad", heroDesc: "Sigurno rešenje za kontaktiranje vlasnika vozila – bez broja telefona i ličnih podataka.", registerBtn: "🚗 Registrujte se besplatno", howItWorks: "Kako PingCar funkcioniše", step1Title: "1. Registracija", step1Desc: "Kreirajte besplatan PingCar nalog." },
-  es: { backBtn: "Atrás", heroDesc: "La solución segura para contactar al propietario del vehículo – sin número de teléfono.", registerBtn: "🚗 Regístrate gratis ahora", howItWorks: "Cómo funciona PingCar", step1Title: "1. Registrarse", step1Desc: "Crea tu cuenta PingCar gratuita." },
-  tr: { backBtn: "Geri", heroDesc: "Araç sahibine ulaşmanın güvenli yolu – telefon numarası ve kişisel veri olmadan.", registerBtn: "🚗 Şimdi ücretsiz kaydolun", howItWorks: "PingCar nasıl çalışır", step1Title: "1. Kaydolun", step1Desc: "Ücretsiz PingCar hesabınızı oluşturun." },
-  sk: { backBtn: "Späť", heroDesc: "Bezpečné riešenie na kontaktovanie vlastníka vozidla – bez telefónneho čísla.", registerBtn: "🚗 Zaregistrujte sa zadarmo", howItWorks: "Ako PingCar funguje", step1Title: "1. Registrácia", step1Desc: "Vytvorte si bezplatný účet PingCar." },
-  hr: { backBtn: "Natrag", heroDesc: "Sigurno rješenje za kontaktiranje vlasnika vozila – bez broja telefona.", registerBtn: "🚗 Registrirajte se besplatno", howItWorks: "Kako PingCar radi", step1Title: "1. Registracija", step1Desc: "Izradite besplatni PingCar račun." },
-  hu: { backBtn: "Vissza", heroDesc: "A biztonságos megoldás a járműtulajdonosok elérésére – telefonszám nélkül.", registerBtn: "🚗 Regisztráljon ingyenesen", howItWorks: "Hogyan működik a PingCar", step1Title: "1. Regisztráció", step1Desc: "Hozza létre ingyenes PingCar fiókját." },
-  pt: { backBtn: "Voltar", heroDesc: "A solução segura para contactar o proprietário do veículo – sem número de telefone.", registerBtn: "🚗 Registe-se gratuitamente", howItWorks: "Como funciona o PingCar", step1Title: "1. Registo", step1Desc: "Crie a sua conta PingCar gratuita." },
-  mk: { backBtn: "Назад", heroDesc: "Безбедно решение за контактирање на сопственикот на возилото – без телефонски број.", registerBtn: "🚗 Регистрирајте се бесплатно", howItWorks: "Како функционира PingCar", step1Title: "1. Регистрирај се", step1Desc: "Креирајте ја вашата бесплатна сметка за PingCar." },
-  nl: { backBtn: "Terug", heroDesc: "De veilige oplossing om contact op te nemen met voertuigeigenaren – zonder telefoonnummer.", registerBtn: "🚗 Nu gratis registreren", howItWorks: "Hoe PingCar werkt", step1Title: "1. Registreren", step1Desc: "Maak uw gratis PingCar-account aan." }
+  de: { backBtn: "Zurück", heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.", registerBtn: "🚗 Jetzt kostenlos registrieren", howItWorks: "So funktioniert PingCar" },
+  sq: { backBtn: "Prapa", heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.", registerBtn: "🚗 Regjistrohu falas tani", howItWorks: "Si funksionon PingCar" },
+  en: { backBtn: "Back", heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.", registerBtn: "🚗 Register now for free", howItWorks: "How PingCar works" },
+  fr: { backBtn: "Retour", heroDesc: "La solution sécurisée pour contacter le propriétaire du véhicule – sans numéro de téléphone.", registerBtn: "🚗 Inscrivez-vous gratuitement", howItWorks: "Comment fonctionne PingCar" },
+  it: { backBtn: "Indietro", heroDesc: "La soluzione sicura per contattare il proprietario del veicolo – senza numero di telefono.", registerBtn: "🚗 Registrati ora gratuitamente", howItWorks: "Come funziona PingCar" },
+  sr: { backBtn: "Nazad", heroDesc: "Sigurno rešenje za kontaktiranje vlasnika vozila – bez broja telefona i ličnih podataka.", registerBtn: "🚗 Registrujte se besplatno", howItWorks: "Kako PingCar funkcioniše" },
+  es: { backBtn: "Atrás", heroDesc: "La solución segura para contactar al propietario del vehículo – sin número de teléfono.", registerBtn: "🚗 Regístrate gratis ahora", howItWorks: "Cómo funciona PingCar" },
+  tr: { backBtn: "Geri", heroDesc: "Araç sahibine ulaşmanın güvenli yolu – telefon numarası ve kişisel veri olmadan.", registerBtn: "🚗 Şimdi ücretsiz kaydolun", howItWorks: "PingCar nasıl çalışır" },
+  sk: { backBtn: "Späť", heroDesc: "Bezpečné riešenie na kontaktovanie vlastníka vozidla – bez telefónneho čísla.", registerBtn: "🚗 Zaregistrujte sa zadarmo", howItWorks: "Ako PingCar funguje" },
+  hr: { backBtn: "Natrag", heroDesc: "Sigurno rješenje za kontaktiranje vlasnika vozila – bez broja telefona.", registerBtn: "🚗 Registrirajte se besplatno", howItWorks: "Kako PingCar radi" },
+  hu: { backBtn: "Vissza", heroDesc: "A biztonságos megoldás a járműtulajdonosok elérésére – telefonszám nélkül.", registerBtn: "🚗 Regisztráljon ingyenesen", howItWorks: "Hogyan működik a PingCar" },
+  pt: { backBtn: "Voltar", heroDesc: "A solução segura para contactar o proprietário do veículo – sem número de telefone.", registerBtn: "🚗 Registe-se gratuitamente", howItWorks: "Como funciona o PingCar" },
+  mk: { backBtn: "Назад", heroDesc: "Безбедно решение за контактирање на сопственикот на возилото – без телефонски број.", registerBtn: "🚗 Регистрирајте се бесплатно", howItWorks: "Како функционира PingCar" },
+  nl: { backBtn: "Terug", heroDesc: "De veilige oplossing om contact op te nemen met voertuigeigenaren – zonder telefoonnummer.", registerBtn: "🚗 Nu gratis registreren", howItWorks: "Hoe PingCar werkt" }
 };
 
 function setLanguage(lang, e) {
   if (e) e.stopPropagation();
   
   const detail = langDetails[lang] || langDetails['de'];
-  document.getElementById("current-code").innerText = detail.code;
-  document.getElementById("current-lang-text").innerText = detail.name;
-  document.getElementById("lang-menu").classList.remove("show");
+  const codeEl = document.getElementById("current-code");
+  const textEl = document.getElementById("current-lang-text");
+  
+  if (codeEl) codeEl.innerText = detail.code;
+  if (textEl) textEl.innerText = detail.name;
+  
+  const menu = document.getElementById("lang-menu");
+  if (menu) menu.classList.remove("show");
+  
   localStorage.setItem("pingcar_lang", lang);
 
   const t = translations[lang] || translations['de'];
@@ -403,20 +526,22 @@ function setLanguage(lang, e) {
     if(document.getElementById("t-hero-desc")) document.getElementById("t-hero-desc").innerText = t.heroDesc;
     if(document.getElementById("t-register-btn")) document.getElementById("t-register-btn").innerText = t.registerBtn;
     if(document.getElementById("t-how-it-works")) document.getElementById("t-how-it-works").innerText = t.howItWorks;
-    if(document.getElementById("t-step1-title")) document.getElementById("t-step1-title").innerText = t.step1Title;
-    if(document.getElementById("t-step1-desc")) document.getElementById("t-step1-desc").innerText = t.step1Desc;
   }
 }
 
 document.addEventListener('click', function(event) {
   const dropdown = document.querySelector('.lang-dropdown');
   if (dropdown && !dropdown.contains(event.target)) {
-    document.getElementById("lang-menu").classList.remove("show");
+    const menu = document.getElementById("lang-menu");
+    if (menu) menu.classList.remove("show");
   }
 });
 
-const savedLang = localStorage.getItem("pingcar_lang") || "de";
-setLanguage(savedLang);
+// Ekzekuton gjuhën e ruajtur pashmangshmërisht sapo ngarkohet faqja
+document.addEventListener("DOMContentLoaded", function() {
+  const savedLang = localStorage.getItem("pingcar_lang") || "de";
+  setLanguage(savedLang);
+});
 </script>
 
 </body>
