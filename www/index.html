@@ -2,7 +2,6 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<!-- FIX PËR IOS: viewport-fit=cover kërkohet për safe area -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <script src="capacitor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,7 +26,6 @@ header{
   background:linear-gradient(135deg,#0066ff,#00bfff);
   color:white;
   text-align:center;
-  /* FIX PËR IOS DYNAMIC ISLAND / NOTCH */
   padding-top: max(20px, env(safe-area-inset-top));
   padding-bottom: 25px;
   padding-left: 15px;
@@ -47,6 +45,7 @@ header{
   font-size:20px;
   font-weight:bold;
   cursor:pointer;
+  touch-action: manipulation;
 }
 
 .container{
@@ -81,6 +80,15 @@ h2{
   border-radius:14px;
 }
 
+.clickable-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  touch-action: manipulation;
+}
+.clickable-card:active {
+  transform: scale(0.98);
+}
+
 footer{
   background:#111;
   color:white;
@@ -107,6 +115,7 @@ footer{
   display: flex;
   align-items: center;
   gap: 6px;
+  touch-action: manipulation;
 }
 
 .lang-menu {
@@ -143,6 +152,7 @@ footer{
   border-bottom: 1px solid #eee;
   cursor: pointer;
   -webkit-appearance: none;
+  touch-action: manipulation;
 }
 
 .lang-option:last-child {
@@ -161,7 +171,6 @@ footer{
   text-align: center;
 }
 
-/* FIX PËR BUTONIN BACK NË IOS MOBIL */
 .back-btn-global {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom));
@@ -180,6 +189,7 @@ footer{
   align-items: center;
   gap: 6px;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .back-btn-global:active {
   transform: scale(0.96);
@@ -288,12 +298,15 @@ footer{
     <h3 id="t-step4-title">4. QR-Code scannen</h3>
     <p id="t-step4-desc">Eine andere Person scannt den QR-Code mit dem Smartphone.</p>
   </div>
-  <div class="item" style="cursor:pointer;" onclick="openQrModal()">
-    <h3>📱 Entdecke PingCar</h3>
-    <p>Klicke hier oder scanne den QR-Code, um PingCar.ch zu öffnen.</p>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar QR-Code" style="width:180px;display:block;margin:15px auto;">
+  
+  <!-- KARTA E KLIKUESHME (ME ROLE BUTTON PËR IOS TOUCH) -->
+  <div class="item clickable-card" role="button" tabindex="0" onclick="openQrModal()">
+    <h3 id="t-discover-title">📱 Entdecke PingCar</h3>
+    <p id="t-discover-desc">Klicke hier oder scanne den QR-Code, um PingCar.ch zu öffnen.</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar QR-Code" style="width:180px;display:block;margin:15px auto;pointer-events:none;">
     <p><strong>www.pingcar.ch</strong></p>
   </div>
+  
   <div class="item">
     <h3 id="t-step5-title">5. Benachrichtigung</h3>
     <p id="t-step5-desc">Sie erhalten sofort eine Nachricht in der PingCar-App.</p>
@@ -301,17 +314,15 @@ footer{
 </div>
 </div>
 
-<!-- SEKCIONI I ABONIMEVE I PLOTË -->
 <div class="card" id="pricing">
-  <h2 style="text-align:center; margin-bottom: 10px;">Unsere Abonnements</h2>
-  <p style="text-align:center; color: #666; margin-bottom: 30px;">Wählen Sie den passenden Plan für Ihre Bedürfnisse.</p>
+  <h2 id="t-sub-title" style="text-align:center; margin-bottom: 10px;">Unsere Abonnements</h2>
+  <p id="t-sub-desc" style="text-align:center; color: #666; margin-bottom: 30px;">Wählen Sie den passenden Plan für Ihre Bedürfnisse.</p>
   
   <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
     
-    <!-- GRATIS -->
     <div class="item" style="background: #fff; border: 2px solid #eef6ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
-        <h3 style="font-size: 24px; color: #333;">Gratis</h3>
+        <h3>Gratis</h3>
         <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 0.- <span style="font-size: 14px; color: #888;">/ Monat</span></div>
         <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
           <li>✅ Basic QR-Code Aktivierung</li>
@@ -319,14 +330,14 @@ footer{
           <li>❌ Keine Prioritäts-Support</li>
         </ul>
       </div>
-      <a href="#registerForm" class="button" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #eef6ff; color: #0066ff;">Kostenlos Starten</a>
+      <a href="#registerForm" class="button" id="t-btn-free" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #eef6ff; color: #0066ff;">Kostenlos Starten</a>
     </div>
 
-    <!-- STANDARD -->
+    <!-- BUTONAT E ABONIMIT ME TYPE="BUTTON" DHE ONCLICK TË REGJISTRUAR PLOTËSISHT -->
     <div class="item" style="background: #fff; border: 2px solid #0066ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 10px 25px rgba(0,102,255,0.15);">
       <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #0066ff; color: white; padding: 4px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">Beliebt</div>
       <div>
-        <h3 style="font-size: 24px; color: #333;">Standard</h3>
+        <h3>Standard</h3>
         <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 4.90 <span style="font-size: 14px; color: #888;">/ Monat</span></div>
         <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
           <li>✅ Alles aus Gratis</li>
@@ -335,13 +346,12 @@ footer{
           <li>✅ Prioritäts-Benachrichtigung</li>
         </ul>
       </div>
-      <button onclick="subscribe('standard')" class="button" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #0066ff; color: white; border: none;">Abonnieren</button>
+      <button type="button" onclick="subscribe('standard')" class="button" id="t-btn-std" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #0066ff; color: white; border: none;">Abonnieren</button>
     </div>
 
-    <!-- PREMIUM -->
     <div class="item" style="background: #fff; border: 2px solid #eef6ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
-        <h3 style="font-size: 24px; color: #333;">Premium</h3>
+        <h3>Premium</h3>
         <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 9.90 <span style="font-size: 14px; color: #888;">/ Monat</span></div>
         <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
           <li>✅ Mehrere Fahrzeuge (bis zu 3)</li>
@@ -350,38 +360,37 @@ footer{
           <li>✅ Anonyme Anrufe weiterleiten</li>
         </ul>
       </div>
-      <button onclick="subscribe('premium')" class="button" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #111; color: white; border: none;">Abonnieren</button>
+      <button type="button" onclick="subscribe('premium')" class="button" id="t-btn-prem" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #111; color: white; border: none;">Abonnieren</button>
     </div>
 
   </div>
 </div>
 
 <div class="card">
-<h2>Registrieren</h2>
+<h2 id="t-reg-title">Registrieren</h2>
 <form id="registerForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
   <input type="text" id="name" placeholder="Ihr Name" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
   <input type="email" id="email" placeholder="E-Mail eingeben" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
   <input type="password" id="password" placeholder="Passwort" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <button type="submit" style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;">Kostenlos registrieren</button>
+  <button type="submit" id="t-reg-submit" style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;">Kostenlos registrieren</button>
 </form>
 
 <hr style="margin:40px 0;">
 
-<h2>Anmelden</h2>
+<h2 id="t-login-title">Anmelden</h2>
 <form id="loginForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
   <input type="email" id="loginEmail" placeholder="E-Mail" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
   <input type="password" id="loginPassword" placeholder="Passwort" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <button type="submit" style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;">Anmelden</button>
+  <button type="submit" id="t-login-submit" style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;">Anmelden</button>
 </form>
 
 <div id="userPanel" style="display:none;margin-top:30px;text-align:center;">
   <h3 id="welcomeUser"></h3>
-  <button id="logoutButton" style="padding:10px 20px;background:#dc3545;color:white;border:0;border-radius:8px;cursor:pointer;margin-top:10px;">Abmelden</button>
+  <button type="button" id="logoutButton" style="padding:10px 20px;background:#dc3545;color:white;border:0;border-radius:8px;cursor:pointer;margin-top:10px;">Abmelden</button>
 </div>
 </div>
 </div>
 
-<!-- Modal i QR Code -->
 <div id="qrModal" class="modal-overlay" onclick="closeQrModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="close-btn" onclick="closeQrModal()">&times;</span>
@@ -399,11 +408,15 @@ footer{
 </footer>
 
 <script>
-const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
-const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+let supabaseClient = null;
+if (typeof window.supabase !== 'undefined') {
+  const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+  const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+  supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+}
 
 async function checkAuth() {
+  if (!supabaseClient) return;
   const { data } = await supabaseClient.auth.getSession();
   if (data && data.session) {
     document.getElementById("userPanel").style.display = "block";
@@ -414,6 +427,10 @@ checkAuth();
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!supabaseClient) {
+    alert("Dienst momentan nicht verfügbar.");
+    return;
+  }
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
@@ -427,6 +444,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!supabaseClient) {
+    alert("Dienst momentan nicht verfügbar.");
+    return;
+  }
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -439,7 +460,9 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 });
 
 document.getElementById("logoutButton").addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
+  if (supabaseClient) {
+    await supabaseClient.auth.signOut();
+  }
   alert("Sie wurden abgemeldet.");
   location.reload();
 });
@@ -450,9 +473,14 @@ function toggleLangMenu(e) {
   menu.classList.toggle("show");
 }
 
-/* LOGJIKA E BUTONIT BACK PËR APP MOBILE */
 function handleGoBack() {
-  if (window.history.length > 1) {
+  const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
+  
+  if (isHomePage) {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+      window.Capacitor.Plugins.App.minimizeApp();
+    }
+  } else if (window.history.length > 1) {
     window.history.back();
   } else {
     window.location.href = "index.html";
@@ -489,20 +517,39 @@ const langDetails = {
 };
 
 const translations = {
-  de: { backBtn: "Zurück", heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.", registerBtn: "🚗 Jetzt kostenlos registrieren", howItWorks: "So funktioniert PingCar" },
-  sq: { backBtn: "Prapa", heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.", registerBtn: "🚗 Regjistrohu falas tani", howItWorks: "Si funksionon PingCar" },
-  en: { backBtn: "Back", heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.", registerBtn: "🚗 Register now for free", howItWorks: "How PingCar works" },
-  fr: { backBtn: "Retour", heroDesc: "La solution sécurisée pour contacter le propriétaire du véhicule – sans numéro de téléphone.", registerBtn: "🚗 Inscrivez-vous gratuitement", howItWorks: "Comment fonctionne PingCar" },
-  it: { backBtn: "Indietro", heroDesc: "La soluzione sicura per contattare il proprietario del veicolo – senza numero di telefono.", registerBtn: "🚗 Registrati ora gratuitamente", howItWorks: "Come funziona PingCar" },
-  sr: { backBtn: "Nazad", heroDesc: "Sigurno rešenje za kontaktiranje vlasnika vozila – bez broja telefona i ličnih podataka.", registerBtn: "🚗 Registrujte se besplatno", howItWorks: "Kako PingCar funkcioniše" },
-  es: { backBtn: "Atrás", heroDesc: "La solución segura para contactar al propietario del vehículo – sin número de teléfono.", registerBtn: "🚗 Regístrate gratis ahora", howItWorks: "Cómo funciona PingCar" },
-  tr: { backBtn: "Geri", heroDesc: "Araç sahibine ulaşmanın güvenli yolu – telefon numarası ve kişisel veri olmadan.", registerBtn: "🚗 Şimdi ücretsiz kaydolun", howItWorks: "PingCar nasıl çalışır" },
-  sk: { backBtn: "Späť", heroDesc: "Bezpečné riešenie na kontaktovanie vlastníka vozidla – bez telefónneho čísla.", registerBtn: "🚗 Zaregistrujte sa zadarmo", howItWorks: "Ako PingCar funguje" },
-  hr: { backBtn: "Natrag", heroDesc: "Sigurno rješenje za kontaktiranje vlasnika vozila – bez broja telefona.", registerBtn: "🚗 Registrirajte se besplatno", howItWorks: "Kako PingCar radi" },
-  hu: { backBtn: "Vissza", heroDesc: "A biztonságos megoldás a járműtulajdonosok elérésére – telefonszám nélkül.", registerBtn: "🚗 Regisztráljon ingyenesen", howItWorks: "Hogyan működik a PingCar" },
-  pt: { backBtn: "Voltar", heroDesc: "A solução segura para contactar o proprietário do veículo – sem número de telefone.", registerBtn: "🚗 Registe-se gratuitamente", howItWorks: "Como funciona o PingCar" },
-  mk: { backBtn: "Назад", heroDesc: "Безбедно решение за контактирање на сопственикот на возилото – без телефонски број.", registerBtn: "🚗 Регистрирајте се бесплатно", howItWorks: "Како функционира PingCar" },
-  nl: { backBtn: "Terug", heroDesc: "De veilige oplossing om contact op te nemen met voertuigeigenaren – zonder telefoonnummer.", registerBtn: "🚗 Nu gratis registreren", howItWorks: "Hoe PingCar werkt" }
+  de: { 
+    backBtn: "Zurück", heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.", registerBtn: "🚗 Jetzt kostenlos registrieren", howItWorks: "So funktioniert PingCar",
+    s1Title: "1. Registrieren", s1Desc: "Erstellen Sie kostenlos Ihr PingCar-Konto.",
+    s2Title: "2. QR-Code erhalten", s2Desc: "Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.",
+    s3Title: "3. QR-Code anbringen", s3Desc: "Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.",
+    s4Title: "4. QR-Code scannen", s4Desc: "Eine andere Person scannt den QR-Code mit dem Smartphone.",
+    s5Title: "5. Benachrichtigung", s5Desc: "Sie erhalten sofort eine Nachricht in der PingCar-App.",
+    subTitle: "Unsere Abonnements", subDesc: "Wählen Sie den passenden Plan für Ihre Bedürfnisse.",
+    btnFree: "Kostenlos Starten", btnStd: "Abonnieren", btnPrem: "Abonnieren",
+    regTitle: "Registrieren", loginTitle: "Anmelden", regSubmit: "Kostenlos registrieren", loginSubmit: "Anmelden"
+  },
+  sq: { 
+    backBtn: "Prapa", heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.", registerBtn: "🚗 Regjistrohu falas tani", howItWorks: "Si funksionon PingCar",
+    s1Title: "1. Regjistrohu", s1Desc: "Krijo llogarinë tënde PingCar falas.",
+    s2Title: "2. Merr QR-Kodin", s2Desc: "Do të marrësh një QR-Kod personal për mjetin tënd.",
+    s3Title: "3. Vendos QR-Kodin", s3Desc: "Vendose QR-Kodin mirë të dukshëm në mjetin tënd.",
+    s4Title: "4. Skano QR-Kodin", s4Desc: "Një person tjetër skanon QR-Kodin me celular.",
+    s5Title: "5. Njoftimi", s5Desc: "Do të marrësh menjëherë një mesazh në aplikacionin PingCar.",
+    subTitle: "Abonimet tona", subDesc: "Zgjidhni planin që ju përshtatet më së miri.",
+    btnFree: "Fillo Falas", btnStd: "Abonohu", btnPrem: "Abonohu",
+    regTitle: "Regjistrohu", loginTitle: "Hyni", regSubmit: "Regjistrohu falas", loginSubmit: "Hyni"
+  },
+  en: { 
+    backBtn: "Back", heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.", registerBtn: "🚗 Register now for free", howItWorks: "How PingCar works",
+    s1Title: "1. Register", s1Desc: "Create your free PingCar account.",
+    s2Title: "2. Get QR Code", s2Desc: "Get your personal QR code for your vehicle.",
+    s3Title: "3. Attach QR Code", s3Desc: "Attach the QR code visibly on your vehicle.",
+    s4Title: "4. Scan QR Code", s4Desc: "Someone scans the QR code with their smartphone.",
+    s5Title: "5. Notification", s5Desc: "Instantly receive a notification in the PingCar app.",
+    subTitle: "Our Subscriptions", subDesc: "Choose the plan that suits your needs.",
+    btnFree: "Start for Free", btnStd: "Subscribe", btnPrem: "Subscribe",
+    regTitle: "Register", loginTitle: "Login", regSubmit: "Register for free", loginSubmit: "Login"
+  }
 };
 
 function setLanguage(lang, e) {
@@ -522,10 +569,34 @@ function setLanguage(lang, e) {
 
   const t = translations[lang] || translations['de'];
   if(t) {
-    if(document.getElementById("t-back-btn")) document.getElementById("t-back-btn").innerText = t.backBtn;
-    if(document.getElementById("t-hero-desc")) document.getElementById("t-hero-desc").innerText = t.heroDesc;
-    if(document.getElementById("t-register-btn")) document.getElementById("t-register-btn").innerText = t.registerBtn;
-    if(document.getElementById("t-how-it-works")) document.getElementById("t-how-it-works").innerText = t.howItWorks;
+    const updateText = (id, text) => {
+      const el = document.getElementById(id);
+      if(el && text) el.innerText = text;
+    };
+
+    updateText("t-back-btn", t.backBtn);
+    updateText("t-hero-desc", t.heroDesc);
+    updateText("t-register-btn", t.registerBtn);
+    updateText("t-how-it-works", t.howItWorks);
+    updateText("t-step1-title", t.s1Title);
+    updateText("t-step1-desc", t.s1Desc);
+    updateText("t-step2-title", t.s2Title);
+    updateText("t-step2-desc", t.s2Desc);
+    updateText("t-step3-title", t.s3Title);
+    updateText("t-step3-desc", t.s3Desc);
+    updateText("t-step4-title", t.s4Title);
+    updateText("t-step4-desc", t.s4Desc);
+    updateText("t-step5-title", t.s5Title);
+    updateText("t-step5-desc", t.s5Desc);
+    updateText("t-sub-title", t.subTitle);
+    updateText("t-sub-desc", t.subDesc);
+    updateText("t-btn-free", t.btnFree);
+    updateText("t-btn-std", t.btnStd);
+    updateText("t-btn-prem", t.btnPrem);
+    updateText("t-reg-title", t.regTitle);
+    updateText("t-login-title", t.loginTitle);
+    updateText("t-reg-submit", t.regSubmit);
+    updateText("t-login-submit", t.loginSubmit);
   }
 }
 
@@ -537,8 +608,13 @@ document.addEventListener('click', function(event) {
   }
 });
 
-// Ekzekuton gjuhën e ruajtur pashmangshmërisht sapo ngarkohet faqja
 document.addEventListener("DOMContentLoaded", function() {
+  const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
+  const backBtn = document.getElementById("globalBackBtn");
+  if (isHomePage && backBtn) {
+    backBtn.style.display = "none";
+  }
+  
   const savedLang = localStorage.getItem("pingcar_lang") || "de";
   setLanguage(savedLang);
 });
