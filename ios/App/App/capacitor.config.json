@@ -1,5 +1,6 @@
 {
-  "appId": "ch.pingcar.app",
-  "appName": "PingCar",
-  "webDir": "www"
+	"appId": "ch.pingcar.app",
+	"appName": "PingCar",
+	"webDir": "www",
+	"packageClassList": []
 }
