@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PingCar Benachrichtigung</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f5f5;
+    max-width:550px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.15);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.info{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+button{
+    width:100%;
+    padding:16px;
+    margin-bottom:12px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+#btn1{
+    background:#ffd54f;
+}
+
+#btn2{
+    background:#ef5350;
+    color:white;
+}
+
+#btn3{
+    background:#42a5f5;
+    color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>PingCar Benachrichtigung</h2>
+
+<p class="info" id="qrInfo"></p>
+
+<button id="btn1">
+💡 Lichter sind eingeschaltet
+</button>
+
+<button id="btn2">
+🚗 Ihr Fahrzeug blockiert die Straße
+</button>
+
+<button id="btn3">
+📞 Bitte kontaktieren Sie mich
+</button>
+<button id="btn4">
+🚫 Fahrzeug steht falsch / falsch parkiert
+</button>
+
+<button id="btn5">
+💬 Sonstige Nachricht
+</button>
+</div>
+
+<script>
+
+const qrId =
+new URLSearchParams(window.location.search).get("id");
+
+document.getElementById("qrInfo").innerText =
+qrId
+? "QR-ID: " + qrId
+: "Keine QR-ID gefunden.";
+
+const supabaseClient =
+window.supabase.createClient(
+
+"https://uvmkhqzfsgvicacvgskf.supabase.co",
+
+"sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+
+);
+
+async function sendNotification(message){
+
+  if(!qrId){
+    alert("QR-Code ungültig.");
+    return;
+  }
+
+  // Ein eindeutiger Benutzer/Browser-Schlüssel
+  let clientId = localStorage.getItem("pingcar_client_id");
+
+  if(!clientId){
+    clientId = crypto.randomUUID();
+    localStorage.setItem("pingcar_client_id", clientId);
+  }
+
+  // Limit + Speichern der Meldung erfolgen jetzt gemeinsam
+  const { data, error } = await supabaseClient.rpc(
+    "send_pingcar_notification",
+    {
+      p_client_id: clientId,
+      p_qr_code: qrId,
+      p_message: message
+    }
+  );
+
+  if(error){
+    alert("Fehler:\n\n" + error.message);
+    console.error(error);
+    return;
+  }
+
+  if(!data.allowed){
+    alert(
+      "Sie haben das tägliche Limit von 5 Meldungen erreicht.\n\n" +
+      "Bitte versuchen Sie es in 24 Stunden erneut."
+    );
+    return;
+  }
+
+  alert(
+    "Nachricht erfolgreich gesendet!\n\n" +
+    "Verbleibende Meldungen heute: " +
+    data.remaining
+  );
+}
+
+document
+
+.getElementById("btn1")
+
+.addEventListener(
+
+"click",
+
+function(){
+
+sendNotification(
+
+"Lichter sind eingeschaltet"
+
+);
+
+}
+
+);
+
+document
+
+.getElementById("btn2")
+
+.addEventListener(
+
+"click",
+
+function(){
+
+sendNotification(
+
+"Ihr Fahrzeug blockiert die Straße"
+
+);
+
+}
+
+);
+
+document
+
+.getElementById("btn3")
+
+.addEventListener(
+
+"click",
+
+function(){
+
+sendNotification(
+
+"Bitte kontaktieren Sie mich"
+
+);
+
+}
+
+);
+document
+.getElementById("btn4")
+.addEventListener(
+  "click",
+  function(){
+    sendNotification(
+      "Fahrzeug steht falsch / falsch parkiert"
+    );
+  }
+);
+
+document
+.getElementById("btn5")
+.addEventListener(
+  "click",
+  function(){
+    sendNotification(
+      "Sonstige Nachricht"
+    );
+  }
+);
+</script>
+<script>
+const contactLang = localStorage.getItem("pingcar_language") || "de";
+
+const contactTranslations = {
+  de: {
+    title: "PingCar Benachrichtigung",
+    noQr: "Keine QR-ID gefunden.",
+    lights: "💡 Lichter sind eingeschaltet",
+    blocked: "🚗 Ihr Fahrzeug blockiert die Straße",
+    contact: "📞 Bitte kontaktieren Sie mich",
+    wrong: "🚫 Fahrzeug steht falsch / falsch parkiert",
+    other: "💬 Sonstige Nachricht",
+    invalid: "QR-Code ungültig.",
+    limit: "Sie haben das tägliche Limit von 5 Meldungen erreicht.\n\nBitte versuchen Sie es in 24 Stunden erneut.",
+    success: "Nachricht erfolgreich gesendet!",
+    remaining: "Verbleibende Meldungen heute: "
+  },
+
+  fr: {
+    title: "Notification PingCar",
+    noQr: "Aucun ID QR trouvé.",
+    lights: "💡 Les lumières sont allumées",
+    blocked: "🚗 Votre véhicule bloque la route",
+    contact: "📞 Veuillez me contacter",
+    wrong: "🚫 Le véhicule est mal stationné",
+    other: "💬 Autre message",
+    invalid: "Code QR invalide.",
+    limit: "Vous avez atteint la limite quotidienne de 5 messages.\n\nVeuillez réessayer dans 24 heures.",
+    success: "Message envoyé avec succès !",
+    remaining: "Messages restants aujourd'hui : "
+  },
+
+  it: {
+    title: "Notifica PingCar",
+    noQr: "Nessun ID QR trovato.",
+    lights: "💡 Le luci sono accese",
+    blocked: "🚗 Il tuo veicolo blocca la strada",
+    contact: "📞 Per favore contattami",
+    wrong: "🚫 Il veicolo è parcheggiato male",
+    other: "💬 Altro messaggio",
+    invalid: "Codice QR non valido.",
+    limit: "Hai raggiunto il limite giornaliero di 5 messaggi.\n\nRiprova tra 24 ore.",
+    success: "Messaggio inviato con successo!",
+    remaining: "Messaggi rimanenti oggi: "
+  },
+
+  en: {
+    title: "PingCar Notification",
+    noQr: "No QR ID found.",
+    lights: "💡 Lights are on",
+    blocked: "🚗 Your vehicle is blocking the road",
+    contact: "📞 Please contact me",
+    wrong: "🚫 Vehicle is parked incorrectly",
+    other: "💬 Other message",
+    invalid: "Invalid QR code.",
+    limit: "You have reached the daily limit of 5 messages.\n\nPlease try again in 24 hours.",
+    success: "Message sent successfully!",
+    remaining: "Messages remaining today: "
+  },
+
+  sq: {
+    title: "Njoftim PingCar",
+    noQr: "Nuk u gjet ID-ja e QR.",
+    lights: "💡 Dritat janë ndezur",
+    blocked: "🚗 Automjeti juaj po bllokon rrugën",
+    contact: "📞 Ju lutem më kontaktoni",
+    wrong: "🚫 Automjeti është parkuar gabimisht",
+    other: "💬 Mesazh tjetër",
+    invalid: "Kodi QR nuk është i vlefshëm.",
+    limit: "Keni arritur kufirin ditor prej 5 mesazhesh.\n\nJu lutem provoni përsëri pas 24 orësh.",
+    success: "Mesazhi u dërgua me sukses!",
+    remaining: "Mesazhe të mbetura sot: "
+  },
+    sr: {
+    title: "PingCar obaveštenje",
+    noQr: "QR ID nije pronađen.",
+    lights: "💡 Svetla su uključena",
+    blocked: "🚗 Vaše vozilo blokira put",
+    contact: "📞 Molimo vas kontaktirajte me",
+    wrong: "🚫 Vozilo je pogrešno parkirano",
+    other: "💬 Druga poruka",
+    invalid: "QR kod nije važeći.",
+    limit: "Dostigli ste dnevno ograničenje od 5 poruka.\n\nPokušajte ponovo nakon 24 sata.",
+    success: "Poruka je uspešno poslata!",
+    remaining: "Preostale poruke danas: "
+},
+
+es: {
+    title: "Notificación de PingCar",
+    noQr: "No se encontró el ID del código QR.",
+    lights: "💡 Las luces están encendidas",
+    blocked: "🚗 Su vehículo está bloqueando la carretera",
+    contact: "📞 Por favor, contácteme",
+    wrong: "🚫 El vehículo está mal estacionado",
+    other: "💬 Otro mensaje",
+    invalid: "El código QR no es válido.",
+    limit: "Ha alcanzado el límite diario de 5 mensajes.\n\nVuelva a intentarlo después de 24 horas.",
+    success: "¡El mensaje se ha enviado correctamente!",
+    remaining: "Mensajes restantes hoy: "
+},
+tr: {
+
+  title: "PingCar Bildirimi",
+
+  noQr: "QR kodu ID'si bulunamadı.",
+
+  lights: "💡 Işıklar açık",
+
+  blocked: "🚗 Aracınız yolu kapatıyor",
+
+  contact: "📞 Lütfen benimle iletişime geçin",
+
+  wrong: "🚫 Araç yanlış park edilmiş",
+
+  other: "💬 Diğer mesaj",
+
+  invalid: "QR kodu geçerli değil.",
+
+  limit: "Günlük 5 mesajlık limite ulaştınız.\n\n24 saat sonra tekrar deneyin.",
+
+  success: "Mesaj başarıyla gönderildi!",
+
+  remaining: "Bugün kalan mesajlar: "
+
+},
+
+sk: {
+
+  title: "Oznámenie PingCar",
+
+  noQr: "ID QR kódu sa nenašlo.",
+
+  lights: "💡 Svetlá sú zapnuté",
+
+  blocked: "🚗 Vaše vozidlo blokuje cestu",
+
+  contact: "📞 Kontaktujte ma, prosím",
+
+  wrong: "🚫 Vozidlo je nesprávne zaparkované",
+
+  other: "💬 Iná správa",
+
+  invalid: "QR kód nie je platný.",
+
+  limit: "Dosiahli ste denný limit 5 správ.\n\nSkúste to znova po 24 hodinách.",
+
+  success: "Správa bola úspešne odoslaná!",
+
+  remaining: "Zostávajúce správy dnes: "
+
+},
+
+hr: {
+
+  title: "PingCar obavijest",
+
+  noQr: "ID QR koda nije pronađen.",
+
+  lights: "💡 Svjetla su uključena",
+
+  blocked: "🚗 Vaše vozilo blokira cestu",
+
+  contact: "📞 Molimo, kontaktirajte me",
+
+  wrong: "🚫 Vozilo je nepropisno parkirano",
+
+  other: "💬 Druga poruka",
+
+  invalid: "QR kod nije valjan.",
+
+  limit: "Dosegnuli ste dnevno ograničenje od 5 poruka.\n\nPokušajte ponovno nakon 24 sata.",
+
+  success: "Poruka je uspješno poslana!",
+
+  remaining: "Preostale poruke danas: "
+
+},
+hu: {
+
+  title: "PingCar értesítés",
+
+  noQr: "A QR-kód azonosítója nem található.",
+
+  lights: "💡 A lámpák égve maradtak",
+
+  blocked: "🚗 Az Ön járműve akadályozza az utat",
+
+  contact: "📞 Kérem, lépjen kapcsolatba velem",
+
+  wrong: "🚫 A jármű szabálytalanul parkol",
+
+  other: "💬 Egyéb üzenet",
+
+  invalid: "A QR-kód érvénytelen.",
+
+  limit: "Elérte az 5 üzenetes napi korlátot.\n\nPróbálja újra 24 óra múlva.",
+
+  success: "Az üzenet sikeresen elküldve!",
+
+  remaining: "A mai napon hátralévő üzenetek: "
+
+},
+pt: {
+
+  title: "Notificação do PingCar",
+
+  noQr: "O ID do código QR não foi encontrado.",
+
+  lights: "💡 As luzes estão acesas",
+
+  blocked: "🚗 O seu veículo está a bloquear a estrada",
+
+  contact: "📞 Por favor, contacte-me",
+
+  wrong: "🚫 O veículo está estacionado incorretamente",
+
+  other: "💬 Outra mensagem",
+
+  invalid: "O código QR não é válido.",
+
+  limit: "Atingiu o limite diário de 5 mensagens.\n\nTente novamente após 24 horas.",
+
+  success: "A mensagem foi enviada com sucesso!",
+
+  remaining: "Mensagens restantes hoje: "
+
+},
+mk: {
+
+  title: "PingCar известување",
+
+  noQr: "ID-бројот на QR-кодот не е пронајден.",
+
+  lights: "💡 Светлата се вклучени",
+
+  blocked: "🚗 Вашето возило го блокира патот",
+
+  contact: "📞 Ве молам контактирајте ме",
+
+  wrong: "🚫 Возилото е непрописно паркирано",
+
+  other: "💬 Друга порака",
+
+  invalid: "QR-кодот не е валиден.",
+
+  limit: "Го достигнавте дневниот лимит од 5 пораки.\n\nОбидете се повторно по 24 часа.",
+
+  success: "Пораката е успешно испратена!",
+
+  remaining: "Преостанати пораки денес: "
+
+},
+nl: {
+
+  title: "PingCar-melding",
+
+  noQr: "Het QR-ID-nummer is niet gevonden.",
+
+  lights: "💡 De lichten staan aan",
+
+  blocked: "🚗 Uw voertuig blokkeert de doorgang",
+
+  contact: "📞 Neem alstublieft contact met mij op",
+
+  wrong: "🚫 Het voertuig staat verkeerd geparkeerd",
+
+  other: "💬 Ander bericht",
+
+  invalid: "De QR-code is niet geldig.",
+
+  limit: "U heeft de dagelijkse limiet van 5 berichten bereikt.\n\nProbeer het over 24 uur opnieuw.",
+
+  success: "Het bericht is succesvol verzonden!",
+
+  remaining: "Resterende berichten vandaag: "
+
+},
+};
+
+const ct = contactTranslations[contactLang] || contactTranslations.de;
+
+document.title = ct.title;
+
+const qrTitle = document.querySelector("h2");
+if (qrTitle) qrTitle.textContent = ct.title;
+
+const qrInfo = document.getElementById("qrInfo");
+
+if (qrInfo) {
+  const qrId = new URLSearchParams(window.location.search).get("id");
+  qrInfo.textContent = qrId
+    ? "QR-ID: " + qrId
+    : ct.noQr;
+}
+
+const btn1 = document.getElementById("btn1");
+const btn2 = document.getElementById("btn2");
+const btn3 = document.getElementById("btn3");
+const btn4 = document.getElementById("btn4");
+const btn5 = document.getElementById("btn5");
+
+if (btn1) btn1.textContent = ct.lights;
+if (btn2) btn2.textContent = ct.blocked;
+if (btn3) btn3.textContent = ct.contact;
+if (btn4) btn4.textContent = ct.wrong;
+if (btn5) btn5.textContent = ct.other;
+
+
+/* Përkthe mesazhet që dërgohen te pronari */
+const originalSendNotification = sendNotification;
+
+sendNotification = async function(message) {
+
+  const translatedMessages = {
+    "Lichter sind eingeschaltet": ct.lights.replace("💡 ", ""),
+    "Ihr Fahrzeug blockiert die Straße": ct.blocked.replace("🚗 ", ""),
+    "Bitte kontaktieren Sie mich": ct.contact.replace("📞 ", ""),
+    "Fahrzeug steht falsch / falsch parkiert": ct.wrong.replace("🚫 ", ""),
+    "Sonstige Nachricht": ct.other.replace("💬 ", "")
+  };
+
+  const translatedMessage =
+    translatedMessages[message] || message;
+
+  return originalSendNotification(translatedMessage);
+};
+
+
+/* Përkthe alert-et ekzistuese */
+const originalAlert = window.alert;
+
+window.alert = function(message) {
+
+  if (message === "QR-Code ungültig.") {
+    return originalAlert(ct.invalid);
+  }
+
+  if (message.includes("Sie haben das tägliche Limit von 5 Meldungen")) {
+    return originalAlert(ct.limit);
+  }
+
+  if (message.includes("Nachricht erfolgreich gesendet!")) {
+    const remaining = message.match(/Verbleibende Meldungen heute:\s*(\d+)/);
+
+    if (remaining) {
+      return originalAlert(
+        ct.success + "\n\n" +
+        ct.remaining + remaining[1]
+      );
+    }
+
+    return originalAlert(ct.success);
+  }
+
+  return originalAlert(message);
+};
+</script>
+</body>
+<!-- PingCar update -->
+</html>

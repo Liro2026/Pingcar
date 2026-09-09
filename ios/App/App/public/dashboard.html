@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PingCar Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fa;color:#172033}.top{background:linear-gradient(135deg,#1677ff,#00b8ff);color:#fff;padding:22px 18px}.wrap{max-width:900px;margin:auto;padding:20px}.top .wrap{padding:0}.card{background:#fff;border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 8px 24px rgba(0,0,0,.08)}h1{margin:0 0 6px;font-size:30px}h2{margin-top:0}.muted{color:#667085}.btn{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}.primary{background:#1677ff;color:#fff}.danger{background:#e5484d;color:#fff}.status{padding:12px;border-radius:10px;background:#eef5ff;margin-top:12px;white-space:pre-wrap}.notice{padding:12px;border-bottom:1px solid #e6e9ef}.notice:last-child{border-bottom:0}.hidden{display:none}.qr{max-width:220px;display:block;margin:15px auto}.error{background:#fff0f0;color:#a61b1b}.success{background:#effaf3;color:#176b37}
+/* ===== PingCar Modern Dashboard ===== */
+
+body {
+  background: #f3f7fb !important;
+  color: #172033;
+}
+
+.top {
+  background: linear-gradient(135deg, #1762d2, #08a9e8) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,.12);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  margin-bottom: 18px;
+}
+
+.btn {
+  border-radius: 10px;
+  transition: .2s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.12);
+}
+
+.status {
+  border-radius: 10px;
+}
+
+.notice {
+  background: #f7f9fc;
+  border-left: 4px solid #1762d2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+#notifications {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f7f9fc;
+  border: 1px solid #e2e8f0;
+  color: #172033;
+}
+
+#notifications > div {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+  border-left: 4px solid #1762d2;
+}
+
+#notifications > div:last-child {
+  margin-bottom: 0;
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><h1>PingCar</h1><div id="userEmail">Dashboard</div></div></header>
+<main class="wrap">
+<section class="card">
+<h2>Mein Konto</h2>
+<p id="userInfo" class="muted">Login wird geprüft...</p>
+<button id="enablePush" class="btn primary" type="button">🔔 Benachrichtigungen aktivieren</button>
+<button id="logout" class="btn danger" type="button">🚪 Logout</button>
+<div id="status" class="status">Bereit.</div>
+
+</section>
+<section class="card">
+<h2>Mein PingCar</h2>
+<div id="pingInfo" class="muted">Wird geladen...</div>
+<img id="qrimage" class="qr hidden" alt="PingCar QR-Code">
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
+
+<button type="button" onclick="downloadQR()"
+style="padding:12px 16px;border:none;border-radius:8px;background:#1976d2;color:white;font-weight:bold;cursor:pointer;">
+📥 QR-Code herunterladen
+</button>
+
+<button type="button" onclick="saveQRAsPDF()"
+style="padding:12px 16px;border:none;border-radius:8px;background:#43a047;color:white;font-weight:bold;cursor:pointer;">
+📄 Als PDF speichern
+</button>
+
+<button type="button" onclick="printQR()"
+style="padding:12px 16px;border:none;border-radius:8px;background:#fb8c00;color:white;font-weight:bold;cursor:pointer;">
+🖨️ QR-Code drucken
+</button>
+
+<button type="button" onclick="shareQR()"
+style="padding:12px 16px;border:none;border-radius:8px;background:#8e24aa;color:white;font-weight:bold;cursor:pointer;">
+📤 QR-Code teilen
+</button>
+
+</div>
+</section>
+<section class="card">
+<h2>Benachrichtigungen</h2>
+<div id="notifications" class="muted">Wird geladen...</div>
+</section>
+</main>
+
+<!-- ===== Script 1: Përkthimi Dashboard ===== -->
+<script>
+const dashLang = localStorage.getItem("pingcar_language") || "de";
+
+const dashTranslations = {
+  de: {
+    "PingCar Dashboard": "PingCar Dashboard",
+    "Mein Konto": "Mein Konto",
+    "Benachrichtigungen aktivieren": "Benachrichtigungen aktivieren",
+    "Logout": "Logout",
+    "Mein PingCar": "Mein PingCar",
+    "Als PDF speichern": "Als PDF speichern",
+    "QR-Code drucken": "QR-Code drucken",
+    "QR-Code teilen": "QR-Code teilen",
+    "QR-Code herunterladen": "QR-Code herunterladen",
+    "Benachrichtigungen": "Benachrichtigungen"
+  },
+  sq: {
+    "PingCar Dashboard": "Paneli PingCar",
+    "Mein Konto": "Llogaria ime",
+    "Benachrichtigungen aktivieren": "Aktivizo njoftimet",
+    "Logout": "Dil",
+    "Mein PingCar": "PingCar im",
+    "Als PDF speichern": "Ruaj si PDF",
+    "QR-Code drucken": "Printo QR-Code",
+    "QR-Code teilen": "Ndaj QR-Code",
+    "QR-Code herunterladen": "Shkarko QR-Code",
+    "Benachrichtigungen": "Njoftimet"
+  },
+  fr: {
+    "PingCar Dashboard": "Tableau de bord PingCar",
+    "Mein Konto": "Mon compte",
+    "Benachrichtigungen aktivieren": "Activer les notifications",
+    "Logout": "Déconnexion",
+    "Mein PingCar": "Mon PingCar",
+    "Als PDF speichern": "Enregistrer en PDF",
+    "QR-Code drucken": "Imprimer le QR-Code",
+    "QR-Code teilen": "Partager le QR-Code",
+    "QR-Code herunterladen": "Télécharger le QR-Code",
+    "Benachrichtigungen": "Notifications"
+  },
+  it: {
+    "PingCar Dashboard": "Dashboard PingCar",
+    "Mein Konto": "Il mio account",
+    "Benachrichtigungen aktivieren": "Attiva notifiche",
+    "Logout": "Esci",
+    "Mein PingCar": "Il mio PingCar",
+    "Als PDF speichern": "Salva come PDF",
+    "QR-Code drucken": "Stampa QR-Code",
+    "QR-Code teilen": "Condividi QR-Code",
+    "QR-Code herunterladen": "Scarica QR-Code",
+    "Benachrichtigungen": "Notifiche"
+  },
+  en: {
+    "PingCar Dashboard": "PingCar Dashboard",
+    "Mein Konto": "My Account",
+    "Benachrichtigungen aktivieren": "Enable Notifications",
+    "Logout": "Logout",
+    "Mein PingCar": "My PingCar",
+    "Als PDF speichern": "Save as PDF",
+    "QR-Code drucken": "Print QR-Code",
+    "QR-Code teilen": "Share QR-Code",
+    "QR-Code herunterladen": "Download QR-Code",
+    "Benachrichtigungen": "Notifications"
+  },
+  sr: {
+      "PingCar Dashboard": "PingCar Kontrolna tabla",
+      "Mein Konto": "Moj nalog",
+      "Angemeldet als:": "Prijavljen kao:",
+      "Benachrichtigungen aktivieren": "Omogući obaveštenja",
+      "Logout": "Odjava",
+      "Bereit.": "Spremno.",
+      "Mein PingCar": "Moj PingCar",
+      "Als PDF speichern": "Sačuvaj kao PDF",
+      "QR-Code drucken": "Odštampaj QR kod",
+      "QR-Code teilen": "Podeli QR kod",
+      "QR-Code herunterladen": "Preuzmi QR kod",
+      "Benachrichtigungen": "Obaveštenja",
+      "wird geladen...": "učitava se..."
+    },
+  es: {
+    "PingCar Dashboard": "Panel de PingCar",
+    "Mein Konto": "Mi cuenta",
+    "Angemeldet als:": "Sesión iniciada como:",
+    "Benachrichtigungen aktivieren": "Activar notificaciones",
+    "Logout": "Cerrar sesión",
+    "Bereit.": "Listo.",
+    "Mein PingCar": "Mi PingCar",
+    "Als PDF speichern": "Guardar como PDF",
+    "QR-Code drucken": "Imprimir código QR",
+    "QR-Code teilen": "Compartir código QR",
+    "QR-Code herunterladen": "Descargar código QR",
+    "Benachrichtigungen": "Notificaciones",
+    "wird geladen...": "Cargando..."
+  },
+  tr: {
+    "PingCar Dashboard": "PingCar Paneli",
+    "Mein Konto": "Hesabım",
+    "Angemeldet als:": "Şu kişi olarak giriş yapıldı:",
+    "Benachrichtigungen aktivieren": "Bildirimleri etkinleştir",
+    "Logout": "Çıkış yap",
+    "Bereit.": "Hazır.",
+    "Mein PingCar": "PingCar'ım",
+    "Als PDF speichern": "PDF olarak kaydet",
+    "QR-Code drucken": "QR kodunu yazdır",
+    "QR-Code teilen": "QR kodunu paylaş",
+    "QR-Code herunterladen": "QR kodunu indir",
+    "Benachrichtigungen": "Bildirimler",
+    "wird geladen...": "Yükleniyor..."
+  },
+  sk: {
+    "PingCar Dashboard": "PingCar Panel",
+    "Mein Konto": "Môj účet",
+    "Angemeldet als:": "Prihlásený ako:",
+    "Benachrichtigungen aktivieren": "Povoliť upozornenia",
+    "Logout": "Odhlásiť sa",
+    "Bereit.": "Pripravené.",
+    "Mein PingCar": "Moje PingCar",
+    "Als PDF speichern": "Uložiť ako PDF",
+    "QR-Code drucken": "Vytlačiť QR kód",
+    "QR-Code teilen": "Zdieľať QR kód",
+    "QR-Code herunterladen": "Stiahnuť QR kód",
+    "Benachrichtigungen": "Upozornenia",
+    "wird geladen...": "Načítava sa..."
+  },
+  hr: {
+    "PingCar Dashboard": "Nadzorna ploča PingCar",
+    "Mein Konto": "Moj račun",
+    "Angemeldet als:": "Prijavljeni ste kao:",
+    "Benachrichtigungen aktivieren": "Omogući obavijesti",
+    "Logout": "Odjava",
+    "Bereit.": "Spremno.",
+    "Mein PingCar": "Moj PingCar",
+    "Als PDF speichern": "Spremi kao PDF",
+    "QR-Code drucken": "Ispiši QR kod",
+    "QR-Code teilen": "Podijeli QR kod",
+    "QR-Code herunterladen": "Preuzmi QR kod",
+    "Benachrichtigungen": "Obavijesti",
+    "wird geladen...": "Učitavanje..."
+  },
+  hu: {
+    "PingCar Dashboard": "PingCar Vezérlőpult",
+    "Mein Konto": "Fiókom",
+    "Angemeldet als:": "Bejelentkezve mint:",
+    "Benachrichtigungen aktivieren": "Értesítések engedélyezése",
+    "Logout": "Kijelentkezés",
+    "Bereit.": "Kész.",
+    "Mein PingCar": "Az én PingCarom",
+    "Als PDF speichern": "Mentés PDF-ként",
+    "QR-Code drucken": "QR-kód nyomtatása",
+    "QR-Code teilen": "QR-kód megosztása",
+    "QR-Code herunterladen": "QR-kód letöltése",
+    "Benachrichtigungen": "Értesítések",
+    "wird geladen...": "Betöltés..."
+  },
+  pt: {
+    "PingCar Dashboard": "Painel PingCar",
+    "Mein Konto": "A minha conta",
+    "Angemeldet als:": "Iniciado como:",
+    "Benachrichtigungen aktivieren": "Ativar notificações",
+    "Logout": "Terminar sessão",
+    "Bereit.": "Pronto.",
+    "Mein PingCar": "O meu PingCar",
+    "Als PDF speichern": "Guardar como PDF",
+    "QR-Code drucken": "Imprimir código QR",
+    "QR-Code teilen": "Partilhar código QR",
+    "QR-Code herunterladen": "Descarregar código QR",
+    "Benachrichtigungen": "Notificações",
+    "wird geladen...": "A carregar..."
+  },
+  mk: {
+    "PingCar Dashboard": "PingCar контролна табла",
+    "Mein Konto": "Мојата сметка",
+    "Angemeldet als:": "Најавени сте како:",
+    "Benachrichtigungen aktivieren": "Активирајте известувања",
+    "Logout": "Одјавување",
+    "Bereit.": "Подготвено.",
+    "Mein PingCar": "Мојот PingCar",
+    "Als PDF speichern": "Зачувај како PDF",
+    "QR-Code drucken": "Печати QR-код",
+    "QR-Code teilen": "Сподели QR-код",
+    "QR-Code herunterladen": "Преземи QR-код",
+    "Benachrichtigungen": "Известувања",
+    "wird geladen...": "Се вчитува..."
+  },
+  nl: {
+    "PingCar Dashboard": "PingCar Dashboard",
+    "Mein Konto": "Mijn account",
+    "Angemeldet als:": "Ingelogd als:",
+    "Benachrichtigungen aktivieren": "Meldingen inschakelen",
+    "Logout": "Uitloggen",
+    "Bereit.": "Klaar.",
+    "Mein PingCar": "Mijn PingCar",
+    "Als PDF speichern": "Opslaan als PDF",
+    "QR-Code drucken": "QR-code afdrukken",
+    "QR-Code teilen": "QR-code delen",
+    "QR-Code herunterladen": "QR-code downloaden",
+    "Benachrichtigungen": "Meldingen",
+    "wird geladen...": "Laden..."
+  }
+};
+
+function translateDashboard() {
+  const translations = dashTranslations[dashLang] || dashTranslations.de;
+
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT
+  );
+
+  let node;
+
+  while (node = walker.nextNode()) {
+    const original = node.nodeValue.trim();
+
+    if (translations[original]) {
+      node.nodeValue = node.nodeValue.replace(
+        original,
+        translations[original]
+      );
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", translateDashboard);
+</script>
+
+<!-- ===== Script 2: QR Actions (jashtë module për iOS) ===== -->
+<script>
+function saveQRAsPDF() {
+    const qrimage = document.getElementById("qrimage");
+    if (!qrimage || !qrimage.src) {
+        alert("QR-Code konnte nicht gefunden werden.");
+        return;
+    }
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+        alert("Bitte Pop-ups für PingCar erlauben.");
+        return;
+    }
+    printWindow.document.write('<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>PingCar QR-Code</title><style>@page{margin:0}body{margin:0;padding:30px;background:white;font-family:Arial,sans-serif;text-align:center}.sticker{width:360px;margin:0 auto;border:2px solid #111827;border-radius:12px;overflow:hidden;background:white}.pingcar-header{background:#111827;color:white;font-size:28px;font-weight:bold;padding:14px 10px}.qr-area{padding:25px;background:white}.qr-area img{width:300px;height:300px;object-fit:contain;display:block;margin:0 auto}@media print{body{padding:0}.sticker{margin:0 auto}}<\/style><\/head><body><div class="sticker"><div class="pingcar-header">PingCar.ch<\/div><div class="qr-area"><img src="' + qrimage.src + '" alt="PingCar QR-Code"><\/div><\/div><\/body><\/html>');
+    printWindow.document.close();
+    printWindow.onload = function() { printWindow.print(); };
+}
+
+async function downloadQR() {
+  const qrImage = document.querySelector('img[alt="PingCar QR-Code"]');
+  if (!qrImage || !qrImage.src) {
+    alert("QR-Code konnte nicht gefunden werden.");
+    return;
+  }
+  try {
+    const response = await fetch(qrImage.src);
+    if (!response.ok) throw new Error("QR-Code konnte nicht geladen werden.");
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "PingCar-QR-Code.png";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("QR-Code Download-Fehler:", error);
+    alert("Der QR-Code konnte nicht heruntergeladen werden.");
+  }
+}
+
+function printQR() {
+    saveQRAsPDF();
+}
+
+async function shareQR() {
+    const qrimage = document.getElementById("qrimage");
+    if (!qrimage || !qrimage.src) {
+        alert("QR-Code konnte nicht gefunden werden.");
+        return;
+    }
+    try {
+        if (navigator.share) {
+            await navigator.share({
+                title: "Mein PingCar QR-Code",
+                text: "Mein PingCar QR-Code",
+                url: window.location.origin + "/qr.html"
+            });
+        } else {
+            await navigator.clipboard.writeText(window.location.origin + "/qr.html");
+            alert("QR-Code-Link wurde kopiert.");
+        }
+    } catch (error) {
+        console.log("Teilen abgebrochen:", error);
+    }
+}
+</script>
+
+<!-- ===== Script 3: Supabase + Auth + Firebase (module) ===== -->
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
+  authDomain: "pingcar.firebaseapp.com",
+  projectId: "pingcar",
+  storageBucket: "pingcar.firebasestorage.app",
+  messagingSenderId: "133178961912",
+  appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
+};
+
+const VAPID_KEY = "BHoqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
+
+const $ = id => document.getElementById(id);
+function status(message, type="") { $("status").textContent = message; $("status").className = "status " + type; }
+
+let currentUser = null;
+
+async function loadUser() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) {
+    location.replace("index.html");
+    return null;
+  }
+  currentUser = data.user;
+  $("userEmail").textContent = currentUser.email || "PingCar User";
+  $("userInfo").textContent = "Angemeldet als: " + (currentUser.email || currentUser.id);
+  return currentUser;
+}
+
+async function loadPingCar(user) {
+  const { data, error } = await supabase.from("user_qr").select("*").eq("user_id", user.id).maybeSingle();
+  if (error) { $("pingInfo").textContent = "PingCar-Daten konnten nicht geladen werden: " + error.message; return; }
+  if (!data) { $("pingInfo").textContent = "Noch kein PingCar-Fahrzeug zugeordnet."; return; }
+  $("pingInfo").innerHTML = "Ping-ID: <strong>" + (data.ping_id || "-") + "</strong>";
+  if (data.ping_id) {
+    const qrValue = "https://pingcar.ch/contact.html?id=" + data.ping_id;
+    $("qrimage").src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(qrValue);
+    $("qrimage").classList.remove("hidden");
+  }
+}
+
+async function loadNotifications(user) {
+  const box = $("notifications");
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("owner_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Benachrichtigungen Fehler:", error);
+    box.textContent = "Benachrichtigungen konnten nicht geladen werden: " + error.message;
+    return;
+  }
+
+  if (!data || !data.length) {
+    box.textContent = "Noch keine Benachrichtigungen.";
+    return;
+  }
+
+  const { data: chatMessages, error: chatError } = await supabase.rpc("get_owner_chat_messages", { p_owner_id: user.id });
+
+  if (chatError) {
+    console.error("Chat-Nachrichten Fehler:", chatError);
+  }
+
+  box.innerHTML = data.map(n => {
+    const chatMessage = (chatMessages || []).find(m => m.qr_code === n.qr_code);
+    return `
+      <div class="notice">
+        <strong>${escapeHtml(n.message || "Benachrichtigung")}</strong>
+        <br>
+        <span class="muted">
+          ${n.created_at ? new Date(n.created_at).toLocaleString("de-CH") : ""}
+        </span>
+        ${chatMessage ? `
+          <br><br>
+          <button type="button"
+            onclick="replyToPingCar('${chatMessage.conversation_id}','${chatMessage.sender_id}','${chatMessage.qr_code}')"
+            style="background:#2563eb;color:white;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:bold;font-size:14px;">
+            💬 Antworten
+          </button>
+        ` : ""}
+      </div>
+    `;
+  }).join("");
+}
+
+function replyToPingCar(conversationId, senderId, qrCode) {
+  if (!currentUser) {
+    alert("Sie sind nicht angemeldet.");
+    return;
+  }
+  const url = "message.html?conversation_id=" + encodeURIComponent(conversationId) + "&receiver_id=" + encodeURIComponent(senderId) + "&qr_code=" + encodeURIComponent(qrCode);
+  window.location.href = url;
+}
+window.replyToPingCar = replyToPingCar;
+
+function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
+
+async function enablePush() {
+  try {
+    if (!currentUser) { status("Du bist nicht angemeldet.", "error"); return; }
+    if (!("serviceWorker" in navigator) || !("Notification" in window)) { status("Dieser Browser unterstützt Push-Benachrichtigungen hier nicht.", "error"); return; }
+
+    status("Firebase wird geladen...");
+    const [{ initializeApp }, { getMessaging, getToken }] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js")
+    ]);
+
+    const firebaseApp = initializeApp(FIREBASE_CONFIG);
+    const messaging = getMessaging(firebaseApp);
+
+    status("Service Worker wird registriert...");
+    const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js", {scope:"./"});
+    await navigator.serviceWorker.ready;
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") { status("Benachrichtigungen wurden nicht erlaubt.", "error"); return; }
+
+    status("FCM Token wird erstellt...");
+    const token = await getToken(messaging, {vapidKey: VAPID_KEY, serviceWorkerRegistration: registration});
+    if (!token) throw new Error("Firebase hat keinen FCM Token zurückgegeben.");
+
+    const { error } = await supabase.from("device_tokens").upsert({user_id: currentUser.id, fcm_token: token}, {onConflict:"user_id"});
+    if (error) throw new Error("Token konnte nicht in Supabase gespeichert werden: " + error.message);
+
+    console.log("PINGCAR DEVICE TOKEN:", token);
+    status("✅ Benachrichtigungen sind aktiviert und der Geräte-Token wurde gespeichert.", "success");
+  } catch (error) {
+    console.error("PINGCAR PUSH ERROR:", error);
+    status("❌ Push-Fehler:\n" + (error?.message || String(error)), "error");
+  }
+}
+
+async function logout() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    location.replace("index.html");
+  } catch (error) {
+    status("Logout-Fehler: " + error.message, "error");
+  }
+}
+
+document.getElementById("enablePush").addEventListener("click", enablePush);
+document.getElementById("logout").addEventListener("click", logout);
+
+const user = await loadUser();
+if (user) { await Promise.all([loadPingCar(user), loadNotifications(user)]); }
+</script>
+
+<!-- ===== Script 4: Përkthimi sekondar ===== -->
+<script>
+const dashboardTranslations = {
+  de: { logged: "Angemeldet als:", notifications: "Benachrichtigungen aktivieren", logout: "Logout", ready: "Bereit.", myPingcar: "PingCar im", pingId: "Ping-ID:", download: "QR-Code herunterladen", pdf: "Als PDF speichern", print: "QR-Code drucken", share: "QR-Code teilen", notificationsTitle: "Benachrichtigungen", loading: "Wird geladen..." },
+  sq: { logged: "I kyçur si:", notifications: "Aktivizo njoftimet", logout: "Dil", ready: "Gati.", myPingcar: "PingCar-i im", pingId: "Ping-ID:", download: "Shkarko QR-Code", pdf: "Ruaje si PDF", print: "Printo QR-Code", share: "Shpërndaje QR-Code", notificationsTitle: "Njoftimet", loading: "Duke u ngarkuar..." },
+  en: { logged: "Logged in as:", notifications: "Enable notifications", logout: "Logout", ready: "Ready.", myPingcar: "My PingCar", pingId: "Ping-ID:", download: "Download QR-Code", pdf: "Save as PDF", print: "Print QR-Code", share: "Share QR-Code", notificationsTitle: "Notifications", loading: "Loading..." },
+  fr: { logged: "Connecté en tant que :", notifications: "Activer les notifications", logout: "Déconnexion", ready: "Prêt.", myPingcar: "Mon PingCar", pingId: "ID Ping :", download: "Télécharger le QR-Code", pdf: "Enregistrer en PDF", print: "Imprimer le QR-Code", share: "Partager le QR-Code", notificationsTitle: "Notifications", loading: "Chargement..." },
+  it: { logged: "Accesso come:", notifications: "Attiva notifiche", logout: "Esci", ready: "Pronto.", myPingcar: "Il mio PingCar", pingId: "ID Ping:", download: "Scarica QR-Code", pdf: "Salva come PDF", print: "Stampa QR-Code", share: "Condividi QR-Code", notificationsTitle: "Notifiche", loading: "Caricamento..." },
+  sr: { logged: "Prijavljen kao:", notifications: "Omogući obaveštenja", logout: "Odjava", ready: "Spremno.", myPingcar: "Moj PingCar", pingId: "Ping-ID:", download: "Preuzmi QR kod", pdf: "Sačuvaj kao PDF", print: "Odštampaj QR kod", share: "Podeli QR kod", notificationsTitle: "Obaveštenja", loading: "Učitava se..." },
+  es: { logged: "Iniciado como:", notifications: "Activar notificaciones", logout: "Cerrar sesión", ready: "Listo.", myPingcar: "Mi PingCar", pingId: "Ping-ID:", download: "Descargar código QR", pdf: "Guardar como PDF", print: "Imprimir código QR", share: "Compartir código QR", notificationsTitle: "Notificaciones", loading: "Cargando..." },
+  tr: { logged: "Şu kişi olarak giriş yapıldı:", notifications: "Bildirimleri etkinleştir", logout: "Çıkış yap", ready: "Hazır.", myPingcar: "PingCar'ım", pingId: "Ping-ID:", download: "QR kodunu indir", pdf: "PDF olarak kaydet", print: "QR kodunu yazdır", share: "QR kodunu paylaş", notificationsTitle: "Bildirimler", loading: "Yükleniyor..." },
+  sk: { logged: "Prihlásený ako:", notifications: "Povoliť upozornenia", logout: "Odhlásiť sa", ready: "Pripravené.", myPingcar: "Moje PingCar", pingId: "Ping-ID:", download: "Stiahnuť QR kód", pdf: "Uložiť ako PDF", print: "Vytlačiť QR kód", share: "Zdieľať QR kód", notificationsTitle: "Upozornenia", loading: "Načítava sa..." },
+  hr: { logged: "Prijavljeni ste kao:", notifications: "Omogući obavijesti", logout: "Odjava", ready: "Spremno.", myPingcar: "Moj PingCar", pingId: "Ping-ID:", download: "Preuzmi QR kod", pdf: "Spremi kao PDF", print: "Ispiši QR kod", share: "Podijeli QR kod", notificationsTitle: "Obavijesti", loading: "Učitavanje..." },
+  hu: { logged: "Bejelentkezve mint:", notifications: "Értesítések engedélyezése", logout: "Kijelentkezés", ready: "Kész.", myPingcar: "Az én PingCarom", pingId: "Ping-ID:", download: "QR-kód letöltése", pdf: "Mentés PDF-ként", print: "QR-kód nyomtatása", share: "QR-kód megosztása", notificationsTitle: "Értesítések", loading: "Betöltés..." },
+  pt: { logged: "Iniciado como:", notifications: "Ativar notificações", logout: "Terminar sessão", ready: "Pronto.", myPingcar: "O meu PingCar", pingId: "Ping-ID:", download: "Descarregar código QR", pdf: "Guardar como PDF", print: "Imprimir código QR", share: "Partilhar código QR", notificationsTitle: "Notificações", loading: "A carregar..." },
+  mk: { logged: "Најавени сте како:", notifications: "Активирајте известувања", logout: "Одјавување", ready: "Подготвено.", myPingcar: "Мојот PingCar", pingId: "Ping-ID:", download: "Преземи QR-код", pdf: "Зачувај како PDF", print: "Печати QR-код", share: "Сподели QR-код", notificationsTitle: "Известувања", loading: "Се вчитува..." },
+  nl: { logged: "Ingelogd als:", notifications: "Meldingen inschakelen", logout: "Uitloggen", ready: "Klaar.", myPingcar: "Mijn PingCar", pingId: "Ping-ID:", download: "QR-code downloaden", pdf: "Opslaan als PDF", print: "QR-code afdrukken", share: "QR-code delen", notificationsTitle: "Meldingen", loading: "Laden..." }
+};
+
+function translateDashboardSecondary() {
+  const lang = localStorage.getItem("pingcar_language") || "de";
+  const t = dashboardTranslations[lang] || dashboardTranslations.de;
+
+  const userInfo = document.getElementById("userInfo");
+  if (userInfo && userInfo.textContent.trim().startsWith("Angemeldet")) {
+    const email = userInfo.textContent.split(":").slice(1).join(":").trim();
+    userInfo.textContent = t.logged + " " + email;
+  }
+
+  const enablePush = document.getElementById("enablePush");
+  if (enablePush) enablePush.textContent = "🔔 " + t.notifications;
+
+  const logout = document.getElementById("logout");
+  if (logout) logout.textContent = "🚪 " + t.logout;
+
+  const statusBox = document.getElementById("status");
+  if (statusBox && statusBox.textContent.trim() === "Bereit.") {
+    statusBox.textContent = t.ready;
+  }
+
+  const headings = document.querySelectorAll("h2");
+  headings.forEach(h => {
+    const text = h.textContent.trim();
+    if (text === "PingCar im") h.textContent = t.myPingcar;
+    if (text === "Benachrichtigungen") h.textContent = t.notificationsTitle;
+  });
+
+  const pingInfo = document.getElementById("pingInfo");
+  if (pingInfo) {
+    pingInfo.innerHTML = pingInfo.innerHTML.replace("Ping-ID:", t.pingId);
+  }
+
+  const downloadBtn = document.querySelector('[onclick="downloadQR()"]');
+  if (downloadBtn) downloadBtn.textContent = "📥 " + t.download;
+
+  const pdfBtn = document.querySelector('[onclick="saveQRAsPDF()"]');
+  if (pdfBtn) pdfBtn.textContent = "📄 " + t.pdf;
+
+  const printBtn = document.querySelector('[onclick="printQR()"]');
+  if (printBtn) printBtn.textContent = "🖨️ " + t.print;
+
+  const shareBtn = document.querySelector('[onclick="shareQR()"]');
+  if (shareBtn) shareBtn.textContent = "📤 " + t.share;
+}
+
+translateDashboardSecondary();
+</script>
+
+<script src="js/language.js"></script>
+
+</body>
+</html>
+<!-- PingCar Pages redeploy test -->
+```
+
