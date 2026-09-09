@@ -911,6 +911,7 @@ function renderSupportMessages(messages) {
   }
 
   tbody.innerHTML = messages.map(message => {
+
     const isRead = message.read === true;
 
     const date = message.created_at
@@ -950,18 +951,192 @@ function renderSupportMessages(messages) {
         </td>
 
         <td style="padding:10px;">
+
+          <button
+            onclick="replyToSupportMessage(
+              '${message.id}',
+              '${escapeSupportText(message.conversation_id || "")}',
+              '${escapeSupportText(message.sender_id || "")}',
+              '${escapeSupportText(message.qr_code || "")}'
+            )"
+            style="
+              background:#198754;
+              color:white;
+              border:none;
+              padding:7px 12px;
+              border-radius:5px;
+              cursor:pointer;
+              font-size:13px;
+              margin-right:5px;
+            "
+          >
+            💬 Antworten
+          </button>
+
           ${
             isRead
-              ? "-"
-              : `<button onclick="markSupportMessageRead('${message.id}')">
-                   ✓ Gelesen
-                 </button>`
+              ? ""
+              : `
+                <button
+                  onclick="markSupportMessageRead('${message.id}')"
+                  style="
+                    background:#0d6efd;
+                    color:white;
+                    border:none;
+                    padding:7px 12px;
+                    border-radius:5px;
+                    cursor:pointer;
+                    font-size:13px;
+                  "
+                >
+                  ✓ Gelesen
+                </button>
+              `
           }
+
         </td>
 
       </tr>
     `;
   }).join("");
+}
+
+
+function filterSupportMessages() {
+  const input = document.getElementById("support-search");
+
+  if (!input) return;
+
+  const search = input.value.toLowerCase().trim();
+  const messages = window.pingcarSupportMessages || [];
+
+  if (!search) {
+    renderSupportMessages(messages);
+    return;
+  }
+
+  const filtered = messages.filter(message =>
+    String(message.qr_code || "").toLowerCase().includes(search) ||
+    String(message.message || "").toLowerCase().includes(search) ||
+    String(message.sender_id || "").toLowerCase().includes(search)
+  );
+
+  renderSupportMessages(filtered);
+}
+
+
+async function markSupportMessageRead(messageId) {
+
+  try {
+
+    const { error } = await db
+      .from("messages")
+      .update({ read: true })
+      .eq("id", messageId);
+
+    if (error) {
+      console.error("Fehler:", error);
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await showSupport();
+
+  } catch (error) {
+
+    console.error(
+      "Fehler beim Aktualisieren:",
+      error
+    );
+
+  }
+}
+
+
+async function replyToSupportMessage(
+  messageId,
+  conversationId,
+  receiverId,
+  qrCode
+) {
+
+  const answer = prompt(
+    "💬 Antwort auf diese Nachricht:"
+  );
+
+  if (answer === null) {
+    return;
+  }
+
+  const text = answer.trim();
+
+  if (!text) {
+    alert("Bitte eine Nachricht eingeben.");
+    return;
+  }
+
+  try {
+
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      alert("Nicht eingeloggt.");
+      return;
+    }
+
+    const adminId =
+      sessionData.session.user.id;
+
+    const { error } = await db
+      .from("messages")
+      .insert({
+        conversation_id: conversationId,
+        sender_id: adminId,
+        receiver_id: receiverId,
+        qr_code: qrCode,
+        message: text,
+        read: false
+      });
+
+    if (error) {
+
+      console.error(
+        "Antwort Fehler:",
+        error
+      );
+
+      alert(
+        "Antwort konnte nicht gesendet werden:\n" +
+        error.message
+      );
+
+      return;
+    }
+
+    await db
+      .from("messages")
+      .update({ read: true })
+      .eq("id", messageId);
+
+    alert("✅ Antwort wurde erfolgreich gesendet.");
+
+    await showSupport();
+
+  } catch (error) {
+
+    console.error(
+      "Support Antwort Fehler:",
+      error
+    );
+
+    alert(
+      "Fehler: " + error.message
+    );
+
+  }
 }
 
 function filterSupportMessages() {
