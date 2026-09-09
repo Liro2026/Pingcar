@@ -1,29 +1,6 @@
 
 <!DOCTYPE html>
 <html lang="de">
-<script>
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) {
-    const nativeFetch = window.fetch;
-    window.fetch = async (url, options = {}) => {
-      try {
-        const response = await window.Capacitor.Plugins.CapacitorHttp.request({
-          method: options.method || 'GET',
-          url: typeof url === 'string' ? url : url.toString(),
-          headers: options.headers || {},
-          data: options.body ? (typeof options.body === 'string' ? JSON.parse(options.body) : options.body) : undefined
-        });
-        return {
-          ok: response.status >= 200 && response.status < 300,
-          status: response.status,
-          json: async () => typeof response.data === 'string' ? JSON.parse(response.data) : response.data,
-          text: async () => typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
-        };
-      } catch (e) {
-        return nativeFetch(url, options);
-      }
-    };
-  }
-</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
