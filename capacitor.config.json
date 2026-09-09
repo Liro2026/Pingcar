@@ -1,5 +1,16 @@
 {
   "appId": "ch.pingcar.app",
   "appName": "PingCar",
-  "webDir": "www"
+  "webDir": "www",
+  "packageClassList": [],
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https",
+    "hostname": "pingcar.ch"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }
