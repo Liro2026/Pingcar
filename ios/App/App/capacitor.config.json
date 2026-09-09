@@ -3,11 +3,6 @@
 	"appName": "PingCar",
 	"webDir": "www",
 	"packageClassList": [],
-	"server": {
-		"androidScheme": "https",
-		"iosScheme": "https",
-		"hostname": "pingcar.ch"
-	},
 	"plugins": {
 		"CapacitorHttp": {
 			"enabled": true
