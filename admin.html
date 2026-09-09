@@ -168,6 +168,7 @@ PingCar Administrator
 
 <a onclick="showStats()">📈 Statistik</a>
 <a onclick="showSubscriptions()">💳 Abonnemente</a>
+<a onclick="showSupport()">💬 Meldungen / Support</a>
 
 </nav>
 
@@ -802,6 +803,209 @@ async function showStats() {
     
   }
 }
+async function showSupport() {
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>💬 Meldungen / Support</h2>
+
+      <div style="display:flex; gap:15px; margin-top:15px;">
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; flex:1; text-align:center;">
+          <small>Nachrichten</small>
+          <h3 id="support-total" style="margin:5px 0; color:#007bff;">0</h3>
+        </div>
+
+        <div style="background:#fff3cd; padding:15px; border-radius:8px; flex:1; text-align:center;">
+          <small>Ungelesen</small>
+          <h3 id="support-unread" style="margin:5px 0; color:#856404;">0</h3>
+        </div>
+      </div>
+
+      <input
+        id="support-search"
+        type="text"
+        placeholder="🔎 Suche nach QR-Code, Nachricht oder Absender..."
+        oninput="filterSupportMessages()"
+        style="width:100%; box-sizing:border-box; padding:12px; margin:20px 0 15px; border:1px solid #ddd; border-radius:6px;"
+      >
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="background:#0d6efd; color:white; text-align:left;">
+              <th style="padding:10px;">QR-Code</th>
+              <th style="padding:10px;">Nachricht</th>
+              <th style="padding:10px;">Absender</th>
+              <th style="padding:10px;">Datum</th>
+              <th style="padding:10px;">Status</th>
+              <th style="padding:10px;">Aktion</th>
+            </tr>
+          </thead>
+
+          <tbody id="support-table-body">
+            <tr>
+              <td colspan="6" style="padding:15px; text-align:center;">
+                Nachrichten werden geladen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  try {
+    const { data: messages, error } = await db
+      .from("messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Support Fehler:", error);
+      document.getElementById("support-table-body").innerHTML = `
+        <tr>
+          <td colspan="6" style="padding:15px; text-align:center; color:#dc3545;">
+            Fehler beim Laden: ${error.message}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    window.pingcarSupportMessages = messages || [];
+    renderSupportMessages(window.pingcarSupportMessages);
+
+  } catch (error) {
+    console.error("Support JS Fehler:", error);
+  }
+}
+
+function escapeSupportText(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderSupportMessages(messages) {
+  const tbody = document.getElementById("support-table-body");
+
+  const total = messages.length;
+  const unread = messages.filter(m => m.read !== true).length;
+
+  document.getElementById("support-total").textContent = total;
+  document.getElementById("support-unread").textContent = unread;
+
+  if (total === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="padding:15px; text-align:center; color:#666;">
+          Keine Nachrichten vorhanden
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = messages.map(message => {
+    const isRead = message.read === true;
+
+    const date = message.created_at
+      ? new Date(message.created_at).toLocaleString("de-CH")
+      : "-";
+
+    return `
+      <tr style="border-bottom:1px solid #eee;">
+
+        <td style="padding:10px;">
+          <strong>${escapeSupportText(message.qr_code || "-")}</strong>
+        </td>
+
+        <td style="padding:10px;">
+          ${escapeSupportText(message.message || "-")}
+        </td>
+
+        <td style="padding:10px; font-size:12px;">
+          ${escapeSupportText(message.sender_id || "-")}
+        </td>
+
+        <td style="padding:10px; white-space:nowrap;">
+          ${date}
+        </td>
+
+        <td style="padding:10px;">
+          <span style="
+            background:${isRead ? "#d4edda" : "#f8d7da"};
+            color:${isRead ? "#155724" : "#721c24"};
+            padding:4px 8px;
+            border-radius:4px;
+            font-size:12px;
+            font-weight:bold;
+          ">
+            ${isRead ? "Gelesen" : "Neu"}
+          </span>
+        </td>
+
+        <td style="padding:10px;">
+          ${
+            isRead
+              ? "-"
+              : `<button onclick="markSupportMessageRead('${message.id}')">
+                   ✓ Gelesen
+                 </button>`
+          }
+        </td>
+
+      </tr>
+    `;
+  }).join("");
+}
+
+function filterSupportMessages() {
+  const input = document.getElementById("support-search");
+  if (!input) return;
+
+  const search = input.value.toLowerCase().trim();
+  const messages = window.pingcarSupportMessages || [];
+
+  if (!search) {
+    renderSupportMessages(messages);
+    return;
+  }
+
+  const filtered = messages.filter(message =>
+    String(message.qr_code || "").toLowerCase().includes(search) ||
+    String(message.message || "").toLowerCase().includes(search) ||
+    String(message.sender_id || "").toLowerCase().includes(search)
+  );
+
+  renderSupportMessages(filtered);
+}
+
+async function markSupportMessageRead(messageId) {
+  try {
+    const { error } = await db
+      .from("messages")
+      .update({ read: true })
+      .eq("id", messageId);
+
+    if (error) {
+      console.error("Fehler:", error);
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await showSupport();
+
+  } catch (error) {
+    console.error("Fehler beim Aktualisieren:", error);
+  }
+}
+
+
 async function showSubscriptions() {
   const content = document.getElementById("content");
   content.innerHTML = `
