@@ -1090,7 +1090,49 @@ async function replyToSupportMessage(
     const adminId =
       sessionData.session.user.id;
 
-    const { error } = await db
+
+    /* Besitzer des QR-Codes finden */
+
+    const {
+      data: qrData,
+      error: qrError
+    } = await db
+      .from("user_qr")
+      .select("user_id")
+      .eq("qr_code", qrCode)
+      .eq("active", true)
+      .maybeSingle();
+
+    if (qrError) {
+
+      console.error(
+        "QR Besitzer Fehler:",
+        qrError
+      );
+
+      alert(
+        "Besitzer des QR-Codes konnte nicht gefunden werden:\n" +
+        qrError.message
+      );
+
+      return;
+    }
+
+    if (!qrData?.user_id) {
+
+      alert(
+        "Kein Benutzer für diesen QR-Code gefunden."
+      );
+
+      return;
+    }
+
+    const ownerId = qrData.user_id;
+
+
+    /* Antwort in messages speichern */
+
+    const { error: messageError } = await db
       .from("messages")
       .insert({
         conversation_id: conversationId,
@@ -1101,27 +1143,68 @@ async function replyToSupportMessage(
         read: false
       });
 
-    if (error) {
+    if (messageError) {
 
       console.error(
         "Antwort Fehler:",
-        error
+        messageError
       );
 
       alert(
         "Antwort konnte nicht gesendet werden:\n" +
-        error.message
+        messageError.message
       );
 
       return;
     }
 
-    await db
+
+    /* Benachrichtigung für den Benutzer erstellen */
+
+    const { error: notificationError } = await db
+      .from("notifications")
+      .insert({
+        message: text,
+        sender_id: adminId,
+        owner_id: ownerId,
+        qr_code: qrCode
+      });
+
+    if (notificationError) {
+
+      console.error(
+        "Benachrichtigung Fehler:",
+        notificationError
+      );
+
+      alert(
+        "Antwort wurde gesendet, aber die Benachrichtigung konnte nicht erstellt werden:\n" +
+        notificationError.message
+      );
+
+      return;
+    }
+
+
+    /* ursprüngliche Nachricht als gelesen markieren */
+
+    const { error: readError } = await db
       .from("messages")
       .update({ read: true })
       .eq("id", messageId);
 
-    alert("✅ Antwort wurde erfolgreich gesendet.");
+    if (readError) {
+
+      console.error(
+        "Gelesen Fehler:",
+        readError
+      );
+    }
+
+
+    alert(
+      "✅ Antwort wurde erfolgreich gesendet."
+    );
 
     await showSupport();
 
