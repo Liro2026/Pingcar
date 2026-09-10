@@ -2,10 +2,10 @@ import UIKit
 import Capacitor
 import WebKit
 
-final class PingCarViewController: CAPBridgeViewController {
+final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandler {
 
     private var backButton: UIButton!
-    private var webViewObservation: NSKeyValueObservation?
+    private var webViewObservation: NSKeyValueObservation!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -13,8 +13,11 @@ final class PingCarViewController: CAPBridgeViewController {
         setupBackButton()
 
         DispatchQueue.main.async { [weak self] in
-            self?.setupWebViewObservation()
-            self?.enableBackSwipe()
+            guard let self = self else { return }
+
+            self.registerQRShareHandler()
+            self.setupWebViewObservation()
+            self.enableBackSwipe()
         }
     }
 
@@ -30,6 +33,17 @@ final class PingCarViewController: CAPBridgeViewController {
         }
 
         return nil
+    }
+
+    private func registerQRShareHandler() {
+        guard let webView = findWebView(in: view) else {
+            return
+        }
+
+        webView.configuration.userContentController.add(
+            self,
+            name: "pingcarShareQR"
+        )
     }
 
     private func setupWebViewObservation() {
@@ -71,7 +85,6 @@ final class PingCarViewController: CAPBridgeViewController {
             UIColor.black.withAlphaComponent(0.45)
 
         backButton.layer.cornerRadius = 22
-
         backButton.translatesAutoresizingMaskIntoConstraints = false
 
         backButton.addTarget(
@@ -107,6 +120,51 @@ final class PingCarViewController: CAPBridgeViewController {
 
         if webView.canGoBack {
             webView.goBack()
+        }
+    }
+
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceive message: WKScriptMessage
+    ) {
+        guard message.name == "pingcarShareQR",
+              let dataURL = message.body as? String,
+              let commaIndex = dataURL.firstIndex(of: ",") else {
+            return
+        }
+
+        let base64 = String(
+            dataURL[dataURL.index(after: commaIndex)...]
+        )
+
+        guard let data = Data(base64Encoded: base64),
+              let image = UIImage(data: data) else {
+            return
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let activityVC = UIActivityViewController(
+                activityItems: [image],
+                applicationActivities: nil
+            )
+
+            activityVC.popoverPresentationController?.sourceView =
+                self.view
+
+            activityVC.popoverPresentationController?.sourceRect =
+                CGRect(
+                    x: self.view.bounds.midX,
+                    y: self.view.bounds.midY,
+                    width: 0,
+                    height: 0
+                )
+
+            self.present(
+                activityVC,
+                animated: true
+            )
         }
     }
 
