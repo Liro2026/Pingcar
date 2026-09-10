@@ -161,7 +161,7 @@ PingCar Administrator
 <a onclick="showDashboard()">📊 Dashboard</a>
 
 <a onclick="showUsers()">👥 Benutzer</a>
-
+<a onclick="showUserVehicles()">👤🚗 Benutzer & Fahrzeuge</a>
 <a onclick="showEmail()">📧 E-Mail senden</a>
 
 <a onclick="showPush()">🔔 Push-Benachrichtigungen</a>
@@ -499,7 +499,186 @@ async function showUsers() {
     `;
   }
 }
+async function showUserVehicles() {
 
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>Benutzer & Fahrzeuge</h2>
+
+      <input
+        id="userVehicleSearch"
+        placeholder="Nach Name, E-Mail oder QR-Code suchen..."
+        oninput="filterUserVehicles()"
+      >
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>E-Mail Status</th>
+            <th>QR-Code</th>
+            <th>Fahrzeug Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="userVehicleRows">
+          <tr>
+            <td colspan="5">Daten werden geladen...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  try {
+
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
+    }
+
+    /* Benutzer laden */
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Fehler beim Laden der Benutzer"
+      );
+    }
+
+    const users = result.users || [];
+
+    /* Fahrzeuge / QR laden */
+    const {
+      data: vehicles,
+      error: vehicleError
+    } = await db
+      .from("user_qr")
+      .select("*");
+
+    if (vehicleError) {
+      throw vehicleError;
+    }
+
+    const vehicleMap = new Map();
+
+    (vehicles || []).forEach(vehicle => {
+      vehicleMap.set(vehicle.user_id, vehicle);
+    });
+
+    let rows = "";
+
+    users.forEach(user => {
+
+      const vehicle = vehicleMap.get(user.id);
+
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        "-";
+
+      const email = user.email || "-";
+
+      const emailStatus = user.email_confirmed_at
+        ? "Bestätigt"
+        : "Nicht bestätigt";
+
+      const qrCode = vehicle?.qr_code || "-";
+
+      const vehicleStatus = vehicle
+        ? (vehicle.active ? "Aktiv" : "Inaktiv")
+        : "Kein Fahrzeug";
+
+      rows += `
+        <tr>
+          <td>${escapeAdminText(name)}</td>
+          <td>${escapeAdminText(email)}</td>
+          <td>${emailStatus}</td>
+          <td>${escapeAdminText(qrCode)}</td>
+          <td>${vehicleStatus}</td>
+        </tr>
+      `;
+    });
+
+    if (!rows) {
+      rows = `
+        <tr>
+          <td colspan="5">Keine Benutzer gefunden.</td>
+        </tr>
+      `;
+    }
+
+    document.getElementById("userVehicleRows").innerHTML = rows;
+
+  } catch (error) {
+
+    console.error("Benutzer & Fahrzeuge Fehler:", error);
+
+    document.getElementById("userVehicleRows").innerHTML = `
+      <tr>
+        <td colspan="5">
+          Fehler: ${escapeAdminText(error.message)}
+        </td>
+      </tr>
+    `;
+  }
+}
+
+
+function filterUserVehicles() {
+
+  const search =
+    document
+      .getElementById("userVehicleSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const rows =
+    document.querySelectorAll("#userVehicleRows tr");
+
+  rows.forEach(row => {
+
+    const text =
+      row.textContent.toLowerCase();
+
+    row.style.display =
+      text.includes(search)
+        ? ""
+        : "none";
+  });
+}
+
+
+function escapeAdminText(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 async function showEmail() {
 
   if (!(await requireAdmin())) return;
