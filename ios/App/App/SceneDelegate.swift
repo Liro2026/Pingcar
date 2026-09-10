@@ -5,12 +5,17 @@ import WebKit
 final class PingCarViewController: CAPBridgeViewController {
 
     private var backButton: UIButton!
+    private var webViewObservation: NSKeyValueObservation?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        enableBackSwipe(in: view)
         setupBackButton()
+
+        DispatchQueue.main.async { [weak self] in
+            self?.setupWebViewObservation()
+            self?.enableBackSwipe()
+        }
     }
 
     private func findWebView(in view: UIView) -> WKWebView? {
@@ -27,28 +32,48 @@ final class PingCarViewController: CAPBridgeViewController {
         return nil
     }
 
-    private func enableBackSwipe(in view: UIView) {
-        if let webView = view as? WKWebView {
-            webView.allowsBackForwardNavigationGestures = true
+    private func setupWebViewObservation() {
+        guard let webView = findWebView(in: view) else {
             return
         }
 
-        for subview in view.subviews {
-            enableBackSwipe(in: subview)
+        webViewObservation = webView.observe(
+            \.canGoBack,
+            options: [.initial, .new]
+        ) { [weak self] webView, _ in
+
+            DispatchQueue.main.async {
+                self?.backButton.isHidden = !webView.canGoBack
+            }
         }
+    }
+
+    private func enableBackSwipe() {
+        guard let webView = findWebView(in: view) else {
+            return
+        }
+
+        webView.allowsBackForwardNavigationGestures = true
     }
 
     private func setupBackButton() {
         backButton = UIButton(type: .system)
 
-        backButton.setTitle("‹", for: .normal)
-        backButton.titleLabel?.font = UIFont.systemFont(ofSize: 38, weight: .medium)
-        backButton.setTitleColor(.white, for: .normal)
+        if let image = UIImage(systemName: "chevron.left") {
+            backButton.setImage(image, for: .normal)
+        } else {
+            backButton.setTitle("‹", for: .normal)
+        }
 
-        backButton.backgroundColor = UIColor.black.withAlphaComponent(0.35)
+        backButton.tintColor = .white
+
+        backButton.backgroundColor =
+            UIColor.black.withAlphaComponent(0.45)
+
         backButton.layer.cornerRadius = 22
 
         backButton.translatesAutoresizingMaskIntoConstraints = false
+
         backButton.addTarget(
             self,
             action: #selector(goBack),
@@ -58,13 +83,21 @@ final class PingCarViewController: CAPBridgeViewController {
         view.addSubview(backButton)
 
         NSLayoutConstraint.activate([
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: 12
+            ),
+
+            backButton.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 8
+            ),
+
             backButton.widthAnchor.constraint(equalToConstant: 44),
             backButton.heightAnchor.constraint(equalToConstant: 44)
         ])
 
-        updateBackButton()
+        backButton.isHidden = true
     }
 
     @objc private func goBack() {
@@ -75,18 +108,10 @@ final class PingCarViewController: CAPBridgeViewController {
         if webView.canGoBack {
             webView.goBack()
         }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.updateBackButton()
-        }
     }
 
-    private func updateBackButton() {
-        guard let webView = findWebView(in: view) else {
-            return
-        }
-
-        backButton.isHidden = !webView.canGoBack
+    deinit {
+        webViewObservation?.invalidate()
     }
 }
 
@@ -99,7 +124,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        guard let windowScene = scene as? UIWindowScene else { return }
+        guard let windowScene = scene as? UIWindowScene else {
+            return
+        }
 
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = PingCarViewController()
