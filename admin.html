@@ -169,6 +169,7 @@ PingCar Administrator
 <a onclick="showStats()">📈 Statistik</a>
 <a onclick="showSubscriptions()">💳 Abonnemente</a>
 <a onclick="showSupport()">💬 Meldungen / Support</a>
+<a onclick="showErrorLogs()">🛠️ Error Logs</a>
 
 </nav>
 
@@ -678,6 +679,94 @@ function escapeAdminText(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+async function showErrorLogs() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🛠️ Error Logs</h2>
+
+      <button onclick="showErrorLogs()">
+        🔄 Aktualisieren
+      </button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Schweregrad</th>
+            <th>Quelle</th>
+            <th>Fehler</th>
+            <th>Seite</th>
+          </tr>
+        </thead>
+
+        <tbody id="errorLogRows">
+          <tr>
+            <td colspan="5">Fehler werden geladen...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  try {
+
+    const { data, error } = await db
+      .from("error_logs")
+      .select("id, created_at, severity, source, message, page_url")
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    if (error) {
+      throw error;
+    }
+
+    const rows = data || [];
+
+    if (!rows.length) {
+      document.getElementById("errorLogRows").innerHTML = `
+        <tr>
+          <td colspan="5">
+            ✅ Keine Fehler gespeichert.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    document.getElementById("errorLogRows").innerHTML =
+      rows.map(log => `
+        <tr>
+          <td>${escapeAdminText(
+            new Date(log.created_at).toLocaleString("de-CH")
+          )}</td>
+
+          <td>${escapeAdminText(log.severity)}</td>
+
+          <td>${escapeAdminText(log.source || "-")}</td>
+
+          <td>${escapeAdminText(log.message)}</td>
+
+          <td>${escapeAdminText(log.page_url || "-")}</td>
+        </tr>
+      `).join("");
+
+  } catch (error) {
+
+    console.error("Error Logs Fehler:", error);
+
+    document.getElementById("errorLogRows").innerHTML = `
+      <tr>
+        <td colspan="5">
+          ❌ Fehler beim Laden:
+          ${escapeAdminText(error.message)}
+        </td>
+      </tr>
+    `;
+  }
 }
 async function showEmail() {
 
