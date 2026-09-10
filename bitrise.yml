@@ -39,12 +39,12 @@ workflows:
               echo "LaunchScreen.storyboard restored."
             fi
 
-            echo "=== Setting Build Number 58 ==="
+            echo "=== Setting Build Number 59 ==="
             PROJECT_FILE="ios/App/App.xcodeproj/project.pbxproj"
             APP_VERSION=$(node -p "require('./package.json').version")
 
             sed -i '' -E \
-              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 58;/g' \
+              's/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = 59;/g' \
               "$PROJECT_FILE"
 
             sed -i '' -E \
