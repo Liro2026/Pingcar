@@ -3,62 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>PingCar QR Scanner</title>
+
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-body{font-family:Arial,sans-serif;background:#f5f5f5;text-align:center;padding:20px}
-#reader{width:320px;margin:20px auto}
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    text-align:center;
+    padding:20px;
+}
+
+#reader{
+    width:320px;
+    max-width:100%;
+    margin:20px auto;
+}
+
+#cameraButton{
+    display:inline-block;
+    border:0;
+    background:#0066ff;
+    color:white;
+    padding:14px 24px;
+    border-radius:10px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#cameraButton:disabled{
+    opacity:0.6;
+}
+
+#status{
+    margin:15px auto;
+    max-width:400px;
+    font-size:15px;
+}
 </style>
 </head>
+
 <body>
 
 <h2 id="qrTitle">📱 QR-Code Scanner</h2>
+
+<button id="cameraButton" type="button">
+    📷 Kamera öffnen
+</button>
+
+<div id="status"></div>
+
 <div id="reader"></div>
 
 <script>
-const supabase = window.supabase.createClient(
-  "https://uvmkhqzfsgvicacvgskf.supabase.co",
-  "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+
+const supabaseClient = window.supabase.createClient(
+    "https://uvmkhqzfsgvicacvgskf.supabase.co",
+    "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
 );
 
 let busy = false;
+let scanner = null;
 
-async function onScanSuccess(decodedText){
-  if(busy) return;
-  busy = true;
+const cameraButton = document.getElementById("cameraButton");
+const status = document.getElementById("status");
 
-  const code = decodedText.trim();
-
-  const { data, error } = await supabase
-    .from("cars")
-    .select("qr_code")
-    .eq("qr_code", code)
-    .maybeSingle();
-
-  if(error){
-    alert(error.message);
-    busy = false;
-    return;
-  }
-
-  if(!data){
-    alert("QR Code nuk u gjet.");
-    busy = false;
-    return;
-  }
-
-  window.location.href = "contact.html?id=" + encodeURIComponent(data.qr_code);
+function setStatus(text){
+    status.textContent = text;
 }
 
-function onScanFailure(error){}
+async function onScanSuccess(decodedText){
 
-const scanner = new Html5QrcodeScanner(
-  "reader",
-  { fps:10, qrbox:250 }
+    if(busy) return;
+
+    busy = true;
+
+    setStatus("QR-Code erkannt...");
+
+    const code = decodedText.trim();
+
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("cars")
+            .select("qr_code")
+            .eq("qr_code", code)
+            .maybeSingle();
+
+        if(error){
+            alert(error.message);
+            busy = false;
+            setStatus("");
+            return;
+        }
+
+        if(!data){
+            alert("QR Code nuk u gjet.");
+            busy = false;
+            setStatus("");
+            return;
+        }
+
+        if(scanner){
+            try {
+                await scanner.stop();
+            } catch(e) {}
+        }
+
+        window.location.href =
+            "contact.html?id=" + encodeURIComponent(data.qr_code);
+
+    } catch(error){
+
+        console.error(error);
+
+        alert("Fehler beim Scannen.");
+        busy = false;
+        setStatus("");
+    }
+}
+
+function onScanFailure(error){
+    // normal während des Scannens
+}
+
+async function startCamera(){
+
+    cameraButton.disabled = true;
+    setStatus("Kamera wird geöffnet...");
+
+    try {
+
+        if(
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ){
+            throw new Error("Camera API not available");
+        }
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                video:{
+                    facingMode:{
+                        ideal:"environment"
+                    }
+                },
+                audio:false
+            });
+
+        // Permission wurde erteilt.
+        // Danach übernimmt Html5Qrcode den Stream.
+        stream.getTracks().forEach(track => track.stop());
+
+        cameraButton.style.display = "none";
+
+        scanner = new Html5QrcodeScanner(
+            "reader",
+            {
+                fps:10,
+                qrbox:{
+                    width:250,
+                    height:250
+                },
+                rememberLastUsedCamera:true,
+                showTorchButtonIfSupported:true
+            },
+            false
+        );
+
+        scanner.render(
+            onScanSuccess,
+            onScanFailure
+        );
+
+        setStatus("");
+
+    } catch(error){
+
+        console.error("Camera error:", error);
+
+        cameraButton.disabled = false;
+
+        if(error.name === "NotAllowedError"){
+
+            setStatus(
+                "Kamerazugriff wurde verweigert. Bitte erlauben Sie die Kamera in den iPhone-Einstellungen."
+            );
+
+        } else {
+
+            setStatus(
+                "Kamera konnte nicht geöffnet werden."
+            );
+        }
+    }
+}
+
+cameraButton.addEventListener(
+    "click",
+    startCamera
 );
 
-scanner.render(onScanSuccess, onScanFailure);
 </script>
 
 </body>
