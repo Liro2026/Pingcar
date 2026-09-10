@@ -615,18 +615,6 @@ async function enablePushNotifications() {
       "/firebase-messaging-sw.js"
     );
 
-    const token = await getToken(messaging, {
-      vapidKey: vapidKey,
-      serviceWorkerRegistration: registration
-    });
-
-    console.log("FCM Token:", token);
-
-    if (!token) {
-      alert("FCM Token konnte nicht erstellt werden.");
-      return;
-    }
-
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
