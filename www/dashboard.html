@@ -361,22 +361,66 @@ function saveQRAsPDF() {
 
 async function downloadQR() {
   const qrImage = document.querySelector('img[alt="PingCar QR-Code"]');
+
   if (!qrImage || !qrImage.src) {
     alert("QR-Code konnte nicht gefunden werden.");
     return;
   }
+
   try {
     const response = await fetch(qrImage.src);
-    if (!response.ok) throw new Error("QR-Code konnte nicht geladen werden.");
+
+    if (!response.ok) {
+      throw new Error("QR-Code konnte nicht geladen werden.");
+    }
+
     const blob = await response.blob();
+
+    // iOS / Capacitor
+    if (Capacitor.isNativePlatform()) {
+      const arrayBuffer = await blob.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+
+      let binary = "";
+      const chunkSize = 0x8000;
+
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(
+          ...bytes.subarray(i, i + chunkSize)
+        );
+      }
+
+      const base64 = btoa(binary);
+
+      const file = await Filesystem.writeFile({
+        path: "PingCar-QR-Code.png",
+        data: base64,
+        directory: Directory.Cache
+      });
+
+      await Share.share({
+        title: "PingCar QR-Code",
+        text: "Mein PingCar QR-Code",
+        files: [file.uri],
+        dialogTitle: "QR-Code speichern oder teilen"
+      });
+
+      return;
+    }
+
+    // Browser / Live Server – funksioni ekzistues mbetet
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+
     link.href = url;
     link.download = "PingCar-QR-Code.png";
+
     document.body.appendChild(link);
     link.click();
     link.remove();
+
     URL.revokeObjectURL(url);
+
   } catch (error) {
     console.error("QR-Code Download-Fehler:", error);
     alert("Der QR-Code konnte nicht heruntergeladen werden.");
@@ -413,6 +457,9 @@ async function shareQR() {
 <!-- ===== Script 3: Supabase + Auth + Firebase (module) ===== -->
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { Capacitor } from "@capacitor/core";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 
 const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
