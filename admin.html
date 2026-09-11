@@ -170,6 +170,7 @@ PingCar Administrator
 <a onclick="showSubscriptions()">💳 Abonnemente</a>
 <a onclick="showSupport()">💬 Meldungen / Support</a>
 <a onclick="showErrorLogs()">🛠️ Error Logs</a>
+<a onclick="showDevices()">📱 Geräte / Push Tokens</a>
 
 </nav>
 
@@ -1531,6 +1532,201 @@ async function markSupportMessageRead(messageId) {
   }
 }
 
+async function showDevices() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="statbox">
+
+      <div class="stat">
+        Geräte gesamt
+        <h3 id="deviceTotal">...</h3>
+      </div>
+
+      <div class="stat">
+        Push aktiv
+        <h3 id="deviceActive">...</h3>
+      </div>
+
+      <div class="stat">
+        Push inaktiv
+        <h3 id="deviceInactive">...</h3>
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>📱 Geräte / Push Tokens</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Benutzer</th>
+            <th>E-Mail</th>
+            <th>Gerät</th>
+            <th>Push Status</th>
+            <th>Registriert</th>
+            <th>Push Token</th>
+          </tr>
+        </thead>
+
+        <tbody id="deviceRows">
+          <tr>
+            <td colspan="6">Daten werden geladen...</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  `;
+
+  try {
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
+    }
+
+    /* Benutzer laden */
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Fehler beim Laden der Benutzer"
+      );
+    }
+
+    const users = result.users || [];
+
+    const userMap = new Map();
+
+    users.forEach(user => {
+      userMap.set(user.id, user);
+    });
+
+    /* Geräte / Push Tokens laden */
+    const { data: devices, error: deviceError } =
+      await db
+        .from("device_tokens")
+        .select("id,user_id,fcm_token,created_at")
+        .order("created_at", { ascending: false });
+
+    if (deviceError) {
+      throw deviceError;
+    }
+
+    const deviceList = devices || [];
+
+    document.getElementById("deviceTotal").textContent =
+      deviceList.length;
+
+    document.getElementById("deviceActive").textContent =
+      deviceList.filter(device => device.fcm_token).length;
+
+    document.getElementById("deviceInactive").textContent =
+      deviceList.filter(device => !device.fcm_token).length;
+
+    const tbody = document.getElementById("deviceRows");
+
+    if (deviceList.length === 0) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;">
+            Keine Geräte / Push Tokens vorhanden.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    tbody.innerHTML = deviceList.map(device => {
+
+      const user = userMap.get(device.user_id);
+
+      const name =
+        user?.user_metadata?.full_name ||
+        user?.user_metadata?.name ||
+        "Unbekannt";
+
+      const email =
+        user?.email ||
+        "Unbekannt";
+
+      const token = device.fcm_token || "";
+
+      const maskedToken = token
+        ? token.substring(0, 12) + "••••••••"
+        : "-";
+
+      const registered = device.created_at
+        ? new Date(device.created_at).toLocaleString("de-CH")
+        : "-";
+
+      return `
+        <tr>
+
+          <td>${name}</td>
+
+          <td>${email}</td>
+
+          <td>📱 Push-Gerät</td>
+
+          <td>
+            <span style="
+              background:#d4edda;
+              color:#155724;
+              padding:4px 8px;
+              border-radius:5px;
+              font-weight:bold;
+            ">
+              Aktiv
+            </span>
+          </td>
+
+          <td>${registered}</td>
+
+          <td title="${token}">
+            ${maskedToken}
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error("Geräte Fehler:", error);
+
+    document.getElementById("deviceRows").innerHTML = `
+      <tr>
+        <td colspan="6">
+          Fehler: ${error.message}
+        </td>
+      </tr>
+    `;
+
+  }
+}
 
 async function showSubscriptions() {
   const content = document.getElementById("content");
