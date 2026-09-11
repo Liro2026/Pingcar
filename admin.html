@@ -172,6 +172,7 @@ PingCar Administrator
 <a onclick="showErrorLogs()">🛠️ Error Logs</a>
 <a onclick="showDevices()">📱 Geräte / Push Tokens</a>
 <a onclick="showOnline()">🟢 Live Online</a>
+<a onclick="showSystemStatus()">🔐 Sicherheit / Systemstatus</a>
 
 </nav>
 
@@ -1934,6 +1935,133 @@ async function showOnline() {
 
     }).join("");
   }
+}
+async function showSystemStatus() {
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🔐 Sicherheit / Systemstatus</h2>
+
+      <div id="system-status-list">
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🌐 Website
+          <span id="status-website" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🗄️ Supabase Datenbank
+          <span id="status-database" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🔄 Realtime
+          <span id="status-realtime" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🔔 Push-System
+          <span id="status-push" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;">
+          🛠️ Error Logs
+          <span id="status-errors" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+      </div>
+
+      <button onclick="showSystemStatus()" style="margin-top:20px;">
+        🔄 System prüfen
+      </button>
+
+      <p style="margin-top:15px;color:#777;">
+        Letzte Prüfung: <span id="status-time">-</span>
+      </p>
+    </div>
+  `;
+
+  const setStatus = (id, ok, text) => {
+    const el = document.getElementById(id);
+
+    el.innerHTML = ok
+      ? `<span style="color:#198754;font-weight:bold;">🟢 ${text}</span>`
+      : `<span style="color:#dc3545;font-weight:bold;">🔴 ${text}</span>`;
+  };
+
+  // Website / Admin erreichbar
+  setStatus("status-website", true, "Online");
+
+  // Supabase Datenbank
+  try {
+    const { error } = await db
+      .from("device_tokens")
+      .select("id", { count: "exact", head: true });
+
+    setStatus("status-database", !error, error ? "Fehler" : "Online");
+  } catch (error) {
+    setStatus("status-database", false, "Fehler");
+  }
+
+  // Realtime
+  try {
+    const testChannel = db.channel("pingcar-system-status-" + Date.now());
+
+    testChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        setStatus("status-realtime", true, "Online");
+        await db.removeChannel(testChannel);
+      }
+    });
+
+    setTimeout(async () => {
+      if (document.getElementById("status-realtime")) {
+        const current = document.getElementById("status-realtime").textContent;
+
+        if (current.includes("Prüfen")) {
+          setStatus("status-realtime", false, "Nicht erreichbar");
+          await db.removeChannel(testChannel);
+        }
+      }
+    }, 5000);
+
+  } catch (error) {
+    setStatus("status-realtime", false, "Fehler");
+  }
+
+  // Push-System / Device Tokens
+  try {
+    const { count, error } = await db
+      .from("device_tokens")
+      .select("id", { count: "exact", head: true });
+
+    setStatus(
+      "status-push",
+      !error,
+      error ? "Fehler" : `${count || 0} Geräte registriert`
+    );
+  } catch (error) {
+    setStatus("status-push", false, "Fehler");
+  }
+
+  // Error Logs
+  try {
+    const { count, error } = await db
+      .from("error_logs")
+      .select("id", { count: "exact", head: true });
+
+    setStatus(
+      "status-errors",
+      !error,
+      error ? "Fehler" : `${count || 0} Einträge`
+    );
+  } catch (error) {
+    setStatus("status-errors", false, "Fehler");
+  }
+
+  document.getElementById("status-time").textContent =
+    new Date().toLocaleString("de-CH");
 }
 async function showSubscriptions() {
   const content = document.getElementById("content");
