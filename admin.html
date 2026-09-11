@@ -173,6 +173,7 @@ PingCar Administrator
 <a onclick="showDevices()">📱 Geräte / Push Tokens</a>
 <a onclick="showOnline()">🟢 Live Online</a>
 <a onclick="showSystemStatus()">🔐 Sicherheit / Systemstatus</a>
+<a onclick="showActivityLog()">📋 Aktivitätsprotokoll</a>
 
 </nav>
 
@@ -2062,6 +2063,177 @@ async function showSystemStatus() {
 
   document.getElementById("status-time").textContent =
     new Date().toLocaleString("de-CH");
+}
+async function showActivityLog() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>📋 Aktivitätsprotokoll</h2>
+
+      <div style="display:flex;gap:15px;flex-wrap:wrap;margin-bottom:20px;">
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>💬 Meldungen</div>
+          <h3 id="activityMessages">...</h3>
+        </div>
+
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>📱 Geräte</div>
+          <h3 id="activityDevices">...</h3>
+        </div>
+
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>💳 Abonnements</div>
+          <h3 id="activitySubscriptions">...</h3>
+        </div>
+
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>🛠️ Fehler</div>
+          <h3 id="activityErrors">...</h3>
+        </div>
+      </div>
+
+      <h3>Letzte Aktivitäten</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Zeit</th>
+            <th>Aktivität</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+
+        <tbody id="activityRows">
+          <tr>
+            <td colspan="3" style="text-align:center;">
+              Daten werden geladen...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button onclick="showActivityLog()" style="margin-top:20px;">
+        🔄 Aktualisieren
+      </button>
+    </div>
+  `;
+
+  try {
+    const [messagesResult, devicesResult, subscriptionsResult, errorsResult] =
+      await Promise.all([
+        db.from("messages")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+
+        db.from("device_tokens")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+
+        db.from("subscriptions")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+
+        db.from("error_logs")
+          .select("created_at, severity, source, message")
+          .order("created_at", { ascending: false })
+          .limit(100)
+      ]);
+
+    const activities = [];
+
+    const messages = messagesResult.data || [];
+    const devices = devicesResult.data || [];
+    const subscriptions = subscriptionsResult.data || [];
+    const errors = errorsResult.data || [];
+
+    messages.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "💬 Meldung / Support",
+        details: "Neue Meldung"
+      });
+    });
+
+    devices.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "📱 Gerät",
+        details: "Push-Gerät registriert"
+      });
+    });
+
+    subscriptions.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "💳 Abonnement",
+        details: "Abonnement erstellt"
+      });
+    });
+
+    errors.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "🛠️ Fehler",
+        details: `${item.severity || "Error"} – ${item.source || "System"}`
+      });
+    });
+
+    document.getElementById("activityMessages").textContent =
+      messages.length;
+
+    document.getElementById("activityDevices").textContent =
+      devices.length;
+
+    document.getElementById("activitySubscriptions").textContent =
+      subscriptions.length;
+
+    document.getElementById("activityErrors").textContent =
+      errors.length;
+
+    activities.sort(
+      (a, b) => new Date(b.time) - new Date(a.time)
+    );
+
+    const rows = activities.slice(0, 50);
+
+    const tbody = document.getElementById("activityRows");
+
+    if (!rows.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align:center;">
+            Keine Aktivitäten vorhanden.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = rows.map(activity => `
+      <tr>
+        <td>
+          ${new Date(activity.time).toLocaleString("de-CH")}
+        </td>
+        <td>${activity.type}</td>
+        <td>${activity.details}</td>
+      </tr>
+    `).join("");
+
+  } catch (error) {
+    console.error("Aktivitätsprotokoll Fehler:", error);
+
+    document.getElementById("activityRows").innerHTML = `
+      <tr>
+        <td colspan="3" style="text-align:center;color:#dc3545;">
+          Fehler beim Laden der Aktivitäten.
+        </td>
+      </tr>
+    `;
+  }
 }
 async function showSubscriptions() {
   const content = document.getElementById("content");
