@@ -2603,6 +2603,47 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 </script>  
+<script>
+(async function () {
+  try {
+    const {
+      data: { session }
+    } = await db.auth.getSession();
+
+    const presenceKey =
+      session?.user?.id || ("guest-" + crypto.randomUUID());
+
+    const onlineChannel = db.channel("pingcar-online", {
+      config: {
+        presence: {
+          key: presenceKey
+        }
+      }
+    });
+
+    onlineChannel.on("presence", { event: "sync" }, () => {
+      // Presence is handled by Supabase Realtime
+    });
+
+    onlineChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await onlineChannel.track({
+          platform: "website",
+          user_id: session?.user?.id || null,
+          email: session?.user?.email || null
+        });
+      }
+    });
+
+    window.addEventListener("beforeunload", () => {
+      db.removeChannel(onlineChannel);
+    });
+
+  } catch (error) {
+    console.error("PingCar Live Online error:", error);
+  }
+})();
+</script>
 <script src="js/error-logger.js"></script>
 </body>
 </html>
