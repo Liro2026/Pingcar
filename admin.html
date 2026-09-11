@@ -171,6 +171,7 @@ PingCar Administrator
 <a onclick="showSupport()">💬 Meldungen / Support</a>
 <a onclick="showErrorLogs()">🛠️ Error Logs</a>
 <a onclick="showDevices()">📱 Geräte / Push Tokens</a>
+<a onclick="showOnline()">🟢 Live Online</a>
 
 </nav>
 
@@ -1727,7 +1728,213 @@ async function showDevices() {
 
   }
 }
+async function showOnline() {
 
+  if (!(await requireAdmin())) return;
+
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🟢 Live Online</h2>
+
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:15px;
+        margin-top:20px;
+      ">
+
+        <div style="background:#f8f9fa;padding:20px;border-radius:10px;text-align:center;">
+          <small>🌐 Website</small>
+          <h2 id="onlineWebsite">0</h2>
+        </div>
+
+        <div style="background:#f8f9fa;padding:20px;border-radius:10px;text-align:center;">
+          <small>🤖 Android</small>
+          <h2 id="onlineAndroid">0</h2>
+        </div>
+
+        <div style="background:#f8f9fa;padding:20px;border-radius:10px;text-align:center;">
+          <small>🍎 iPhone</small>
+          <h2 id="onlineIphone">0</h2>
+        </div>
+
+        <div style="background:#e8f5e9;padding:20px;border-radius:10px;text-align:center;">
+          <small>🟢 Gesamt Online</small>
+          <h2 id="onlineTotal">0</h2>
+        </div>
+
+      </div>
+
+      <div style="margin-top:25px;">
+        <h3>Aktive Verbindungen</h3>
+
+        <table style="width:100%;">
+          <thead>
+            <tr>
+              <th>Plattform</th>
+              <th>Benutzer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="onlineRows">
+            <tr>
+              <td colspan="3" style="text-align:center;">
+                Warte auf Live-Verbindungen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  `;
+
+  let onlineChannel = window.pingcarOnlineChannel;
+
+  if (onlineChannel) {
+    try {
+      await db.removeChannel(onlineChannel);
+    } catch (e) {}
+  }
+
+  const session = await db.auth.getSession();
+
+  const adminKey =
+    "admin-" +
+    (session?.data?.session?.user?.id || "admin");
+
+  onlineChannel = db.channel("pingcar-online", {
+    config: {
+      presence: {
+        key: adminKey
+      }
+    }
+  });
+
+  window.pingcarOnlineChannel = onlineChannel;
+
+  onlineChannel.on("presence", { event: "sync" }, () => {
+    updateOnlinePresence();
+  });
+
+  onlineChannel.on("presence", { event: "join" }, () => {
+    updateOnlinePresence();
+  });
+
+  onlineChannel.on("presence", { event: "leave" }, () => {
+    updateOnlinePresence();
+  });
+
+  onlineChannel.subscribe(async status => {
+
+    if (status === "SUBSCRIBED") {
+
+      await onlineChannel.track({
+        platform: "admin",
+        user_id: session?.data?.session?.user?.id || null
+      });
+
+      updateOnlinePresence();
+    }
+
+  });
+
+  async function updateOnlinePresence() {
+
+    const state = onlineChannel.presenceState();
+
+    const connections = [];
+
+    Object.entries(state).forEach(([key, presences]) => {
+
+      presences.forEach(presence => {
+
+        if (presence.platform === "admin") return;
+
+        connections.push({
+          key,
+          ...presence
+        });
+
+      });
+
+    });
+
+    const website = connections.filter(
+      x => x.platform === "website"
+    ).length;
+
+    const android = connections.filter(
+      x => x.platform === "android"
+    ).length;
+
+    const iphone = connections.filter(
+      x => x.platform === "iphone"
+    ).length;
+
+    document.getElementById("onlineWebsite").textContent =
+      website;
+
+    document.getElementById("onlineAndroid").textContent =
+      android;
+
+    document.getElementById("onlineIphone").textContent =
+      iphone;
+
+    document.getElementById("onlineTotal").textContent =
+      connections.length;
+
+    const rows = document.getElementById("onlineRows");
+
+    if (connections.length === 0) {
+
+      rows.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align:center;">
+            Aktuell niemand online.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    rows.innerHTML = connections.map(connection => {
+
+      let platform = "🌐 Website";
+
+      if (connection.platform === "android") {
+        platform = "🤖 Android";
+      }
+
+      if (connection.platform === "iphone") {
+        platform = "🍎 iPhone";
+      }
+
+      return `
+        <tr>
+          <td>${platform}</td>
+          <td>${connection.email || "Gast / Besucher"}</td>
+          <td>
+            <span style="
+              background:#d4edda;
+              color:#155724;
+              padding:4px 8px;
+              border-radius:5px;
+              font-weight:bold;
+            ">
+              🟢 Online
+            </span>
+          </td>
+        </tr>
+      `;
+
+    }).join("");
+  }
+}
 async function showSubscriptions() {
   const content = document.getElementById("content");
   content.innerHTML = `
