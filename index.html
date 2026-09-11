@@ -537,6 +537,7 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+window.supabase = supabase;
 async function registerPageVisit() {
   try {
     let visitorId = localStorage.getItem("pingcar_visitor_id");
@@ -2608,12 +2609,12 @@ document.addEventListener("DOMContentLoaded", function() {
   try {
     const {
       data: { session }
-    } = await db.auth.getSession();
+    } = await window.supabase.auth.getSession()
 
     const presenceKey =
       session?.user?.id || ("guest-" + crypto.randomUUID());
 
-    const onlineChannel = db.channel("pingcar-online", {
+    const onlineChannel = window.supabase.channel("pingcar-online", {
       config: {
         presence: {
           key: presenceKey
@@ -2636,7 +2637,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     window.addEventListener("beforeunload", () => {
-      db.removeChannel(onlineChannel);
+      window.supabase.removeChannel(onlineChannel);
     });
 
   } catch (error) {
