@@ -2607,9 +2607,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <script>
 (async function () {
   try {
+    // Wait until the Supabase client is available
+    let attempts = 0;
+
+    while (!window.supabase && attempts < 50) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      attempts++;
+    }
+
+    if (!window.supabase) {
+      console.error("PingCar Live Online: Supabase not available");
+      return;
+    }
+
     const {
       data: { session }
-    } = await window.supabase.auth.getSession()
+    } = await window.supabase.auth.getSession();
 
     const presenceKey =
       session?.user?.id || ("guest-" + crypto.randomUUID());
@@ -2622,10 +2635,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
 
-    onlineChannel.on("presence", { event: "sync" }, () => {
-      // Presence is handled by Supabase Realtime
-    });
-
     onlineChannel.subscribe(async (status) => {
       if (status === "SUBSCRIBED") {
         await onlineChannel.track({
@@ -2633,6 +2642,8 @@ document.addEventListener("DOMContentLoaded", function() {
           user_id: session?.user?.id || null,
           email: session?.user?.email || null
         });
+
+        console.log("PingCar Live Online: WEBSITE ONLINE");
       }
     });
 
@@ -2645,6 +2656,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 })();
 </script>
+
 <script src="js/error-logger.js"></script>
 </body>
 </html>
