@@ -457,25 +457,54 @@ async function saveCompanyUser(companyId) {
 
   try {
 
-    const { error } = await db
-      .from("company_members")
-      .insert({
-        company_id: companyId,
-        full_name: name,
-        email: email,
-        phone: phone || null,
-        status: "pending"
-      });
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
 
-    if (error) throw error;
+    if (sessionError) throw sessionError;
+
+    const accessToken =
+      sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      throw new Error("Keine aktive Admin-Sitzung.");
+    }
+
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/invite-company-user",
+      {
+        method: "POST",
+
+        headers: {
+          "Authorization": "Bearer " + accessToken,
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          company_id: companyId,
+          name: name,
+          email: email,
+          phone: phone || ""
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Fehler beim Einladen des Benutzers."
+      );
+    }
 
     message.style.color = "green";
     message.textContent =
-      "✅ Benutzer erfolgreich hinzugefügt.";
+      "✅ Benutzer erfolgreich eingeladen.";
 
     setTimeout(() => {
       showCompanyDetails(companyId);
-    }, 700);
+    }, 1000);
 
   } catch (error) {
 
