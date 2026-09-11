@@ -329,7 +329,13 @@ async function showCompanyDetails(companyId) {
 
         <br>
 
-        <h3>👥 Benutzer der Firma</h3>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+  <h3>👥 Benutzer der Firma</h3>
+
+  <button onclick="showAddCompanyUser('${company.id}')">
+    ➕ Benutzer hinzufügen
+  </button>
+</div>
 
         <table>
           <thead>
@@ -366,7 +372,118 @@ async function showCompanyDetails(companyId) {
   }
 }
 
+function showAddCompanyUser(companyId) {
 
+  if (!requireAdmin()) return;
+
+  content.innerHTML = `
+    <div class="card">
+
+      <button
+        onclick="showCompanyDetails('${companyId}')"
+        style="background:#666;margin-bottom:20px;"
+      >
+        ← Zurück zur Firma
+      </button>
+
+      <h2>👤 Benutzer hinzufügen</h2>
+
+      <label>Name</label>
+      <input
+        id="companyUserName"
+        placeholder="Vorname Nachname"
+      >
+
+      <label>E-Mail</label>
+      <input
+        id="companyUserEmail"
+        type="email"
+        placeholder="benutzer@example.ch"
+      >
+
+      <label>Telefon</label>
+      <input
+        id="companyUserPhone"
+        placeholder="+41 ..."
+      >
+
+      <br>
+
+      <button onclick="saveCompanyUser('${companyId}')">
+        💾 Benutzer hinzufügen
+      </button>
+
+      <button
+        onclick="showCompanyDetails('${companyId}')"
+        style="margin-left:10px;background:#666;"
+      >
+        Abbrechen
+      </button>
+
+      <p id="companyUserMessage" style="margin-top:20px;"></p>
+
+    </div>
+  `;
+}
+
+
+async function saveCompanyUser(companyId) {
+
+  if (!(await requireAdmin())) return;
+
+  const name =
+    document.getElementById("companyUserName").value.trim();
+
+  const email =
+    document.getElementById("companyUserEmail").value.trim();
+
+  const phone =
+    document.getElementById("companyUserPhone").value.trim();
+
+  const message =
+    document.getElementById("companyUserMessage");
+
+  if (!name) {
+    message.style.color = "red";
+    message.textContent = "Bitte Namen eingeben.";
+    return;
+  }
+
+  if (!email) {
+    message.style.color = "red";
+    message.textContent = "Bitte E-Mail eingeben.";
+    return;
+  }
+
+  try {
+
+    const { error } = await db
+      .from("company_members")
+      .insert({
+        company_id: companyId,
+        full_name: name,
+        email: email,
+        phone: phone || null,
+        status: "pending"
+      });
+
+    if (error) throw error;
+
+    message.style.color = "green";
+    message.textContent =
+      "✅ Benutzer erfolgreich hinzugefügt.";
+
+    setTimeout(() => {
+      showCompanyDetails(companyId);
+    }, 700);
+
+  } catch (error) {
+
+    message.style.color = "red";
+    message.textContent =
+      "Fehler: " + error.message;
+  }
+}
 function escapeCompanyHtml(value) {
 
   return String(value)
