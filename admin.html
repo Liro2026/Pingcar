@@ -174,6 +174,7 @@ PingCar Administrator
 <a onclick="showOnline()">🟢 Live Online</a>
 <a onclick="showSystemStatus()">🔐 Sicherheit / Systemstatus</a>
 <a onclick="showActivityLog()">📋 Aktivitätsprotokoll</a>
+<a onclick="showGlobalSearch()">🔎 Globale Suche</a>
 
 </nav>
 
@@ -2232,6 +2233,228 @@ async function showActivityLog() {
           Fehler beim Laden der Aktivitäten.
         </td>
       </tr>
+    `;
+  }
+}
+async function showGlobalSearch() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🔎 Globale Suche</h2>
+
+      <input
+        id="globalSearchInput"
+        placeholder="Name, E-Mail, QR-Code oder Suchbegriff..."
+        onkeydown="if(event.key==='Enter') runGlobalSearch()"
+      >
+
+      <button onclick="runGlobalSearch()">
+        🔎 Suchen
+      </button>
+
+      <div id="globalSearchResults" style="margin-top:25px;">
+        <p style="color:#777;">
+          Suchbegriff eingeben und auf „Suchen“ klicken.
+        </p>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("globalSearchInput").focus();
+}
+
+async function runGlobalSearch() {
+  const input = document.getElementById("globalSearchInput");
+  const results = document.getElementById("globalSearchResults");
+
+  const searchTerm = (input.value || "").trim().toLowerCase();
+
+  if (!searchTerm) {
+    results.innerHTML = `
+      <p style="color:#dc3545;">
+        Bitte einen Suchbegriff eingeben.
+      </p>
+    `;
+    return;
+  }
+
+  results.innerHTML = `
+    <p>🔄 Suche läuft...</p>
+  `;
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
+    }
+
+    /* Benutzer */
+    const userResponse = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const userResult = await userResponse.json();
+    const users = userResult.users || [];
+
+    const matches = [];
+
+    users.forEach(user => {
+      const searchable = JSON.stringify(user).toLowerCase();
+
+      if (searchable.includes(searchTerm)) {
+        matches.push({
+          type: "👤 Benutzer",
+          title:
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            "Benutzer",
+          detail: user.email || user.id
+        });
+      }
+    });
+
+    /* Fahrzeuge / QR */
+    const { data: vehicles } = await db
+      .from("user_qr")
+      .select("*")
+      .limit(1000);
+
+    (vehicles || []).forEach(vehicle => {
+      const searchable = JSON.stringify(vehicle).toLowerCase();
+
+      if (searchable.includes(searchTerm)) {
+        matches.push({
+          type: "🚗 Fahrzeug / QR",
+          title: vehicle.qr_code || vehicle.id || "Fahrzeug",
+          detail: JSON.stringify(vehicle)
+        });
+      }
+    });
+
+    /* Meldungen */
+    const { data: messages } = await db
+      .from("messages")
+      .select("*")
+      .limit(1000);
+
+    (messages || []).forEach(message => {
+      const searchable = JSON.stringify(message).toLowerCase();
+
+      if (searchable.includes(searchTerm)) {
+        matches.push({
+          type: "💬 Meldung",
+          title: "Support / Nachricht",
+          detail: JSON.stringify(message)
+        });
+      }
+    });
+
+    /* Abonnements */
+    const { data: subscriptions } = await db
+      .from("subscriptions")
+      .select("*")
+      .limit(1000);
+
+    (subscriptions || []).forEach(subscription => {
+      const searchable =
+        JSON.stringify(subscription).toLowerCase();
+
+      if (searchable.includes(searchTerm)) {
+        matches.push({
+          type: "💳 Abonnement",
+          title:
+            subscription.email ||
+            subscription.plan_name ||
+            "Abonnement",
+          detail: JSON.stringify(subscription)
+        });
+      }
+    });
+
+    /* Geräte */
+    const { data: devices } = await db
+      .from("device_tokens")
+      .select("*")
+      .limit(1000);
+
+    (devices || []).forEach(device => {
+      const searchable = JSON.stringify(device).toLowerCase();
+
+      if (searchable.includes(searchTerm)) {
+        matches.push({
+          type: "📱 Gerät",
+          title: "Push-Gerät",
+          detail:
+            device.user_id ||
+            device.fcm_token ||
+            "Gerät"
+        });
+      }
+    });
+
+    if (!matches.length) {
+      results.innerHTML = `
+        <div style="
+          padding:20px;
+          background:#f8f9fa;
+          border-radius:8px;
+          text-align:center;
+        ">
+          🔍 Keine Ergebnisse für
+          <strong>${searchTerm}</strong>
+        </div>
+      `;
+      return;
+    }
+
+    results.innerHTML = `
+      <h3>
+        ${matches.length} Ergebnis${matches.length === 1 ? "" : "se"}
+      </h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Bereich</th>
+            <th>Eintrag</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${matches.slice(0, 100).map(item => `
+            <tr>
+              <td>${item.type}</td>
+              <td>${item.title}</td>
+              <td style="word-break:break-word;">
+                ${item.detail}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+
+  } catch (error) {
+    console.error("Globale Suche Fehler:", error);
+
+    results.innerHTML = `
+      <div style="color:#dc3545;">
+        ❌ Fehler bei der Suche:
+        ${error.message}
+      </div>
     `;
   }
 }
