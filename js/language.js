@@ -346,6 +346,9 @@ loadLanguage(language);
     }
 
   };
+  window.setLanguage = function (language) {
+  window.PingCarLanguage.set(language);
+};
 
   // --------------------------------------------------
   // 9. Start PingCar language system
