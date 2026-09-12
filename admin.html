@@ -170,6 +170,7 @@ PingCar Administrator
 <a onclick="showSubscriptions()">💳 Abonnemente</a>
 <a onclick="showSupport()">💬 Meldungen / Support</a>
 <a onclick="showErrorLogs()">🛠️ Error Logs</a>
+<a onclick="showAdminAlerts()">🚨 Admin Alerts</a>
 <a onclick="showDevices()">📱 Geräte / Push Tokens</a>
 <a onclick="showOnline()">🟢 Live Online</a>
 <a onclick="showSystemStatus()">🔐 Sicherheit / Systemstatus</a>
@@ -685,6 +686,59 @@ function escapeAdminText(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+async function showAdminAlerts() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🚨 Admin Alerts</h2>
+      <div id="adminAlertsStatus">Wird geladen...</div>
+    </div>
+  `;
+
+  try {
+    const { data, error } = await db
+      .from("error_logs")
+      .select("*");
+
+    if (error) throw error;
+
+    const errors = data || [];
+
+    const status = document.getElementById("adminAlertsStatus");
+
+    if (errors.length === 0) {
+      status.innerHTML = `
+        <p style="color:green;font-size:18px;">
+          🟢 System normal – keine Fehler vorhanden.
+        </p>
+      `;
+      return;
+    }
+
+    status.innerHTML = `
+      <p style="color:red;font-size:18px;">
+        🔴 ${errors.length} Fehler im System gefunden.
+      </p>
+
+      <p>
+        Bitte <strong>Error Logs</strong> öffnen, um die Details zu prüfen.
+      </p>
+
+      <button onclick="showErrorLogs()">
+        🛠️ Error Logs öffnen
+      </button>
+    `;
+  } catch (error) {
+    console.error("Admin Alerts Fehler:", error);
+
+    document.getElementById("adminAlertsStatus").innerHTML = `
+      <p style="color:red;font-size:18px;">
+        ❌ Admin Alerts konnten nicht geladen werden.
+      </p>
+    `;
+  }
 }
 async function showErrorLogs() {
 
