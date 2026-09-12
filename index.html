@@ -204,6 +204,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('pt'); return false;"><span class="flag">🇵🇹</span> Português (PT)</a>
     <a href="#" onclick="PingCarLanguage.set('mk'); return false;"><span class="flag">🇲🇰</span> Македонски (MK)</a>
     <a href="#" onclick="PingCarLanguage.set('nl'); return false;"><span class="flag">🇳🇱</span> Nederlands (NL)</a>
+    <a href="#" onclick="PingCarLanguage.set('sv'); return false;"><span class="flag">🇸🇪</span> Svenska (SE)</a>
   </div>
 </div>
 
@@ -320,15 +321,19 @@ margin-top:50px;
 </div>
 
 <div style="text-align:center; margin:30px 0;">
- <h1 style="color:red;" data-i18n="trial_heading">
-  🚀 7 Tage kostenlos testen.
+  <h1 style="color:red;">
+🚀 7 Tage kostenlos testen.
 </h1>
-<p>
-  <span data-i18n="trial_subheading">Teste alle Premium-Funktionen kostenlos.</span><br><br>
-  <strong data-i18n="now_new">⭐ Jetzt neu:</strong><br>
-  <span data-i18n="trial_bullet_1">7 Tage kostenlos testen.</span><br>
-  <span data-i18n="trial_bullet_2">Keine Zahlung heute.</span><br>
-  <span data-i18n="trial_bullet_3">Jederzeit kündbar.</span>
+  <p>
+Teste alle Premium-Funktionen kostenlos.<br><br>
+
+<strong>⭐ Jetzt neu:</strong><br>
+
+7 Tage kostenlos testen.<br>
+
+Keine Zahlung heute.<br>
+
+Jederzeit kündbar.
 </p>
 
 <script async src="https://js.stripe.com/v3/buy-button.js"></script>
@@ -336,26 +341,26 @@ margin-top:50px;
 <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:25px;">
 
   <div style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;width:280px;text-align:center;">
-    <h3 data-i18n="monthly_plan">📅 Monatsabo</h3>
+    <h3>📅 Monatsabo</h3>
     <h2>CHF 4.90</h2>
-    <p data-i18n="per_month">pro Monat</p>
+    <p>pro Monat</p>
 
     <a href="https://buy.stripe.com/7sYcMXdIk1094RAdMB6J200?locale=de&__embed_source=buy_btn_1U06zM1bPlhWc3Hfq7LBoWxD"
        target="_blank"
        style="display:inline-block;background:#0066ff;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
-      <span data-i18n="select_monthly">Monatsabo wählen</span>
+      Monatsabo wählen
     </a>
   </div>
 
   <div style="background:#fff;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:280px;text-align:center;">
-    <h3 data-i18n="yearly_plan">⭐ Jahresabo</h3>
+    <h3>⭐ Jahresabo</h3>
     <h2>CHF 49.90</h2>
-    <p data-i18n="per_year">pro Jahr</p>
+    <p>pro Jahr</p>
 
     <a href="https://buy.stripe.com/7sYbITdIkaAJ6ZI23T6J201"
        target="_blank"
        style="display:inline-block;background:#f59e0b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
-      <span data-i18n="select_yearly">Jahresabo wählen</span>
+      Jahresabo wählen
     </a>
   </div>
 
@@ -408,7 +413,7 @@ Entwickelt mit Fokus auf Datenschutz.
 
 </div>
 <div class="card">
-<h2 data-i18n="register">Registrieren</h2>
+  <h2>Registrieren</h2>
 
  <form id="registerForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 
@@ -444,7 +449,7 @@ Entwickelt mit Fokus auf Datenschutz.
 
 <hr style="margin:40px 0;">
 
-<h2 data-i18n="login">Anmelden</h2>
+<h2>Anmelden</h2>
 
 <form id="loginForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 <input
@@ -537,7 +542,6 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-window.supabase = supabase;
 async function registerPageVisit() {
   try {
     let visitorId = localStorage.getItem("pingcar_visitor_id");
@@ -1897,97 +1901,98 @@ nl: {
 
   rights: "Alle rechten voorbehouden."
 
-},nl: {
+},
+sv: {
 
-  home: "Home",
+  home: "Hem",
 
   qr: "QR",
 
-  contact: "Contact",
+  contact: "Kontakt",
 
-  dashboard: "Dashboard",
+  dashboard: "Instrumentpanel",
 
-  messages: "Berichten",
+  messages: "Meddelanden",
 
   title: "PingCar",
 
-  description: "Een veilige manier om contact op te nemen met voertuigeigenaren zonder telefoonnummer of persoonlijke gegevens.",
+  description: "Ett säkert sätt att kontakta fordonsägare utan telefonnummer eller personuppgifter.",
 
-  available: "Gratis registratie",
+  available: "Gratis registrering",
 
-  how: "Hoe werkt PingCar",
+  how: "Så fungerar PingCar",
 
-  afterScan: "Na het scannen",
+  afterScan: "Efter skanning",
 
-  register: "Registratie",
+  register: "Registrering",
 
-  registerText: "Maak gratis uw PingCar-account aan.",
+  registerText: "Skapa ditt PingCar-konto gratis.",
 
-  getQr: "Ontvang een QR-code",
+  getQr: "Få en QR-kod",
 
-  getQrText: "U ontvangt een persoonlijke QR-code voor uw voertuig.",
+  getQrText: "Du får en personlig QR-kod för ditt fordon.",
 
-  placeQr: "Plaats de QR-code",
+  placeQr: "Placera QR-koden",
 
-  placeQrText: "Plaats de QR-code op een goed zichtbare plaats op uw voertuig.",
+  placeQrText: "Placera QR-koden på en väl synlig plats på ditt fordon.",
 
-  scanQr: "Scan een QR-code",
+  scanQr: "Skanna en QR-kod",
 
-  scanQrText: "Een andere persoon scant de QR-code met zijn of haar smartphone.",
+  scanQrText: "En annan person skannar QR-koden med sin smartphone.",
 
-  notification: "Melding",
+  notification: "Meddelande",
 
-  notificationText: "U ontvangt onmiddellijk een bericht via PingCar.",
+  notificationText: "Du får omedelbart ett meddelande via PingCar.",
 
-  blocked: "Mijn voertuig blokkeert de doorgang",
+  blocked: "Mitt fordon blockerar vägen",
 
-  lights: "De lichten staan aan",
+  lights: "Lamporna är på",
 
-  damaged: "Het voertuig is beschadigd",
+  damaged: "Fordonet är skadat",
 
-  forgot: "Er is iets achtergelaten",
+  forgot: "Något har lämnats kvar",
 
-  otherMessage: "Ander bericht",
+  otherMessage: "Annat meddelande",
 
-  noPhone: "Zonder telefoonnummer",
+  noPhone: "Utan telefonnummer",
 
-  noPersonalData: "Zonder persoonlijke gegevens",
+  noPersonalData: "Utan personuppgifter",
 
-  fastNotification: "Snelle melding",
+  fastNotification: "Snabb avisering",
 
-  privacy: "Privacy",
+  privacy: "Integritet",
 
-  discover: "Ontdek PingCar",
+  discover: "Upptäck PingCar",
 
-  monthly: "Maandabonnement",
+  monthly: "Månadsabonnemang",
 
-  yearly: "Jaarabonnement",
+  yearly: "Årsabonnemang",
 
-  premiumText: "Probeer alle Premium-functies gratis uit.",
+  premiumText: "Prova alla Premium-funktioner gratis.",
 
-  perMonth: "per maand",
+  perMonth: "per månad",
 
-  perYear: "per jaar",
+  perYear: "per år",
 
-  name: "Uw naam",
+  name: "Ditt namn",
 
-  email: "Uw e-mailadres",
+  email: "Din e-postadress",
 
-  password: "Wachtwoord",
+  password: "Lösenord",
 
-  login: "Inloggen",
+  login: "Logga in",
 
-  forgotPassword: "Wachtwoord vergeten?",
+  forgotPassword: "Glömt lösenord?",
 
-  sendLink: "Link verzenden",
+  sendLink: "Skicka länk",
 
-  logout: "Uitloggen",
+  logout: "Logga ut",
 
-  contactTitle: "Contact",
+  contactTitle: "Kontakt",
 
-  footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
+  footerText: "PingCar – en säker lösning för fordonsägare.",
 
-  rights: "Alle rechten voorbehouden."
+  rights: "Alla rättigheter förbehållna."
 
 },
 };
@@ -2016,7 +2021,8 @@ const languageFlags = {
   hu: "HU",
   pt: "PT",
   mk: "MK",
-  nl: "NL"
+  nl: "NL",
+  sv: "SV"
   
 };
 
@@ -2043,7 +2049,8 @@ const languageNames = {
   hu: "HU",
   pt: "PT",
   mk: "MK",
-  nl: "NL"
+  nl: "NL",
+  sv: "SV"
 
   
   
@@ -2099,7 +2106,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Hogyan működik a PingCar") ||
       text.includes("Como funciona o PingCar")||
       text.includes("Како функционира PingCar")||
-      text.includes("Hoe werkt PingCar")
+      text.includes("Hoe werkt PingCar")||
+      text.includes("Hur fungerar PingCar") 
     ) {
       el.textContent = t.how;
     }
@@ -2118,7 +2126,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Hogyan működik a PingCar") ||
       text.includes("Após a leitura")||
       text.includes("По скенирањето")||
-      text.includes("Na het scannen")
+      text.includes("Na het scannen")||
+      text.includes("Efter skanning")
     ) {
       el.textContent = t.afterScan;
     }
@@ -2133,7 +2142,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "İletişim" ||
       text === "Kapcsolat"||
       text === "Contacto"||
-      text === "Контакт"
+      text === "Контакт"||
+      text === "Kontakt"
     ) {
       el.textContent = t.contactTitle;
     }
@@ -2152,7 +2162,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Regisztráció"||
   text === "Registar"||
   text === "Регистрација"||
-  text === "Registratie"
+  text === "Registratie"||
+  text === "Registrering"
     ) {
       el.textContent = t.register;
     }
@@ -2171,7 +2182,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Bejelentkezés"||
   text === "Iniciar sessão"||
   text === "Најава"||
-  text === "Inloggen"
+  text === "Inloggen"||
+  text === "Inloggning"
   
     ) {
       el.textContent = t.login;
@@ -2263,7 +2275,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("A járművem akadályozza a forgalmat")||
       text.includes("O meu veículo está a bloquear a passagem")||
       text.includes("Моето возило го блокира преминот")||
-      text.includes("Mijn voertuig blokkeert de doorgang")
+      text.includes("Mijn voertuig blokkeert de doorgang")||
+      text.includes("Mitt fordon blockerar vägen")
     ) {
       el.textContent = t.blocked;
     }
@@ -2282,6 +2295,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("A lámpák égve maradtak")||
       text.includes("As luzes estão acesas")||
       text.includes("Светлата се вклучени")||
+      text.includes("De lichten staan aan")||
       text.includes("De lichten staan aan")
     ) {
       el.textContent = t.lights;
@@ -2301,7 +2315,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("A jármű megsérült")||
       text.includes("O veículo está danificado")||
       text.includes("Возилото е оштетено")||
-      text.includes("Het voertuig is beschadigd")
+      text.includes("Het voertuig is beschadigd")||
+      text.includes("Det fordon är skadat")
     ) {
       el.textContent = t.damaged;
     }
@@ -2320,7 +2335,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Valami ott maradt")||
       text.includes("Algo foi esquecido")||
       text.includes("Нешто е заборавено")||
-      text.includes("Er is iets vergeten")
+      text.includes("Er is iets vergeten")||
+      text.includes("Det är något som glömts")
     ) {
       el.textContent = t.forgot;
     }
@@ -2339,7 +2355,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Egyéb üzenet")||
       text.includes("Outra mensagem")||
       text.includes("Друга порака")||
-      text.includes("Ander bericht")
+      text.includes("Ander bericht")||
+      text.includes("Annat meddelande")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -2358,7 +2375,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Telefonszám nélkül")||
       text.includes("Sem número de telefone")||
       text.includes("Без телефонски број")||
-      text.includes("Zonder telefoonnummer")
+      text.includes("Zonder telefoonnummer")||
+      text.includes("Inget telefonnummer")
     ) {
       el.textContent = t.noPhone;
     }
@@ -2377,7 +2395,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Személyes adatok nélkül")||
       text.includes("Sem dados pessoais")||
       text.includes("Без лични податоци")||
-      text.includes("Zonder persoonlijke gegevens")
+      text.includes("Zonder persoonlijke gegevens")||
+      text.includes("Inget personligt data")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -2396,7 +2415,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text.includes("Gyors értesítés") ||
         text.includes("Notificação rápida")||
         text.includes("Брзо известување")||
-        text.includes("Snelle melding")
+        text.includes("Snelle melding")||
+        text.includes("Snabb avisering")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -2415,7 +2435,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Adatvédelem")||
       text.includes("Privacidade")||
       text.includes("Приватност")||
-      text.includes("Privacy")
+      text.includes("Privacy")||
+      text.includes("Integritet")
     ) {
       el.textContent = t.privacy;
     }
@@ -2446,7 +2467,9 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Próbálja ki az összes Premium funkciót ingyen."||
         text === "Experimente todas as funcionalidades Premium gratuitamente."||
         text === "Испробајте ги сите Premium функции бесплатно."||
-        text === "Probeer alle Premium-functies gratis uit." 
+        text === "Probeer alle Premium-functies gratis uit." ||
+        text === "Prova alla Premium-funktioner gratis."
+
         ) {
       el.textContent = t.premiumText;
     }
@@ -2604,59 +2627,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 </script>  
-<script>
-(async function () {
-  try {
-    // Wait until the Supabase client is available
-    let attempts = 0;
-
-    while (!window.supabase && attempts < 50) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      attempts++;
-    }
-
-    if (!window.supabase) {
-      console.error("PingCar Live Online: Supabase not available");
-      return;
-    }
-
-    const {
-      data: { session }
-    } = await window.supabase.auth.getSession();
-
-    const presenceKey =
-      session?.user?.id || ("guest-" + crypto.randomUUID());
-
-    const onlineChannel = window.supabase.channel("pingcar-online", {
-      config: {
-        presence: {
-          key: presenceKey
-        }
-      }
-    });
-
-    onlineChannel.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
-        await onlineChannel.track({
-          platform: "website",
-          user_id: session?.user?.id || null,
-          email: session?.user?.email || null
-        });
-
-        console.log("PingCar Live Online: WEBSITE ONLINE");
-      }
-    });
-
-    window.addEventListener("beforeunload", () => {
-      window.supabase.removeChannel(onlineChannel);
-    });
-
-  } catch (error) {
-    console.error("PingCar Live Online error:", error);
-  }
-})();
-</script>
-
-<script src="js/error-logger.js"></script>
 </body>
 </html>
