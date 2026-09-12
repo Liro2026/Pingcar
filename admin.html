@@ -177,6 +177,7 @@ PingCar Administrator
 <a onclick="showActivityLog()">📋 Aktivitätsprotokoll</a>
 <a onclick="showGlobalSearch()">🔎 Globale Suche</a>
 <a onclick="showCompanies()">🏢 Firmenkunden</a>
+<a onclick="showConversionAnalytics()">📊 Conversion Analytics</a>
 
 </nav>
 
@@ -738,6 +739,147 @@ async function showAdminAlerts() {
         ❌ Admin Alerts konnten nicht geladen werden.
       </p>
     `;
+  }
+}
+async function showConversionAnalytics() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>📊 Conversion Analytics</h2>
+      <p>Wie viele Besucher zu registrierten Benutzern und Premium-Kunden werden.</p>
+
+      <div class="statbox">
+        <div class="stat">
+          Unique Besucher
+          <h3 id="conversionVisitors">...</h3>
+        </div>
+
+        <div class="stat">
+          Registrierte Benutzer
+          <h3 id="conversionUsers">...</h3>
+        </div>
+
+        <div class="stat">
+          Premium Benutzer
+          <h3 id="conversionPremium">...</h3>
+        </div>
+      </div>
+
+      <div style="margin-top:25px;">
+        <p>
+          Besucher → Registrierung:
+          <strong id="visitorToUser">...</strong>
+        </p>
+
+        <p>
+          Registrierung → Premium:
+          <strong id="userToPremium">...</strong>
+        </p>
+
+        <p>
+          Besucher → Premium:
+          <strong id="visitorToPremium">...</strong>
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    const allVisits = await loadAllVisits();
+
+    const uniqueVisitors = new Set(
+      allVisits
+        .map(visit => visit.visitor_id)
+        .filter(Boolean)
+    ).size;
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      throw new Error("Keine aktive Admin-Sitzung.");
+    }
+
+    const usersResponse = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        headers: {
+          "Authorization": "Bearer " + accessToken
+        }
+      }
+    );
+
+    if (!usersResponse.ok) {
+      throw new Error("Benutzer konnten nicht geladen werden.");
+    }
+
+    const usersResult = await usersResponse.json();
+
+    const users = Array.isArray(usersResult)
+      ? usersResult
+      : (usersResult.users || usersResult.data || []);
+
+    const registeredUsers = users.length;
+
+    const { data: subscriptions, error: subscriptionError } =
+      await db
+        .from("subscriptions")
+        .select("status");
+
+    if (subscriptionError) throw subscriptionError;
+
+    const premiumUsers = (subscriptions || []).filter(
+      subscription =>
+        String(subscription.status || "").toLowerCase() === "active"
+    ).length;
+
+    const visitorToUser =
+      uniqueVisitors > 0
+        ? ((registeredUsers / uniqueVisitors) * 100).toFixed(1)
+        : "0.0";
+
+    const userToPremium =
+      registeredUsers > 0
+        ? ((premiumUsers / registeredUsers) * 100).toFixed(1)
+        : "0.0";
+
+    const visitorToPremium =
+      uniqueVisitors > 0
+        ? ((premiumUsers / uniqueVisitors) * 100).toFixed(1)
+        : "0.0";
+
+    document.getElementById("conversionVisitors").textContent =
+      uniqueVisitors;
+
+    document.getElementById("conversionUsers").textContent =
+      registeredUsers;
+
+    document.getElementById("conversionPremium").textContent =
+      premiumUsers;
+
+    document.getElementById("visitorToUser").textContent =
+      visitorToUser + "%";
+
+    document.getElementById("userToPremium").textContent =
+      userToPremium + "%";
+
+    document.getElementById("visitorToPremium").textContent =
+      visitorToPremium + "%";
+
+  } catch (error) {
+    console.error("Conversion Analytics Fehler:", error);
+
+    document.getElementById("conversionVisitors").textContent = "!";
+    document.getElementById("conversionUsers").textContent = "!";
+    document.getElementById("conversionPremium").textContent = "!";
+    document.getElementById("visitorToUser").textContent = "!";
+    document.getElementById("userToPremium").textContent = "!";
+    document.getElementById("visitorToPremium").textContent = "!";
   }
 }
 async function showErrorLogs() {
