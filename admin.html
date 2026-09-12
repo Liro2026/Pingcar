@@ -385,47 +385,7 @@ async function showDashboard() {
 
     document.getElementById("uniqueVisitCount").textContent =
       uniqueVisitors.size;
-    /* Unique Besucher nach Ländern */
-    const uniqueByCountry = {};
-
-    allVisits.forEach(visit => {
-      const country = visit.country;
-      const visitorId = visit.visitor_id;
-
-      if (!country || !visitorId) return;
-
-      if (!uniqueByCountry[country]) {
-        uniqueByCountry[country] = new Set();
-      }
-
-      uniqueByCountry[country].add(visitorId);
-    });
-
-    const uniqueCountryStats = Object.entries(uniqueByCountry)
-      .map(([country, visitors]) => [country, visitors.size])
-      .sort((a, b) => b[1] - a[1]);
-
-    const uniqueCountryCard = document.createElement("div");
-    uniqueCountryCard.className = "card";
-
-    uniqueCountryCard.innerHTML = `
-      <h2>👤🌍 Unique Besucher nach Ländern</h2>
-      ${
-        uniqueCountryStats.length
-          ? uniqueCountryStats
-              .map(
-                ([country, count]) =>
-                  `<p>👤🌍 ${escapeAdminText(country)}: <strong>${count}</strong></p>`
-              )
-              .join("")
-          : "<p>Keine eindeutigen Besucher mit Land gefunden.</p>"
-      }
-    `;
-
-    document
-      .getElementById("countryStats")
-      .closest(".card")
-      .insertAdjacentElement("afterend", uniqueCountryCard);
+  
   } catch (error) {
 
     console.error("Dashboard Fehler:", error);
@@ -1105,6 +1065,47 @@ async function showStats() {
       .sort((a, b) => b[1] - a[1])
       .map(([country, count]) => `<p>🌍 ${country}: <strong>${count}</strong></p>`)
       .join("");
+        /* Unique Besucher nach Ländern */
+    const uniqueByCountry = {};
+
+    allVisits.forEach(visit => {
+      const country = visit.country;
+      const visitorId = visit.visitor_id;
+
+      if (!country || !visitorId) return;
+
+      if (!uniqueByCountry[country]) {
+        uniqueByCountry[country] = new Set();
+      }
+
+      uniqueByCountry[country].add(visitorId);
+    });
+
+    const uniqueCountryStats = Object.entries(uniqueByCountry)
+      .map(([country, visitors]) => [country, visitors.size])
+      .sort((a, b) => b[1] - a[1]);
+
+    const uniqueCountryCard = document.createElement("div");
+    uniqueCountryCard.className = "card";
+
+    uniqueCountryCard.innerHTML = `
+      <h2>👤🌍 Unique Besucher nach Ländern</h2>
+      ${
+        uniqueCountryStats.length
+          ? uniqueCountryStats
+              .map(
+                ([country, count]) =>
+                  `<p>👤🌍 ${escapeAdminText(country)}: <strong>${count}</strong></p>`
+              )
+              .join("")
+          : "<p>Keine eindeutigen Besucher mit Land gefunden.</p>"
+      }
+    `;
+
+    document
+      .getElementById("countryStats")
+      .closest(".card")
+      .insertAdjacentElement("afterend", uniqueCountryCard);
   } catch (error) {
 
     console.error("Statistik Fehler:", error);
