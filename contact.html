@@ -527,6 +527,31 @@ nl: {
   remaining: "Resterende berichten vandaag: "
 
 },
+sv: {
+
+  title: "PingCar-avisering",
+
+  noQr: "QR-ID-numret hittades inte.",
+
+  lights: "💡 Lamporna är på",
+
+  blocked: "🚗 Ditt fordon blockerar vägen",
+
+  contact: "📞 Kontakta mig gärna",
+
+  wrong: "🚫 Fordonet är felparkerat",
+
+  other: "💬 Annat meddelande",
+
+  invalid: "QR-koden är inte giltig.",
+
+  limit: "Du har nått den dagliga gränsen på 5 meddelanden.\n\nFörsök igen om 24 timmar.",
+
+  success: "Meddelandet har skickats!",
+
+  remaining: "Återstående meddelanden idag: "
+
+},
 };
 
 const ct = contactTranslations[contactLang] || contactTranslations.de;
@@ -607,7 +632,6 @@ window.alert = function(message) {
   return originalAlert(message);
 };
 </script>
-<script src="js/error-logger.js"></script>
 </body>
 <!-- PingCar update -->
 </html>
