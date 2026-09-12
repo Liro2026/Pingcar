@@ -2266,10 +2266,12 @@ async function showGlobalSearch() {
 }
 
 async function runGlobalSearch() {
+
   const input = document.getElementById("globalSearchInput");
   const results = document.getElementById("globalSearchResults");
 
-  const searchTerm = (input.value || "").trim().toLowerCase();
+  const searchTerm =
+    (input.value || "").trim().toLowerCase();
 
   if (!searchTerm) {
     results.innerHTML = `
@@ -2285,127 +2287,417 @@ async function runGlobalSearch() {
   `;
 
   try {
-    const { data: sessionData, error: sessionError } =
-      await db.auth.getSession();
+
+    /* Admin-Sitzung prüfen */
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
 
     if (sessionError || !sessionData.session) {
       throw new Error("Nicht eingeloggt");
     }
 
-    /* Benutzer */
+    const accessToken =
+      sessionData.session.access_token;
+
+    const matches = [];
+
+    /* =====================================================
+       👤 BENUTZER
+       ===================================================== */
+
     const userResponse = await fetch(
       "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
       {
         method: "POST",
         headers: {
           "Authorization":
-            "Bearer " + sessionData.session.access_token,
-          "Content-Type": "application/json"
+            "Bearer " + accessToken,
+          "Content-Type":
+            "application/json"
         },
         body: JSON.stringify({})
       }
     );
 
-    const userResult = await userResponse.json();
-    const users = userResult.users || [];
+    const userResult =
+      await userResponse.json();
 
-    const matches = [];
+    if (!userResponse.ok) {
+      throw new Error(
+        userResult.error ||
+        "Benutzer konnten nicht geladen werden."
+      );
+    }
+
+    const users =
+      userResult.users || [];
 
     users.forEach(user => {
-      const searchable = JSON.stringify(user).toLowerCase();
+
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        "";
+
+      const email =
+        user.email || "";
+
+      const phone =
+        user.phone || "";
+
+      const id =
+        user.id || "";
+
+      /*
+        WICHTIG:
+        Email, Name, Telefon und UID
+        werden einzeln durchsucht.
+      */
+
+      const searchable = [
+        name,
+        email,
+        phone,
+        id
+      ]
+        .join(" ")
+        .toLowerCase();
 
       if (searchable.includes(searchTerm)) {
+
         matches.push({
           type: "👤 Benutzer",
           title:
-            user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
+            name ||
+            email ||
             "Benutzer",
-          detail: user.email || user.id
+          detail: `
+            <strong>E-Mail:</strong>
+            ${escapeGlobalSearchHtml(email)}
+            <br>
+            <strong>Telefon:</strong>
+            ${escapeGlobalSearchHtml(phone || "-")}
+            <br>
+            <strong>UID:</strong>
+            ${escapeGlobalSearchHtml(id)}
+          `
         });
+
       }
+
     });
 
-    /* Fahrzeuge / QR */
-    const { data: vehicles } = await db
+
+    /* =====================================================
+       🚗 FAHRZEUGE / QR
+       ===================================================== */
+
+    const {
+      data: vehicles,
+      error: vehicleError
+    } = await db
       .from("user_qr")
       .select("*")
       .limit(1000);
 
-    (vehicles || []).forEach(vehicle => {
-      const searchable = JSON.stringify(vehicle).toLowerCase();
+    if (vehicleError) {
+      console.error(
+        "Globale Suche Fahrzeuge:",
+        vehicleError
+      );
+    }
 
-      if (searchable.includes(searchTerm)) {
+    (vehicles || []).forEach(vehicle => {
+
+      const searchable =
+        JSON.stringify(vehicle)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
         matches.push({
           type: "🚗 Fahrzeug / QR",
-          title: vehicle.qr_code || vehicle.id || "Fahrzeug",
-          detail: JSON.stringify(vehicle)
+
+          title:
+            vehicle.qr_code ||
+            vehicle.id ||
+            "Fahrzeug",
+
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(vehicle)
+            )
         });
+
       }
+
     });
 
-    /* Meldungen */
-    const { data: messages } = await db
+
+    /* =====================================================
+       💬 MELDUNGEN / SUPPORT
+       ===================================================== */
+
+    const {
+      data: messages,
+      error: messagesError
+    } = await db
       .from("messages")
       .select("*")
       .limit(1000);
 
-    (messages || []).forEach(message => {
-      const searchable = JSON.stringify(message).toLowerCase();
+    if (messagesError) {
+      console.error(
+        "Globale Suche Meldungen:",
+        messagesError
+      );
+    }
 
-      if (searchable.includes(searchTerm)) {
+    (messages || []).forEach(message => {
+
+      const searchable =
+        JSON.stringify(message)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
         matches.push({
-          type: "💬 Meldung",
-          title: "Support / Nachricht",
-          detail: JSON.stringify(message)
+          type: "💬 Meldung / Support",
+          title:
+            "Support / Nachricht",
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(message)
+            )
         });
+
       }
+
     });
 
-    /* Abonnements */
-    const { data: subscriptions } = await db
+
+    /* =====================================================
+       💳 ABONNEMENTS
+       ===================================================== */
+
+    const {
+      data: subscriptions,
+      error: subscriptionsError
+    } = await db
       .from("subscriptions")
       .select("*")
       .limit(1000);
 
-    (subscriptions || []).forEach(subscription => {
-      const searchable =
-        JSON.stringify(subscription).toLowerCase();
+    if (subscriptionsError) {
+      console.error(
+        "Globale Suche Abonnements:",
+        subscriptionsError
+      );
+    }
 
-      if (searchable.includes(searchTerm)) {
+    (subscriptions || []).forEach(subscription => {
+
+      const searchable =
+        JSON.stringify(subscription)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
         matches.push({
           type: "💳 Abonnement",
+
           title:
             subscription.email ||
             subscription.plan_name ||
             "Abonnement",
-          detail: JSON.stringify(subscription)
+
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(subscription)
+            )
         });
+
       }
+
     });
 
-    /* Geräte */
-    const { data: devices } = await db
+
+    /* =====================================================
+       📱 GERÄTE / PUSH
+       ===================================================== */
+
+    const {
+      data: devices,
+      error: devicesError
+    } = await db
       .from("device_tokens")
-      .select("*")
+      .select("id,user_id,fcm_token,created_at")
       .limit(1000);
 
-    (devices || []).forEach(device => {
-      const searchable = JSON.stringify(device).toLowerCase();
+    if (devicesError) {
+      console.error(
+        "Globale Suche Geräte:",
+        devicesError
+      );
+    }
 
-      if (searchable.includes(searchTerm)) {
+    (devices || []).forEach(device => {
+
+      const searchable =
+        JSON.stringify(device)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
         matches.push({
           type: "📱 Gerät",
           title: "Push-Gerät",
-          detail:
-            device.user_id ||
-            device.fcm_token ||
-            "Gerät"
+
+          detail: `
+            <strong>User ID:</strong>
+            ${escapeGlobalSearchHtml(
+              device.user_id || "-"
+            )}
+            <br>
+            <strong>Registriert:</strong>
+            ${
+              device.created_at
+                ? new Date(
+                    device.created_at
+                  ).toLocaleString("de-CH")
+                : "-"
+            }
+          `
         });
+
       }
+
     });
 
+
+    /* =====================================================
+       🏢 FIRMENKUNDEN
+       ===================================================== */
+
+    const {
+      data: companies,
+      error: companiesError
+    } = await db
+      .from("companies")
+      .select("*")
+      .limit(1000);
+
+    if (companiesError) {
+      console.error(
+        "Globale Suche Firmen:",
+        companiesError
+      );
+    }
+
+    (companies || []).forEach(company => {
+
+      const searchable =
+        JSON.stringify(company)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "🏢 Firmenkunde",
+
+          title:
+            company.company_name ||
+            "Firma",
+
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(company)
+            )
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       👥 FIRMEN-MITGLIEDER
+       ===================================================== */
+
+    const {
+      data: companyMembers,
+      error: membersError
+    } = await db
+      .from("company_members")
+      .select("*")
+      .limit(1000);
+
+    if (membersError) {
+      console.error(
+        "Globale Suche Firmen-Mitglieder:",
+        membersError
+      );
+    }
+
+    (companyMembers || []).forEach(member => {
+
+      const searchable =
+        JSON.stringify(member)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "👥 Firmenbenutzer",
+
+          title:
+            member.full_name ||
+            member.email ||
+            "Firmenbenutzer",
+
+          detail: `
+            <strong>E-Mail:</strong>
+            ${escapeGlobalSearchHtml(
+              member.email || "-"
+            )}
+            <br>
+            <strong>Telefon:</strong>
+            ${escapeGlobalSearchHtml(
+              member.phone || "-"
+            )}
+            <br>
+            <strong>Status:</strong>
+            ${escapeGlobalSearchHtml(
+              member.status || "-"
+            )}
+          `
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       🔍 KEINE ERGEBNISSE
+       ===================================================== */
+
     if (!matches.length) {
+
       results.innerHTML = `
         <div style="
           padding:20px;
@@ -2413,19 +2705,40 @@ async function runGlobalSearch() {
           border-radius:8px;
           text-align:center;
         ">
+
           🔍 Keine Ergebnisse für
-          <strong>${searchTerm}</strong>
+          <strong>
+            ${escapeGlobalSearchHtml(searchTerm)}
+          </strong>
+
+          <br><br>
+
+          <span style="color:#777;">
+            Es wurden Benutzer, Fahrzeuge,
+            Meldungen, Abonnements, Geräte
+            und Firmen durchsucht.
+          </span>
+
         </div>
       `;
+
       return;
     }
 
+
+    /* =====================================================
+       📋 ERGEBNISSE ANZEIGEN
+       ===================================================== */
+
     results.innerHTML = `
+
       <h3>
-        ${matches.length} Ergebnis${matches.length === 1 ? "" : "se"}
+        ${matches.length}
+        Ergebnis${matches.length === 1 ? "" : "se"}
       </h3>
 
       <table>
+
         <thead>
           <tr>
             <th>Bereich</th>
@@ -2435,29 +2748,86 @@ async function runGlobalSearch() {
         </thead>
 
         <tbody>
-          ${matches.slice(0, 100).map(item => `
-            <tr>
-              <td>${item.type}</td>
-              <td>${item.title}</td>
-              <td style="word-break:break-word;">
-                ${item.detail}
-              </td>
-            </tr>
-          `).join("")}
+
+          ${matches
+            .slice(0, 100)
+            .map(item => `
+
+              <tr>
+
+                <td>
+                  ${item.type}
+                </td>
+
+                <td>
+                  <strong>
+                    ${escapeGlobalSearchHtml(
+                      item.title
+                    )}
+                  </strong>
+                </td>
+
+                <td style="
+                  word-break:break-word;
+                ">
+                  ${item.detail}
+                </td>
+
+              </tr>
+
+            `)
+            .join("")}
+
         </tbody>
+
       </table>
+
     `;
 
   } catch (error) {
-    console.error("Globale Suche Fehler:", error);
+
+    console.error(
+      "Globale Suche Fehler:",
+      error
+    );
 
     results.innerHTML = `
-      <div style="color:#dc3545;">
+
+      <div style="
+        padding:20px;
+        background:#fff3f3;
+        border-radius:8px;
+        color:#dc3545;
+      ">
+
         ❌ Fehler bei der Suche:
-        ${error.message}
+
+        <br><br>
+
+        ${escapeGlobalSearchHtml(
+          error.message
+        )}
+
       </div>
+
     `;
+
   }
+}
+
+
+/* =====================================================
+   🔒 HTML SICHER MACHEN
+   ===================================================== */
+
+function escapeGlobalSearchHtml(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 async function showSubscriptions() {
   const content = document.getElementById("content");
