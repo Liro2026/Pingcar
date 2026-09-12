@@ -175,7 +175,6 @@ const dashTranslations = {
     "QR-Code teilen": "Share QR-Code",
     "QR-Code herunterladen": "Download QR-Code",
     "Benachrichtigungen": "Notifications",
-    },
     
  sr: {
       "PingCar Dashboard": "PingCar Kontrolna tabla",
@@ -369,8 +368,24 @@ nl: {
   "wird geladen...": "Laden..."
 
 },
+sv: {
+  "PingCar Dashboard": "PingCar Dashboard",
+  "Mein Konto": "Mitt konto",
+  "Angemeldet als:": "Inloggad som:",
+  "Benachrichtigungen aktivieren": "Aktivera aviseringar",
+  "Logout": "Logga ut",
+  "Bereit.": "Klar.",
+  "Mein PingCar": "Mitt PingCar",
+  "Als PDF speichern": "Spara som PDF",
+  "QR-Code drucken": "Skriv ut QR-kod",
+  "QR-Code teilen": "Dela QR-kod",
+  "QR-Code herunterladen": "Ladda ner QR-kod",
+  "Benachrichtigungen": "Aviseringar",
+  "wird geladen...": "Laddar..."
+},
 }
 
+};
 
 function translateDashboard() {
   const translations = dashTranslations[dashLang] || dashTranslations.de;
@@ -1059,7 +1074,34 @@ nl: {
 
     loading: "Laden..."
 
-  }
+  },
+  sv: {
+
+  logged: "Inloggad som:",
+
+  notifications: "Aktivera aviseringar",
+
+  logout: "Logga ut",
+
+  ready: "Klar.",
+
+  myPingcar: "Mitt PingCar",
+
+  pingId: "Ping-ID:",
+
+  download: "Ladda ner QR-kod",
+
+  pdf: "Spara som PDF",
+
+  print: "Skriv ut QR-kod",
+
+  share: "Dela QR-kod",
+
+  notificationsTitle: "Aviseringar",
+
+  loading: "Laddar..."
+
+},
 
 
 };
@@ -1125,7 +1167,7 @@ translateDashboard();
 </script>
 
 <script src="js/language.js"></script>
-<script src="js/error-logger.js"></script>
+  
 </body>
 </html>
 <!-- PingCar Pages redeploy test -->
