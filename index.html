@@ -2,7 +2,6 @@
 <html lang="de">
 <head>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2622,7 +2621,15 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       el.textContent = t.perYear;
     }
   });
+const monthlyPlan = document.querySelector('[data-i18n="monthly_plan"]');
+const yearlyPlan = document.querySelector('[data-i18n="yearly_plan"]');
+const selectMonthly = document.querySelector('[data-i18n="select_monthly"]');
+const selectYearly = document.querySelector('[data-i18n="select_yearly"]');
 
+if (monthlyPlan) monthlyPlan.textContent = "📅 " + t.monthly_plan;
+if (yearlyPlan) yearlyPlan.textContent = "⭐ " + t.yearly_plan;
+if (selectMonthly) selectMonthly.textContent = t.select_monthly;
+if (selectYearly) selectYearly.textContent = t.select_yearly;
   // Forms
   const nameInput = document.getElementById("name");
   const emailInput = document.getElementById("email");
