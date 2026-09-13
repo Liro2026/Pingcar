@@ -2760,6 +2760,19 @@ if (monthlyPlan) monthlyPlan.textContent = "📅 " + t.monthly_plan;
 if (yearlyPlan) yearlyPlan.textContent = "⭐ " + t.yearly_plan;
 if (selectMonthly) selectMonthly.textContent = t.select_monthly;
 if (selectYearly) selectYearly.textContent = t.select_yearly;
+const trialHeading = document.querySelector('[data-i18n="trial_heading"]');
+const trialSubheading = document.querySelector('[data-i18n="trial_subheading"]');
+const nowNew = document.querySelector('[data-i18n="now_new"]');
+const trialBullet1 = document.querySelector('[data-i18n="trial_bullet_1"]');
+const trialBullet2 = document.querySelector('[data-i18n="trial_bullet_2"]');
+const trialBullet3 = document.querySelector('[data-i18n="trial_bullet_3"]');
+
+if (trialHeading) trialHeading.textContent = t.trial_heading;
+if (trialSubheading) trialSubheading.textContent = t.trial_subheading;
+if (nowNew) nowNew.textContent = t.now_new;
+if (trialBullet1) trialBullet1.textContent = t.trial_bullet_1;
+if (trialBullet2) trialBullet2.textContent = t.trial_bullet_2;
+if (trialBullet3) trialBullet3.textContent = t.trial_bullet_3;
   // Forms
   const nameInput = document.getElementById("name");
   const emailInput = document.getElementById("email");
