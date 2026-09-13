@@ -2254,7 +2254,79 @@ window.setLanguage = function(lang) {
 
   const t = translations[lang];
   if (!t) return;
+  // PingCar stable language mapping
+  // Remembers the original German elements so languages
+  // can switch directly from one language to another.
 
+  if (!window.__pingcarI18nMap) {
+    window.__pingcarI18nMap = new Map();
+
+    const addMap = (selector, key) => {
+      document.querySelectorAll(selector).forEach(el => {
+        if (!window.__pingcarI18nMap.has(el)) {
+          window.__pingcarI18nMap.set(el, key);
+        }
+      });
+    };
+
+    addMap('header p', 'description');
+    addMap('header .button', 'available');
+
+    addMap('nav a:nth-child(1)', 'home');
+    addMap('nav a:nth-child(2)', 'qr');
+    addMap('nav a:nth-child(3)', 'contact');
+    addMap('nav a:nth-child(4)', 'dashboard');
+    addMap('nav a:nth-child(5)', 'messages');
+
+    const mainH2 = document.querySelectorAll('.container > .card h2');
+    if (mainH2[0]) window.__pingcarI18nMap.set(mainH2[0], 'how');
+    if (mainH2[1]) window.__pingcarI18nMap.set(mainH2[1], 'afterScan');
+
+    const stepH3 = document.querySelectorAll('.item h3');
+
+    if (stepH3[0]) window.__pingcarI18nMap.set(stepH3[0], 'register');
+    if (stepH3[1]) window.__pingcarI18nMap.set(stepH3[1], 'getQr');
+    if (stepH3[2]) window.__pingcarI18nMap.set(stepH3[2], 'placeQr');
+    if (stepH3[3]) window.__pingcarI18nMap.set(stepH3[3], 'scanQr');
+    if (stepH3[4]) window.__pingcarI18nMap.set(stepH3[4], 'discover');
+    if (stepH3[5]) window.__pingcarI18nMap.set(stepH3[5], 'notification');
+
+    const stepP = document.querySelectorAll('.item p');
+
+    if (stepP[0]) window.__pingcarI18nMap.set(stepP[0], 'registerText');
+    if (stepP[1]) window.__pingcarI18nMap.set(stepP[1], 'getQrText');
+    if (stepP[2]) window.__pingcarI18nMap.set(stepP[2], 'placeQrText');
+    if (stepP[3]) window.__pingcarI18nMap.set(stepP[3], 'scanQrText');
+
+    const problemB = document.querySelectorAll('.item b');
+
+    if (problemB[0]) window.__pingcarI18nMap.set(problemB[0], 'blocked');
+    if (problemB[1]) window.__pingcarI18nMap.set(problemB[1], 'lights');
+    if (problemB[2]) window.__pingcarI18nMap.set(problemB[2], 'damaged');
+    if (problemB[3]) window.__pingcarI18nMap.set(problemB[3], 'forgot');
+    if (problemB[4]) window.__pingcarI18nMap.set(problemB[4], 'otherMessage');
+
+    addMap('#forgotPassword', 'forgotPassword');
+    addMap('#resetButton', 'sendLink');
+    addMap('#logoutButton', 'logout');
+
+    const inputs = {
+      '#name': 'name',
+      '#email': 'email',
+      '#password': 'password',
+      '#loginEmail': 'email',
+      '#loginPassword': 'password',
+      '#resetEmail': 'email'
+    };
+
+    Object.keys(inputs).forEach(selector => {
+      const el = document.querySelector(selector);
+      if (el) window.__pingcarI18nMap.set(el, inputs[selector]);
+    });
+
+    const footerPs = document.querySelectorAll('footer p');
+    if (footerPs[0]) window.__pingcarI18nMap.set(footerPs[0], 'footerText');
+  }
   localStorage.setItem("pingcar_language", lang);
 const currentFlag = document.getElementById("current-flag");
 const currentLangText = document.getElementById("current-lang-text");
@@ -2819,7 +2891,45 @@ if (trialBullet3) trialBullet3.textContent = t.trial_bullet_3;
       footerPs[1].textContent = "© 2026 PingCar. " + t.rights;
     }
   }
+  // Apply stable PingCar language mapping
+  if (window.__pingcarI18nMap) {
+    for (const [el, key] of window.__pingcarI18nMap.entries()) {
+      if (!el || !t[key]) continue;
 
+      if (el.tagName === "INPUT") {
+        el.placeholder = t[key];
+        continue;
+      }
+
+      if (key === "home") {
+        el.textContent = "🏠 " + t[key];
+      } else if (key === "qr") {
+        el.textContent = "📷 " + t[key];
+      } else if (key === "contact") {
+        el.textContent = "💬 " + t[key];
+      } else if (key === "dashboard") {
+        el.textContent = "👤 " + t[key];
+      } else if (key === "messages") {
+        el.textContent = "🔔 " + t[key];
+      } else if (key === "available") {
+        el.textContent = "🚗 " + t[key];
+      } else if (key === "register") {
+        el.textContent = "1. " + t[key];
+      } else if (key === "getQr") {
+        el.textContent = "2. " + t[key];
+      } else if (key === "placeQr") {
+        el.textContent = "3. " + t[key];
+      } else if (key === "scanQr") {
+        el.textContent = "4. " + t[key];
+      } else if (key === "discover") {
+        el.textContent = "📱 " + t[key];
+      } else if (key === "notification") {
+        el.textContent = "5. " + t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  }
 };
 
 // Load saved language
