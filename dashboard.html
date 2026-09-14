@@ -73,7 +73,7 @@ body {
 <header class="top"><div class="wrap"><h1>PingCar</h1><div id="userEmail">Dashboard</div></div></header>
 <main class="wrap">
 <section class="card">
-<h2>Mein Konto</h2>
+<h2 id="accountTitle">Mein Konto</h2>
 <p id="userInfo" class="muted">Login wird geprüft...</p>
 <button id="enablePush" class="btn primary" type="button">🔔 Benachrichtigungen aktivieren</button>
 <button id="logout" class="btn danger" type="button">🚪 Logout</button>
@@ -81,7 +81,7 @@ body {
 
 </section>
 <section class="card">
-<h2>Mein PingCar</h2>
+<h2 id="pingcarTitle">Mein PingCar</h2>
 <div id="pingInfo" class="muted">Wird geladen...</div>
 <img id="qrimage" class="qr hidden" alt="PingCar QR-Code">
   <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
@@ -109,7 +109,7 @@ style="padding:12px 16px;border:none;border-radius:8px;background:#8e24aa;color:
 </div>
 </section>
 <section class="card">
-<h2>Benachrichtigungen</h2>
+<h2 id="notificationsTitle">Benachrichtigungen</h2>
 <div id="notifications" class="muted">Wird geladen...</div>
 </section>
 </main>
@@ -453,7 +453,15 @@ function translateDashboard() {
       );
     }
   }
-}
+  document.getElementById("accountTitle").textContent =
+    translations["Mein Konto"] || "Mein Konto";
+
+  document.getElementById("pingcarTitle").textContent =
+    translations["Mein PingCar"] || "Mein PingCar";
+
+  document.getElementById("notificationsTitle").textContent =
+    translations["Benachrichtigungen"] || "Benachrichtigungen";
+  }
 
 document.addEventListener("DOMContentLoaded", translateDashboard);
 </script>
