@@ -207,6 +207,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('sv'); return false;"><span class="flag">🇸🇪</span> Svenska (SE)</a>
     <a href="#" onclick="PingCarLanguage.set('ro'); return false;"><span class="flag">🇷🇴</span> Română (RO)</a>
     <a href="#" onclick="PingCarLanguage.set('el'); return false;"><span class="flag">🇬🇷</span> Ελληνικά (EL)</a>
+    <a href="#" onclick="PingCarLanguage.set('pl'); return false;"><span class="flag">🇵🇱</span> Polski (PL)</a>
 
   </div>
 </div>
@@ -2361,6 +2362,117 @@ el: {
   select_yearly: "Επιλέξτε την ετήσια συνδρομή"
 
 },
+pl: {
+
+  home: "Strona główna",
+
+  qr: "QR",
+
+  contact: "Kontakt",
+
+  dashboard: "Panel",
+
+  messages: "Wiadomości",
+
+  title: "PingCar",
+
+  description: "Bezpieczny sposób kontaktowania się z właścicielami pojazdów bez numerów telefonów i danych osobowych.",
+
+  available: "Darmowa rejestracja",
+
+  how: "Jak działa PingCar",
+
+  afterScan: "Po zeskanowaniu",
+
+  register: "Rejestracja",
+
+  registerText: "Utwórz bezpłatne konto w PingCar.",
+
+  getQr: "Otrzymaj kod QR",
+
+  getQrText: "Otrzymasz osobisty kod QR dla swojego pojazdu.",
+
+  placeQr: "Umieść kod QR",
+
+  placeQrText: "Umieść kod QR w widocznym miejscu na swoim pojeździe.",
+
+  scanQr: "Zeskanuj kod QR",
+
+  scanQrText: "Inna osoba skanuje kod QR za pomocą swojego smartfona.",
+
+  notification: "Wiadomość",
+
+  notificationText: "Natychmiast otrzymasz powiadomienie przez PingCar.",
+
+  blocked: "Mój pojazd blokuje przejazd",
+
+  lights: "Światła są włączone",
+
+  damaged: "Pojazd jest uszkodzony",
+
+  forgot: "Ktoś coś zostawił",
+
+  otherMessage: "Inna wiadomość",
+
+  noPhone: "Bez numeru telefonu",
+
+  noPersonalData: "Bez danych osobowych",
+
+  fastNotification: "Szybkie powiadomienie",
+
+  privacy: "Prywatność",
+
+  discover: "Odkryj PingCar",
+
+  monthly: "Subskrypcja miesięczna",
+
+  yearly: "Subskrypcja roczna",
+
+  premiumText: "Wypróbuj wszystkie funkcje Premium za darmo.",
+
+  perMonth: "miesięcznie",
+
+  perYear: "rocznie",
+
+  name: "Twoje imię",
+
+  email: "Twój adres e-mail",
+
+  password: "Hasło",
+
+  login: "Zaloguj się",
+
+  forgotPassword: "Nie pamiętasz hasła?",
+
+  sendLink: "Wyślij link",
+
+  logout: "Wyloguj się",
+
+  contactTitle: "Kontakt",
+
+  footerText: "PingCar – bezpieczne rozwiązanie dla właścicieli pojazdów.",
+
+  trial_heading: "🚀 Wypróbuj za darmo przez 7 dni.",
+
+  trial_subheading: "Wypróbuj wszystkie funkcje Premium za darmo.",
+
+  now_new: "⭐ Teraz nowość:",
+
+  trial_bullet_1: "Wypróbuj za darmo przez 7 dni.",
+
+  trial_bullet_2: "Dzisiaj nie płacisz.",
+
+  trial_bullet_3: "Możesz anulować w dowolnym momencie.",
+
+  rights: "Wszelkie prawa zastrzeżone.",
+
+  monthly_plan: "Subskrypcja miesięczna",
+
+  yearly_plan: "Subskrypcja roczna",
+
+  select_monthly: "Wybierz subskrypcję miesięczną",
+
+  select_yearly: "Wybierz subskrypcję roczną"
 };
 
 
@@ -2462,7 +2574,8 @@ const languageFlags = {
   nl: "NL",
   sv: "SV",
   ro: "RO",
-  el: "EL"
+  el: "EL",
+  pl: "PL"
   
 };
 
@@ -2492,7 +2605,8 @@ const languageNames = {
   nl: "NL",
   sv: "SV",
   ro: "RO",
-  el: "EL"
+  el: "EL",
+  pl: "PL"
 
   
   
@@ -2551,7 +2665,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Hoe werkt PingCar")||
       text.includes("Hur fungerar PingCar")||
       text.includes("Cum funcționează PingCar")||
-      text.includes("Πώς λειτουργεί το PingCar")
+      text.includes("Πώς λειτουργεί το PingCar")||
+      text.includes("Jak działa PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -2573,7 +2688,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Na het scannen")||
       text.includes("Efter skanning")||
       text.includes("Cum funcționează PingCar")||
-      text.includes("Πώς λειτουργεί το PingCar")
+      text.includes("Πώς λειτουργεί το PingCar")||
+      text.includes("Jak działa PingCar")
     ) {
       el.textContent = t.afterScan;
     }
@@ -2591,7 +2707,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "Контакт"||
       text === "Kontakt"||
       text === "Kontakt"||
-      text === "Επικοινωνία"
+      text === "Επικοινωνία"||
+      text === "Kontakt"
       
     ) {
       el.textContent = t.contactTitle;
@@ -2614,7 +2731,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Registratie"||
   text === "Registrering"||
   text === "Înregistrare"||
-  text === "Εγγραφή"
+  text === "Εγγραφή"||
+  text === "Rejestracja"
     ) {
       el.textContent = t.register;
     }
@@ -2636,7 +2754,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Inloggen"||
   text === "Inloggning"||
   text === "Autentificare"||
-  text === "Σύνδεση"
+  text === "Σύνδεση"||
+  text === "Zaloguj się"
   
     ) {
       el.textContent = t.login;
@@ -2731,7 +2850,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Mijn voertuig blokkeert de doorgang")||
       text.includes("Mitt fordon blockerar vägen")||
       text.includes("Autovehiculul meu blochează trecerea")||
-      text.includes("Το όχημά μου εμποδίζει τη διέλευση")
+      text.includes("Το όχημά μου εμποδίζει τη διέλευση")||
+      text.includes("Mój pojazd blokuje przejazd")
     ) {
       el.textContent = t.blocked;
     }
@@ -2753,7 +2873,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("De lichten staan aan")||
       text.includes("De lichten staan aan")||
       text.includes("Ljussen är på")||
-      text.includes("Τα φώτα είναι αναμμένα")
+      text.includes("Τα φώτα είναι αναμμένα")||
+      text.includes("Światła są włączone")
     ) {
       el.textContent = t.lights;
     }
@@ -2775,7 +2896,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Het voertuig is beschadigd")||
       text.includes("Det fordon är skadat")||
       text.includes("Autovehiculul meu este deteriorat")||
-      text.includes("Το όχημά μου έχει υποστεί ζημιά")
+      text.includes("Το όχημά μου έχει υποστεί ζημιά")||
+      text.includes("Pojazd jest uszkodzony")
     ) {
       el.textContent = t.damaged;
     }
@@ -2797,7 +2919,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Er is iets vergeten")||
       text.includes("Det är något som glömts")||
       text.includes("A fost uitat ceva")||
-      text.includes("Ξεχάστηκε κάτι")
+      text.includes("Ξεχάστηκε κάτι")||
+      text.includes("Ktoś coś zostawił")
     ) {
       el.textContent = t.forgot;
     }
@@ -2819,7 +2942,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Ander bericht")||
       text.includes("Annat meddelande")||
       text.includes("Altro messaggio")||
-      text.includes("Άλλο μήνυμα")
+      text.includes("Άλλο μήνυμα")||
+      text.includes("Inna wiadomość")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -2841,7 +2965,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Zonder telefoonnummer")||
       text.includes("Inget telefonnummer")||
       text.includes("Fără număr de telefon")||
-      text.includes("Χωρίς αριθμό τηλεφώνου")
+      text.includes("Χωρίς αριθμό τηλεφώνου")||
+      text.includes("Bez numeru telefonu")
     ) {
       el.textContent = t.noPhone;
     }
@@ -2863,7 +2988,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Zonder persoonlijke gegevens")||
       text.includes("Inget personligt data")||
       text.includes("Fără date personale")||
-      text.includes("Χωρίς προσωπικά δεδομένα")
+      text.includes("Χωρίς προσωπικά δεδομένα")||
+      text.includes("Bez danych osobowych")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -2885,7 +3011,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text.includes("Snelle melding")||
         text.includes("Snabb avisering")||
         text.includes("Notificare rapidă")||
-      text.includes("Γρήγορη ειδοποίηση")
+      text.includes("Γρήγορη ειδοποίηση")||
+      text.includes("Szybkie powiadomienie")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -2907,7 +3034,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Privacy")||
       text.includes("Integritet")||
       text.includes("Confidențialitate")||
-      text.includes("Απόρρητο")
+      text.includes("Απόρρητο")||
+      text.includes("Prywatność")
     ) {
       el.textContent = t.privacy;
     }
@@ -2941,7 +3069,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Probeer alle Premium-functies gratis uit." ||
         text === "Prova alla Premium-funktioner gratis."||
         text === "Încearcă gratuit toate funcțiile Premium."||
-        text === "Δοκιμάστε δωρεάν όλες τις Premium λειτουργίες."
+        text === "Δοκιμάστε δωρεάν όλες τις Premium λειτουργίες."||
+        text === "Wypróbuj wszystkie funkcje Premium za darmo."
 
         ) {
       el.textContent = t.premiumText;
