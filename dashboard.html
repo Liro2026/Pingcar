@@ -176,6 +176,7 @@ const dashTranslations = {
     "QR-Code teilen": "Share QR-Code",
     "QR-Code herunterladen": "Download QR-Code",
     "Benachrichtigungen": "Notifications",
+  },
     
  sr: {
       "PingCar Dashboard": "PingCar Kontrolna tabla",
@@ -453,14 +454,34 @@ function translateDashboard() {
       );
     }
   }
-  document.getElementById("accountTitle").textContent =
-    translations["Mein Konto"] || "Mein Konto";
+ const lang = localStorage.getItem("pingcar_language") || "de";
 
-  document.getElementById("pingcarTitle").textContent =
-    translations["Mein PingCar"] || "Mein PingCar";
+const titles = {
+  de: ["Mein Konto", "Mein PingCar", "Benachrichtigungen"],
+  sq: ["Llogaria ime", "PingCar im", "Njoftimet"],
+  fr: ["Mon compte", "Mon PingCar", "Notifications"],
+  it: ["Il mio account", "Il mio PingCar", "Notifiche"],
+  en: ["My Account", "My PingCar", "Notifications"],
+  sr: ["Moj nalog", "Moj PingCar", "Obaveštenja"],
+  es: ["Mi cuenta", "Mi PingCar", "Notificaciones"],
+  tr: ["Hesabım", "PingCar'ım", "Bildirimler"],
+  sk: ["Môj účet", "Moje PingCar", "Upozornenia"],
+  hr: ["Moj račun", "Moj PingCar", "Obavijesti"],
+  hu: ["Fiókom", "Az én PingCarom", "Értesítések"],
+  pt: ["A minha conta", "O meu PingCar", "Notificações"],
+  mk: ["Мојата сметка", "Мојот PingCar", "Известувања"],
+  nl: ["Mijn account", "Mijn PingCar", "Meldingen"],
+  sv: ["Mitt konto", "Mitt PingCar", "Aviseringar"],
+  ro: ["Contul meu", "PingCar-ul meu", "Notificări"],
+  el: ["Ο λογαριασμός μου", "Το PingCar μου", "Ειδοποιήσεις"],
+  pl: ["Moje konto", "Mój PingCar", "Powiadomienia"]
+};
 
-  document.getElementById("notificationsTitle").textContent =
-    translations["Benachrichtigungen"] || "Benachrichtigungen";
+const t = titles[lang] || titles.de;
+
+document.getElementById("accountTitle").textContent = t[0];
+document.getElementById("pingcarTitle").textContent = t[1];
+document.getElementById("notificationsTitle").textContent = t[2];
   }
 
 document.addEventListener("DOMContentLoaded", translateDashboard);
