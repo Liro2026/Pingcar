@@ -88,6 +88,10 @@ export default {
 
   footerText: "PingCar – suluhisho salama kwa wamiliki wa magari.",
 
-  rights: "Haki zote zimehifadhiwa."
+  rights: "Haki zote zimehifadhiwa.",
+  phonePrivate: "Nambari yako ya simu inabaki kuwa ya faragha.",
+personalDataPrivate: "Jina na maelezo ya mawasiliano hayaonyeshwi.",
+ownerNotified: "Mmiliki wa gari anaarifiwa mara moja.",
+privacyFocus: "Imetengenezwa kwa kuzingatia ulinzi wa data."
 
 };
