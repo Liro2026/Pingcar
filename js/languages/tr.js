@@ -56,5 +56,9 @@ export default {
   per_month: "aylık",
   per_year: "yıllık",
   select_monthly: "Aylık planı seç",
-  select_yearly: "Yıllık planı seç"
+  select_yearly: "Yıllık planı seç",
+  phonePrivate: "Telefon numaranız gizli kalır.",
+personalDataPrivate: "İsim ve iletişim bilgileri görüntülenmez.",
+ownerNotified: "Araç sahibi hemen bilgilendirilir.",
+privacyFocus: "Veri korumasına odaklanılarak geliştirilmiştir."
 };
