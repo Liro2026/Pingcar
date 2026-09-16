@@ -88,6 +88,10 @@ export default {
 
   footerText: "PingCar – الحل الآمن لمالكي المركبات.",
 
-  rights: "جميع الحقوق محفوظة."
+  rights: "جميع الحقوق محفوظة.",
+  phonePrivate: "يبقى رقم هاتفك خاصًا.",
+personalDataPrivate: "لا يتم عرض الاسم وبيانات الاتصال.",
+ownerNotified: "يتم إبلاغ مالك المركبة فورًا.",
+privacyFocus: "تم تطويره مع التركيز على حماية البيانات."
 
 };
