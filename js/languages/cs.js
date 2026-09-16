@@ -88,6 +88,10 @@ export default {
 
   footerText: "PingCar – bezpečné řešení pro majitele vozidel.",
 
-  rights: "Všechna práva vyhrazena."
+  rights: "Všechna práva vyhrazena.",
+  phonePrivate: "Vaše telefonní číslo zůstává soukromé.",
+personalDataPrivate: "Jméno a kontaktní údaje se nezobrazují.",
+ownerNotified: "Majitel vozidla je okamžitě informován.",
+privacyFocus: "Vyvinuto se zaměřením na ochranu osobních údajů."
 
 };
