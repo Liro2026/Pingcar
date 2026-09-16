@@ -44,6 +44,10 @@ export default {
   welcome: "Dobro došli u PingCar",
   contactTitle: "Kontakt",
   footerText: "PingCar – siguran način kontaktiranja vlasnika vozila.",
-  rights: "Sva prava pridržana."
+  rights: "Sva prava pridržana.",
+  phonePrivate: "Vaš telefonski broj ostaje privatan.",
+personalDataPrivate: "Ime i kontaktni podaci nisu prikazani.",
+ownerNotified: "Vlasnik vozila je odmah obaviješten.",
+privacyFocus: "Razvijeno s fokusom na zaštitu podataka."
 
 };
