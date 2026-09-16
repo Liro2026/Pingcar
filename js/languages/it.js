@@ -57,5 +57,9 @@ export default {
   per_month: "al mese",
   per_year: "all'anno",
   select_monthly: "Scegli l'abbonamento mensile",
-  select_yearly: "Scegli l'abbonamento annuale"
+  select_yearly: "Scegli l'abbonamento annuale",
+  phonePrivate: "Il tuo numero di telefono rimane privato.",
+personalDataPrivate: "Il nome e i dati di contatto non vengono visualizzati.",
+ownerNotified: "Il proprietario del veicolo viene informato immediatamente.",
+privacyFocus: "Sviluppato con particolare attenzione alla protezione dei dati."
 };
