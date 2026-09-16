@@ -56,5 +56,9 @@ export default {
   per_month: "mesečno",
   per_year: "godišnje",
   select_monthly: "Izaberi mesečnu pretplatu",
-  select_yearly: "Izaberi godišnju pretplatu"
+  select_yearly: "Izaberi godišnju pretplatu",
+  phonePrivate: "Vaš broj telefona ostaje privatan.",
+personalDataPrivate: "Ime i kontakt podaci nisu prikazani.",
+ownerNotified: "Vlasnik vozila je odmah obavešten.",
+privacyFocus: "Razvijeno sa fokusom na zaštitu podataka."
 };
