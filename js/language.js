@@ -115,21 +115,12 @@
       localStorage.setItem("pingcar_language", language);
       window.PingCarLanguage.current = language;
 
- set: function (language) {
-  if (!supportedLanguages.includes(language)) {
-    console.warn("Unsupported PingCar language:", language);
-    return;
-  }
+      loadLanguage(language);
 
-  localStorage.setItem("pingcar_language", language);
-  window.PingCarLanguage.current = language;
-
-  loadLanguage(language);
-
-  if (typeof window.setLanguage === "function") {
-    window.setLanguage(language);
-  }
-},
+      if (typeof window.setLanguage === "function") {
+        window.setLanguage(language);
+      }
+    },
 
     supported: supportedLanguages,
 
