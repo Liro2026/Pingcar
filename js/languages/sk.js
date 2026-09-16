@@ -92,6 +92,10 @@ export default {
   per_month: "za mesiac",
   per_year: "za rok",
   select_monthly: "Vybrať mesačné predplatné",
-  select_yearly: "Vybrať ročné predplatné"
+  select_yearly: "Vybrať ročné predplatné",
+  phonePrivate: "Vaše telefónne číslo zostáva súkromné.",
+personalDataPrivate: "Meno a kontaktné údaje sa nezobrazujú.",
+ownerNotified: "Majiteľ vozidla je okamžite informovaný.",
+privacyFocus: "Vyvinuté so zameraním na ochranu osobných údajov."
 
 };
