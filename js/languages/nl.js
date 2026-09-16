@@ -100,6 +100,10 @@ export default {
   per_month: "per maand",
   per_year: "per jaar",
   select_monthly: "Kies maandabonnement",
-  select_yearly: "Kies jaarabonnement"
+  select_yearly: "Kies jaarabonnement",
+  phonePrivate: "Uw telefoonnummer blijft privé.",
+personalDataPrivate: "Naam en contactgegevens worden niet weergegeven.",
+ownerNotified: "De voertuigeigenaar wordt onmiddellijk geïnformeerd.",
+privacyFocus: "Ontwikkeld met focus op gegevensbescherming."
 
 };
