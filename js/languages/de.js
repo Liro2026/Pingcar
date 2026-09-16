@@ -15,6 +15,7 @@ export default {
   afterScan: "Nach dem Scannen",
 
   notification: "Benachrichtigung",
+  notificationText: "Sie erhalten sofort eine Nachricht in der PingCar-App.",
 
   blocked: "Fahrzeug ist blockiert",
   lights: "Lichter sind eingeschaltet",
@@ -23,9 +24,14 @@ export default {
   otherMessage: "Andere Nachricht",
 
   noPhone: "Ohne Telefonnummer",
+  phonePrivate: "Ihre Telefonnummer bleibt privat.",
   noPersonalData: "Ohne persönliche Daten",
+  fastNotification: "Schnelle Benachrichtigung",
+  ownerNotified: "Der Fahrzeughalter wird sofort informiert.",
+  personalDataPrivate: "Name und Kontaktdaten werden nicht angezeigt.",
 
   privacy: "Datenschutz",
+  privacyFocus: "Entwickelt mit Fokus auf Datenschutz.",
   discover: "PingCar entdecken",
 
   monthly: "Monatliches Abonnement",
