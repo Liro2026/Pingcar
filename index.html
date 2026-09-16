@@ -284,7 +284,7 @@ margin-top:50px;
 </div>
 <div class="item">
 <h3>5. Benachrichtigung</h3>
-<p>Sie erhalten sofort eine Nachricht in der PingCar-App.</p>
+<p data-i18n="notificationText">Sie erhalten sofort eine Nachricht in der PingCar-App.</p>
 </div>
 
 </div>
@@ -2874,6 +2874,7 @@ window.setLanguage = function(lang) {
     if (stepP[1]) window.__pingcarI18nMap.set(stepP[1], 'getQrText');
     if (stepP[2]) window.__pingcarI18nMap.set(stepP[2], 'placeQrText');
     if (stepP[3]) window.__pingcarI18nMap.set(stepP[3], 'scanQrText');
+    if (stepP[5]) window.__pingcarI18nMap.set(stepP[5], 'notificationText');
 
     const problemB = document.querySelectorAll('.item b');
 
