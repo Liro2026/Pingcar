@@ -88,6 +88,10 @@ export default {
 
   footerText: "PingCar – en säker lösning för fordonsägare.",
 
-  rights: "Alla rättigheter förbehållna."
+  rights: "Alla rättigheter förbehållna.",
+  phonePrivate: "Ditt telefonnummer förblir privat.",
+personalDataPrivate: "Namn och kontaktuppgifter visas inte.",
+ownerNotified: "Fordonsägaren informeras omedelbart.",
+privacyFocus: "Utvecklad med fokus på dataskydd."
 
 };
