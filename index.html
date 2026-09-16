@@ -222,6 +222,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('cs'); return false;"><span class="flag">🇨🇿</span> Čeština (CS)</a>
     <a href="#" onclick="PingCarLanguage.set('sw'); return false;"><span class="flag">🇰🇪</span> Kiswahili (SW)</a>
     <a href="#" onclick="PingCarLanguage.set('ar'); return false;"><span class="flag">🇸🇦</span> العربية (AR)</a>
+    <a href="#" onclick="PingCarLanguage.set('zh'); return false;"><span class="flag">🇨🇳</span> 中文 (ZH)</a>
 
   </div>
 </div>
@@ -2824,6 +2825,118 @@ pl: {
 
   select_yearly: "اختر الاشتراك السنوي"
 },
+zh: {
+
+  home: "首页",
+
+  qr: "QR",
+
+  contact: "联系我们",
+
+  dashboard: "控制面板",
+
+  messages: "消息",
+
+  title: "PingCar",
+
+  description: "一种安全联系车主的方式，无需电话号码或个人信息。",
+
+  available: "免费注册",
+
+  how: "PingCar 如何运作",
+
+  afterScan: "扫描二维码后",
+
+  register: "注册",
+
+  registerText: "在 PingCar 上创建您的免费账户。",
+
+  getQr: "获取二维码",
+
+  getQrText: "您将获得一个专属于您车辆的二维码。",
+
+  placeQr: "放置二维码",
+
+  placeQrText: "将二维码放置在车辆上明显的位置。",
+
+  scanQr: "扫描二维码",
+
+  scanQrText: "其他人可以使用智能手机扫描二维码。",
+
+  notification: "通知",
+
+  notificationText: "您将立即通过 PingCar 收到通知。",
+
+  blocked: "我的车辆妨碍通行",
+
+  lights: "车灯亮着",
+
+  damaged: "我的车辆受损",
+
+  forgot: "有人遗忘了物品",
+
+  otherMessage: "其他消息",
+
+  noPhone: "无需电话号码",
+
+  noPersonalData: "无需个人信息",
+
+  fastNotification: "快速通知",
+
+  privacy: "隐私保护",
+
+  discover: "探索 PingCar",
+
+  monthly: "月度订阅",
+
+  yearly: "年度订阅",
+
+  premiumText: "免费体验所有 Premium 功能。",
+
+  perMonth: "每月",
+
+  perYear: "每年",
+
+  name: "您的姓名",
+
+  email: "您的电子邮箱",
+
+  password: "密码",
+
+  login: "登录",
+
+  forgotPassword: "忘记密码？",
+
+  sendLink: "发送链接",
+
+  logout: "退出登录",
+
+  contactTitle: "联系我们",
+
+  footerText: "PingCar – 车主的安全联系解决方案。",
+
+  trial_heading: "🚀 免费试用 7 天。",
+
+  trial_subheading: "免费体验所有 Premium 功能。",
+
+  now_new: "⭐ 现在新增：",
+
+  trial_bullet_1: "免费试用 7 天。",
+
+  trial_bullet_2: "今天无需付款。",
+
+  trial_bullet_3: "随时可以取消。",
+
+  rights: "版权所有。",
+
+  monthly_plan: "月度订阅",
+
+  yearly_plan: "年度订阅",
+
+  select_monthly: "选择月度订阅",
+
+  select_yearly: "选择年度订阅"
+},
 };
 
 
@@ -2930,7 +3043,8 @@ const languageFlags = {
   pl: "PL",
   cs: "CS",
   sw: "SW",
-  ar: "AR"
+  ar: "AR",
+  zh: "ZH"
   
 };
 
@@ -2964,7 +3078,8 @@ const languageNames = {
   pl: "PL",
   cs: "CS",
   sw: "SW",
-  ar: "AR"
+  ar: "AR",
+  zh: "ZH"
 
   
   
@@ -3027,7 +3142,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Jak działa PingCar")||
       text.includes("Jak PingCar funguje")||
       text.includes("Jinsi PingCar inavyofanya kazi")||
-      text.includes("كيف يعمل PingCar")
+      text.includes("كيف يعمل PingCar")||
+      text.includes("PingCar 如何运作")
     ) {
       el.textContent = t.how;
     }
@@ -3053,7 +3169,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Jak działa PingCar")||
       text.includes("Jak PingCar funguje")||
       text.includes("Jinsi PingCar inavyofanya kazi")||
-      text.includes("كيف يعمل PingCar")
+      text.includes("كيف يعمل PingCar")||
+      text.includes("PingCar 如何运作")
       
     ) {
       el.textContent = t.afterScan;
@@ -3075,7 +3192,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "Επικοινωνία"||
       text === "Kontakt"||
       text === "Wasiliana"||
-      text === "تواصل معنا"
+      text === "تواصل معنا"||
+      text === "联系我们"
       
       
     ) {
@@ -3103,7 +3221,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Rejestracja"||
   text === "Registrace"||
   text === "Jisajili"||
-  text === "التسجيل"
+  text === "التسجيل"||
+  text === "注册"
     ) {
       el.textContent = t.register;
     }
@@ -3129,7 +3248,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Zaloguj się"||
   text === "Přihlásit se"||
   text === "Ingia"||
-  text === "تسجيل الدخول"
+  text === "تسجيل الدخول"||
+  text === "登录"
   
     ) {
       el.textContent = t.login;
@@ -3228,7 +3348,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Mój pojazd blokuje przejazd")||
       text.includes("Moje vozidlo blokuje průjezd")||
       text.includes("Gari langu linazuia njia")||
-      text.includes("مركبتي تعيق المرور")
+      text.includes("مركبتي تعيق المرور")||
+      text.includes("我的车辆妨碍通行")
     ) {
       el.textContent = t.blocked;
     }
@@ -3254,7 +3375,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Światła są włączone")||
       text.includes("Světla jsou zapnutá")||
       text.includes("Taa zimewashwa")||
-      text.includes("الأضواء مضاءة")
+      text.includes("الأضواء مضاءة")||
+      text.includes("车灯亮着")
     ) {
       el.textContent = t.lights;
     }
@@ -3280,7 +3402,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Pojazd jest uszkodzony")||
       text.includes("Vozidlo je poškozené")||
       text.includes("Gari limeharibika")||
-      text.includes("مركبتي متضررة")
+      text.includes("مركبتي متضررة")||
+      text.includes("我的车辆受损")
     ) {
       el.textContent = t.damaged;
     }
@@ -3306,7 +3429,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Ktoś coś zostawił")||
       text.includes("Někdo něco zapomněl")||
       text.includes("Mtu amesahau kitu")||
-      text.includes("نسي شخص ما شيئًا")
+      text.includes("نسي شخص ما شيئًا")||
+      text.includes("有人遗忘了物品")
     ) {
       el.textContent = t.forgot;
     }
@@ -3332,7 +3456,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Inna wiadomość")||
       text.includes("Jiná zpráva")||
       text.includes("Ujumbe mwingine")||
-      text.includes("رسالة أخرى")
+      text.includes("رسالة أخرى")||
+      text.includes("其他消息")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -3358,7 +3483,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bez numeru telefonu")||
       text.includes("Bez telefonního čísla")||
       text.includes("Bila nambari ya simu")||
-      text.includes("بدون رقم هاتف")
+      text.includes("بدون رقم هاتف")||
+      text.includes("无需电话号码")
     ) {
       el.textContent = t.noPhone;
     }
@@ -3384,7 +3510,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bez danych osobowych")||
       text.includes("Bez osobních údajů")||
       text.includes("Bila taarifa binafsi")||
-      text.includes("بدون بيانات شخصية")
+      text.includes("بدون بيانات شخصية")||
+      text.includes("无需个人信息")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -3410,7 +3537,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Szybkie powiadomienie")||
       text.includes("Rychlé upozornění")||
       text.includes("Arifa ya haraka")||
-      text.includes("إشعار سريع")
+      text.includes("إشعار سريع")||
+      text.includes("快速通知")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -3436,7 +3564,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Prywatność")||
       text.includes("Soukromí")||
       text.includes("Faragha")||
-      text.includes("الخصوصية")
+      text.includes("الخصوصية")||
+      text.includes("隐私保护")
     ) {
       el.textContent = t.privacy;
     }
@@ -3474,7 +3603,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Wypróbuj wszystkie funkcje Premium za darmo."||
         text === "Vyzkoušejte všechny funkce Premium zdarma."||
         text === "Jaribu vipengele vyote vya Premium bila malipo."||
-        text === "جرّب جميع ميزات Premium مجانًا."
+        text === "جرّب جميع ميزات Premium مجانًا."||
+        text === "免费体验所有 Premium 功能。"
 
         ) {
       el.textContent = t.premiumText;
