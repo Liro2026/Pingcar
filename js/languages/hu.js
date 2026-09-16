@@ -56,6 +56,10 @@ export default {
   per_month: "havonta",
   per_year: "évente",
   select_monthly: "Havi csomag kiválasztása",
-  select_yearly: "Éves csomag kiválasztása"
+  select_yearly: "Éves csomag kiválasztása",
+  phonePrivate: "A telefonszáma privát marad.",
+personalDataPrivate: "A név és az elérhetőségek nem jelennek meg.",
+ownerNotified: "A jármű tulajdonosa azonnal értesítést kap.",
+privacyFocus: "Az adatvédelemre összpontosítva fejlesztve."
 
 };
