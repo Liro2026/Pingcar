@@ -57,5 +57,9 @@ export default {
   per_month: "per month",
   per_year: "per year",
   select_monthly: "Select monthly plan",
-  select_yearly: "Select yearly plan"
+  select_yearly: "Select yearly plan",
+  phonePrivate: "Your phone number remains private.",
+personalDataPrivate: "Name and contact details are not displayed.",
+ownerNotified: "The vehicle owner is informed immediately.",
+privacyFocus: "Developed with a focus on data protection."
 };
