@@ -221,6 +221,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('pl'); return false;"><span class="flag">🇵🇱</span> Polski (PL)</a>
     <a href="#" onclick="PingCarLanguage.set('cs'); return false;"><span class="flag">🇨🇿</span> Čeština (CS)</a>
     <a href="#" onclick="PingCarLanguage.set('sw'); return false;"><span class="flag">🇰🇪</span> Kiswahili (SW)</a>
+    <a href="#" onclick="PingCarLanguage.set('ar'); return false;"><span class="flag">🇸🇦</span> العربية (AR)</a>
 
   </div>
 </div>
@@ -2711,6 +2712,118 @@ pl: {
 
   select_yearly: "Chagua usajili wa kila mwaka"
 },
+  ar: {
+
+  home: "الرئيسية",
+
+  qr: "QR",
+
+  contact: "تواصل معنا",
+
+  dashboard: "لوحة التحكم",
+
+  messages: "الرسائل",
+
+  title: "PingCar",
+
+  description: "طريقة آمنة للتواصل مع مالكي المركبات دون أرقام هواتف أو بيانات شخصية.",
+
+  available: "تسجيل مجاني",
+
+  how: "كيف يعمل PingCar",
+
+  afterScan: "بعد مسح الرمز",
+
+  register: "التسجيل",
+
+  registerText: "أنشئ حسابك المجاني على PingCar.",
+
+  getQr: "احصل على رمز QR",
+
+  getQrText: "ستحصل على رمز QR شخصي لمركبتك.",
+
+  placeQr: "ضع رمز QR",
+
+  placeQrText: "ضع رمز QR في مكان واضح على مركبتك.",
+
+  scanQr: "امسح رمز QR",
+
+  scanQrText: "يقوم شخص آخر بمسح رمز QR باستخدام هاتفه الذكي.",
+
+  notification: "رسالة",
+
+  notificationText: "ستتلقى إشعارًا فورًا عبر PingCar.",
+
+  blocked: "مركبتي تعيق المرور",
+
+  lights: "الأضواء مضاءة",
+
+  damaged: "مركبتي متضررة",
+
+  forgot: "نسي شخص ما شيئًا",
+
+  otherMessage: "رسالة أخرى",
+
+  noPhone: "بدون رقم هاتف",
+
+  noPersonalData: "بدون بيانات شخصية",
+
+  fastNotification: "إشعار سريع",
+
+  privacy: "الخصوصية",
+
+  discover: "اكتشف PingCar",
+
+  monthly: "اشتراك شهري",
+
+  yearly: "اشتراك سنوي",
+
+  premiumText: "جرّب جميع ميزات Premium مجانًا.",
+
+  perMonth: "شهريًا",
+
+  perYear: "سنويًا",
+
+  name: "اسمك",
+
+  email: "عنوان بريدك الإلكتروني",
+
+  password: "كلمة المرور",
+
+  login: "تسجيل الدخول",
+
+  forgotPassword: "هل نسيت كلمة المرور؟",
+
+  sendLink: "إرسال الرابط",
+
+  logout: "تسجيل الخروج",
+
+  contactTitle: "تواصل معنا",
+
+  footerText: "PingCar – الحل الآمن لمالكي المركبات.",
+
+  trial_heading: "🚀 جرّب مجانًا لمدة 7 أيام.",
+
+  trial_subheading: "جرّب جميع ميزات Premium مجانًا.",
+
+  now_new: "⭐ جديد الآن:",
+
+  trial_bullet_1: "جرّب مجانًا لمدة 7 أيام.",
+
+  trial_bullet_2: "لن تدفع أي شيء اليوم.",
+
+  trial_bullet_3: "يمكنك إلغاء الاشتراك في أي وقت.",
+
+  rights: "جميع الحقوق محفوظة.",
+
+  monthly_plan: "اشتراك شهري",
+
+  yearly_plan: "اشتراك سنوي",
+
+  select_monthly: "اختر الاشتراك الشهري",
+
+  select_yearly: "اختر الاشتراك السنوي"
+},
 };
 
 
@@ -2815,7 +2928,8 @@ const languageFlags = {
   el: "EL",
   pl: "PL",
   cs: "CS",
-  sw: "SW"
+  sw: "SW",
+  ar: "AR"
   
 };
 
@@ -2848,7 +2962,8 @@ const languageNames = {
   el: "EL",
   pl: "PL",
   cs: "CS",
-  sw: "SW"
+  sw: "SW",
+  ar: "AR"
 
   
   
@@ -2910,7 +3025,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Πώς λειτουργεί το PingCar")||
       text.includes("Jak działa PingCar")||
       text.includes("Jak PingCar funguje")||
-      text.includes("Jinsi PingCar inavyofanya kazi")
+      text.includes("Jinsi PingCar inavyofanya kazi")||
+      text.includes("كيف يعمل PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -2935,7 +3051,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Πώς λειτουργεί το PingCar")||
       text.includes("Jak działa PingCar")||
       text.includes("Jak PingCar funguje")||
-      text.includes("Jinsi PingCar inavyofanya kazi")
+      text.includes("Jinsi PingCar inavyofanya kazi")||
+      text.includes("كيف يعمل PingCar")
       
     ) {
       el.textContent = t.afterScan;
@@ -2956,7 +3073,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "Kontakt"||
       text === "Επικοινωνία"||
       text === "Kontakt"||
-      text === "Wasiliana"
+      text === "Wasiliana"||
+      text === "تواصل معنا"
       
       
     ) {
@@ -2983,7 +3101,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Εγγραφή"||
   text === "Rejestracja"||
   text === "Registrace"||
-  text === "Jisajili"
+  text === "Jisajili"||
+  text === "التسجيل"
     ) {
       el.textContent = t.register;
     }
@@ -3008,7 +3127,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Σύνδεση"||
   text === "Zaloguj się"||
   text === "Přihlásit se"||
-  text === "Ingia"
+  text === "Ingia"||
+  text === "تسجيل الدخول"
   
     ) {
       el.textContent = t.login;
@@ -3106,7 +3226,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Το όχημά μου εμποδίζει τη διέλευση")||
       text.includes("Mój pojazd blokuje przejazd")||
       text.includes("Moje vozidlo blokuje průjezd")||
-      text.includes("Gari langu linazuia njia")
+      text.includes("Gari langu linazuia njia")||
+      text.includes("مركبتي تعيق المرور")
     ) {
       el.textContent = t.blocked;
     }
@@ -3131,7 +3252,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Τα φώτα είναι αναμμένα")||
       text.includes("Światła są włączone")||
       text.includes("Světla jsou zapnutá")||
-      text.includes("Taa zimewashwa")
+      text.includes("Taa zimewashwa")||
+      text.includes("الأضواء مضاءة")
     ) {
       el.textContent = t.lights;
     }
@@ -3156,7 +3278,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Το όχημά μου έχει υποστεί ζημιά")||
       text.includes("Pojazd jest uszkodzony")||
       text.includes("Vozidlo je poškozené")||
-      text.includes("Gari limeharibika")
+      text.includes("Gari limeharibika")||
+      text.includes("مركبتي متضررة")
     ) {
       el.textContent = t.damaged;
     }
@@ -3181,7 +3304,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Ξεχάστηκε κάτι")||
       text.includes("Ktoś coś zostawił")||
       text.includes("Někdo něco zapomněl")||
-      text.includes("Mtu amesahau kitu")
+      text.includes("Mtu amesahau kitu")||
+      text.includes("نسي شخص ما شيئًا")
     ) {
       el.textContent = t.forgot;
     }
@@ -3206,7 +3330,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Άλλο μήνυμα")||
       text.includes("Inna wiadomość")||
       text.includes("Jiná zpráva")||
-      text.includes("Ujumbe mwingine")
+      text.includes("Ujumbe mwingine")||
+      text.includes("رسالة أخرى")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -3231,7 +3356,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Χωρίς αριθμό τηλεφώνου")||
       text.includes("Bez numeru telefonu")||
       text.includes("Bez telefonního čísla")||
-      text.includes("Bila nambari ya simu")
+      text.includes("Bila nambari ya simu")||
+      text.includes("بدون رقم هاتف")
     ) {
       el.textContent = t.noPhone;
     }
@@ -3256,7 +3382,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Χωρίς προσωπικά δεδομένα")||
       text.includes("Bez danych osobowych")||
       text.includes("Bez osobních údajů")||
-      text.includes("Bila taarifa binafsi")
+      text.includes("Bila taarifa binafsi")||
+      text.includes("بدون بيانات شخصية")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -3281,7 +3408,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Γρήγορη ειδοποίηση")||
       text.includes("Szybkie powiadomienie")||
       text.includes("Rychlé upozornění")||
-      text.includes("Arifa ya haraka")
+      text.includes("Arifa ya haraka")||
+      text.includes("إشعار سريع")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -3306,7 +3434,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Απόρρητο")||
       text.includes("Prywatność")||
       text.includes("Soukromí")||
-      text.includes("Faragha")
+      text.includes("Faragha")||
+      text.includes("الخصوصية")
     ) {
       el.textContent = t.privacy;
     }
@@ -3343,7 +3472,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Δοκιμάστε δωρεάν όλες τις Premium λειτουργίες."||
         text === "Wypróbuj wszystkie funkcje Premium za darmo."||
         text === "Vyzkoušejte všechny funkce Premium zdarma."||
-        text === "Jaribu vipengele vyote vya Premium bila malipo."
+        text === "Jaribu vipengele vyote vya Premium bila malipo."||
+        text === "جرّب جميع ميزات Premium مجانًا."
 
         ) {
       el.textContent = t.premiumText;
