@@ -96,6 +96,10 @@ export default {
   per_month: "por mês",
   per_year: "por ano",
   select_monthly: "Escolher plano mensal",
-  select_yearly: "Escolher plano anual"
+  select_yearly: "Escolher plano anual",
+  phonePrivate: "O seu número de telefone permanece privado.",
+personalDataPrivate: "O nome e os dados de contacto não são apresentados.",
+ownerNotified: "O proprietário do veículo é informado imediatamente.",
+privacyFocus: "Desenvolvido com foco na proteção de dados."
 
 };
