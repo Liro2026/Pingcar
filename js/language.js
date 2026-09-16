@@ -115,7 +115,7 @@
       localStorage.setItem("pingcar_language", language);
       window.PingCarLanguage.current = language;
 
-    set: async function (language) {
+ set: function (language) {
   if (!supportedLanguages.includes(language)) {
     console.warn("Unsupported PingCar language:", language);
     return;
@@ -124,7 +124,7 @@
   localStorage.setItem("pingcar_language", language);
   window.PingCarLanguage.current = language;
 
-  await loadLanguage(language);
+  loadLanguage(language);
 
   if (typeof window.setLanguage === "function") {
     window.setLanguage(language);
