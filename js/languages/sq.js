@@ -58,5 +58,9 @@ export default {
   per_month: "në muaj",
   per_year: "në vit",
   select_monthly: "Zgjidh abonimin muajor",
-  select_yearly: "Zgjidh abonimin vjetor"
+  select_yearly: "Zgjidh abonimin vjetor",
+  phonePrivate: "Numri juaj i telefonit mbetet privat.",
+personalDataPrivate: "Emri dhe të dhënat e kontaktit nuk shfaqen.",
+ownerNotified: "Pronari i automjetit njoftohet menjëherë.",
+privacyFocus: "Zhvilluar me fokus në mbrojtjen e të dhënave."
 };
