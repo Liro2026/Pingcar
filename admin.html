@@ -168,6 +168,7 @@ PingCar Administrator
 <a onclick="showPush()">🔔 Push-Benachrichtigungen</a>
 
 <a onclick="showStats()">📈 Statistik</a>
+<a onclick="showDailyVisitors()">🌍 Besucher nach Tagen</a>
 <a onclick="showSubscriptions()">💳 Abonnemente</a>
 <a onclick="showSupport()">💬 Meldungen / Support</a>
 <a onclick="showErrorLogs()">🛠️ Error Logs</a>
@@ -1361,6 +1362,138 @@ async function showStats() {
     
   }
 }
+async function showDailyVisitors() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🌍 Besucher nach Tagen</h2>
+
+      <p>
+        Jeder Tag wird separat angezeigt. Die Länder werden nach den
+        gespeicherten Seitenbesuchen dieses Tages gezählt.
+      </p>
+
+      <div id="dailyVisitorStats">
+        Wird geladen...
+      </div>
+    </div>
+  `;
+
+  try {
+
+    const allVisits = await loadAllVisits();
+
+    const dailyStats = {};
+
+    allVisits.forEach(visit => {
+
+      if (!visit.visited_at) return;
+
+      const date = new Date(visit.visited_at);
+
+      if (Number.isNaN(date.getTime())) return;
+
+      const dayKey =
+        date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+
+      if (!dailyStats[dayKey]) {
+        dailyStats[dayKey] = {
+          total: 0,
+          countries: {}
+        };
+      }
+
+      dailyStats[dayKey].total++;
+
+      const country = visit.country || "Unbekannt";
+
+      dailyStats[dayKey].countries[country] =
+        (dailyStats[dayKey].countries[country] || 0) + 1;
+    });
+
+    const days = Object.entries(dailyStats)
+      .sort((a, b) => b[0].localeCompare(a[0]));
+
+    const container =
+      document.getElementById("dailyVisitorStats");
+
+    if (!days.length) {
+      container.innerHTML =
+        "<p>Noch keine Besucher gespeichert.</p>";
+      return;
+    }
+
+    container.innerHTML = days.map(([day, stats]) => {
+
+      const [year, month, date] = day.split("-");
+
+      const formattedDate =
+        new Date(
+          Number(year),
+          Number(month) - 1,
+          Number(date)
+        ).toLocaleDateString("de-CH", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        });
+
+      const countries = Object.entries(stats.countries)
+        .sort((a, b) => b[1] - a[1])
+        .map(([country, count]) =>
+          `<p style="margin:6px 0;">
+            🌍 ${escapeAdminText(country)}:
+            <strong>${count}</strong>
+          </p>`
+        )
+        .join("");
+
+      return `
+        <div style="
+          padding:18px;
+          margin-bottom:15px;
+          background:#f8f9fa;
+          border:1px solid #ddd;
+          border-radius:10px;
+        ">
+
+          <h3 style="margin-bottom:10px;">
+            📅 ${formattedDate}
+          </h3>
+
+          <p style="margin-bottom:10px;">
+            <strong>${stats.total}</strong> Seitenbesuche
+          </p>
+
+          ${countries}
+
+        </div>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error(
+      "Besucher nach Tagen Fehler:",
+      error
+    );
+
+    document.getElementById(
+      "dailyVisitorStats"
+    ).innerHTML = `
+      <p style="color:red;">
+        ❌ Fehler beim Laden:
+        ${escapeAdminText(error.message)}
+      </p>
+    `;
+  }
+}
+
 async function showSupport() {
   const content = document.getElementById("content");
 
