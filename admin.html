@@ -536,9 +536,11 @@ async function showUsers() {
 
       const email = user.email || "-";
 
-      const status = user.email_confirmed_at
-        ? "Bestätigt"
-        : "Nicht bestätigt";
+     const status = user.banned_until
+  ? "Gesperrt"
+  : user.email_confirmed_at
+    ? "Bestätigt"
+    : "Nicht bestätigt";
 
    rows += `
   <tr>
