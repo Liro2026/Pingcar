@@ -403,7 +403,83 @@ async function showDashboard() {
     document.getElementById("uniqueVisitCount").textContent = "!";
   }
 }
+async function manageUser(userId, action) {
 
+  if (!(await requireAdmin())) return;
+
+  if (action === "delete") {
+    const confirmed = confirm(
+      "Möchtest du diesen Benutzer wirklich löschen?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  if (action === "block") {
+    const confirmed = confirm(
+      "Möchtest du diesen Benutzer wirklich blockieren?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  if (action === "unblock") {
+    const confirmed = confirm(
+      "Möchtest du diesen Benutzer wieder entsperren?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  try {
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      alert("Bitte zuerst als Administrator einloggen.");
+      return;
+    }
+
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action: action,
+          userId: userId
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Aktion konnte nicht ausgeführt werden."
+      );
+    }
+
+    alert(result.message || "Aktion erfolgreich.");
+
+    await showUsers();
+
+  } catch (error) {
+
+    console.error("manageUser error:", error);
+
+    alert(
+      error instanceof Error
+        ? error.message
+        : "Ein Fehler ist aufgetreten."
+    );
+  }
+}
 async function showUsers() {
 
   if (!(await requireAdmin())) return;
@@ -464,19 +540,34 @@ async function showUsers() {
         ? "Bestätigt"
         : "Nicht bestätigt";
 
-      rows += `
-        <tr>
-          <td>${name}</td>
-          <td>${email}</td>
-          <td>${status}</td>
-        </tr>
-      `;
+   rows += `
+  <tr>
+    <td>${name}</td>
+    <td>${email}</td>
+    <td>${status}</td>
+    <td>
+      ${
+        user.banned_until
+          ? `<button onclick="manageUser('${user.id}', 'unblock')">
+               🔓 Entsperren
+             </button>`
+          : `<button onclick="manageUser('${user.id}', 'block')">
+               🚫 Blockieren
+             </button>`
+      }
+
+      <button onclick="manageUser('${user.id}', 'delete')">
+        🗑️ Löschen
+      </button>
+    </td>
+  </tr>
+`;
     });
 
     if (!rows) {
       rows = `
         <tr>
-          <td colspan="3">Keine Benutzer gefunden.</td>
+          <td colspan="4">Keine Benutzer gefunden.</td>
         </tr>
       `;
     }
@@ -492,6 +583,7 @@ async function showUsers() {
             <th>Name</th>
             <th>E-Mail</th>
             <th>Status</th>
+            <th>Aktion</th>
           </tr>
 
           ${rows}
