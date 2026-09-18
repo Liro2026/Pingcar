@@ -224,6 +224,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('ar'); return false;"><span class="flag">🇸🇦</span> العربية (AR)</a>
     <a href="#" onclick="PingCarLanguage.set('zh'); return false;"><span class="flag">🇨🇳</span> 中文 (ZH)</a>
     <a href="#" onclick="PingCarLanguage.set('ja'); return false;"><span class="flag">🇯🇵</span> 日本語 (JA)</a>
+    <a href="#" onclick="PingCarLanguage.set('bg'); return false;"><span class="flag">🇧🇬</span> Български (BG)</a>
 
   </div>
 </div>
@@ -3050,6 +3051,118 @@ zh: {
 
   select_yearly: "年額サブスクリプションを選択"
 },
+  bg: {
+
+  home: "Начало",
+
+  qr: "QR",
+
+  contact: "Контакти",
+
+  dashboard: "Табло",
+
+  messages: "Съобщения",
+
+  title: "PingCar",
+
+  description: "Сигурен начин да се свържете със собственика на автомобил без телефонен номер или лична информация.",
+
+  available: "Безплатна регистрация",
+
+  how: "Как работи PingCar",
+
+  afterScan: "След сканиране на QR кода",
+
+  register: "Регистрация",
+
+  registerText: "Създайте безплатен акаунт в PingCar.",
+
+  getQr: "Получете QR код",
+
+  getQrText: "Ще получите QR код, предназначен специално за вашия автомобил.",
+
+  placeQr: "Поставете QR кода",
+
+  placeQrText: "Поставете QR кода на видно място върху автомобила.",
+
+  scanQr: "Сканирайте QR кода",
+
+  scanQrText: "Други хора могат да сканират QR кода със своя смартфон.",
+
+  notification: "Известие",
+
+  notificationText: "Ще получите незабавно известие чрез PingCar.",
+
+  blocked: "Автомобилът ми пречи на преминаването",
+
+  lights: "Светлините са включени",
+
+  damaged: "Автомобилът ми е повреден",
+
+  forgot: "Някой е забравил вещ",
+
+  otherMessage: "Друго съобщение",
+
+  noPhone: "Без телефонен номер",
+
+  noPersonalData: "Без лична информация",
+
+  fastNotification: "Бързо известяване",
+
+  privacy: "Защита на личните данни",
+
+  discover: "Разгледайте PingCar",
+
+  monthly: "Месечен абонамент",
+
+  yearly: "Годишен абонамент",
+
+  premiumText: "Изпробвайте всички Premium функции безплатно.",
+
+  perMonth: "На месец",
+
+  perYear: "На година",
+
+  name: "Вашето име",
+
+  email: "Вашият имейл адрес",
+
+  password: "Парола",
+
+  login: "Вход",
+
+  forgotPassword: "Забравили сте паролата си?",
+
+  sendLink: "Изпрати линк",
+
+  logout: "Изход",
+
+  contactTitle: "Свържете се с нас",
+
+  footerText: "PingCar – сигурно решение за контакт със собствениците на автомобили.",
+
+  trial_heading: "🚀 7 дни безплатен пробен период.",
+
+  trial_subheading: "Изпробвайте всички Premium функции безплатно.",
+
+  now_new: "⭐ Ново:",
+
+  trial_bullet_1: "7 дни безплатен пробен период.",
+
+  trial_bullet_2: "Днес не се изисква плащане.",
+
+  trial_bullet_3: "Можете да отмените по всяко време.",
+
+  rights: "Всички права запазени.",
+
+  monthly_plan: "Месечен абонамент",
+
+  yearly_plan: "Годишен абонамент",
+
+  select_monthly: "Изберете месечен абонамент",
+
+  select_yearly: "Изберете годишен абонамент"
+},
 };
 
 
@@ -3158,7 +3271,8 @@ const languageFlags = {
   sw: "SW",
   ar: "AR",
   zh: "ZH",
-  ja: "JA"
+  ja: "JA",
+  bg: "BG"
   
 };
 
@@ -3194,7 +3308,8 @@ const languageNames = {
   sw: "SW",
   ar: "AR",
   zh: "ZH",
-  ja: "JA"
+  ja: "JA",
+  bg: "BG"
 
   
   
@@ -3259,7 +3374,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Jinsi PingCar inavyofanya kazi")||
       text.includes("كيف يعمل PingCar")||
       text.includes("PingCar 如何运作")||
-      text.includes("PingCarの仕組み")
+      text.includes("PingCarの仕組み")||
+      text.includes("Как работи PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -3287,7 +3403,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Jinsi PingCar inavyofanya kazi")||
       text.includes("كيف يعمل PingCar")||
       text.includes("PingCar 如何运作")||
-      text.includes("PingCarの仕組み")
+      text.includes("PingCarの仕組み")||
+      text.includes("Как работи PingCar")
       
     ) {
       el.textContent = t.afterScan;
@@ -3311,7 +3428,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "Wasiliana"||
       text === "تواصل معنا"||
       text === "联系我们"||
-      text === "お問い合わせ"
+      text === "お問い合わせ"||
+      text === "Контакти"
       
       
     ) {
@@ -3341,7 +3459,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Jisajili"||
   text === "التسجيل"||
   text === "注册"||
-  text === "登録"
+  text === "登録"||
+  text === "Регистрация"
     ) {
       el.textContent = t.register;
     }
@@ -3369,7 +3488,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Ingia"||
   text === "تسجيل الدخول"||
   text === "登录"||
-  text === "ログイン"
+  text === "ログイン"||
+  text === "Вход"
   
     ) {
       el.textContent = t.login;
@@ -3470,7 +3590,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Gari langu linazuia njia")||
       text.includes("مركبتي تعيق المرور")||
       text.includes("我的车辆妨碍通行")||
-      text.includes("車が通行を妨げています")
+      text.includes("車が通行を妨げています")||
+      text.includes("Автомобилът ми пречи на преминаването")
 
 
     ) {
@@ -3500,7 +3621,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Taa zimewashwa")||
       text.includes("الأضواء مضاءة")||
       text.includes("车灯亮着")||
-      text.includes("ライトが点灯しています")
+      text.includes("ライトが点灯しています")||
+      text.includes("Светлините са включени")
     ) {
       el.textContent = t.lights;
     }
@@ -3528,7 +3650,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Gari limeharibika")||
       text.includes("مركبتي متضررة")||
       text.includes("我的车辆受损")||
-      text.includes("車が損傷しています")
+      text.includes("車が損傷しています")||
+      text.includes("Автомобилът ми е повреден")
     ) {
       el.textContent = t.damaged;
     }
@@ -3556,7 +3679,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Mtu amesahau kitu")||
       text.includes("نسي شخص ما شيئًا")||
       text.includes("有人遗忘了物品")||
-      text.includes("忘れ物があります")
+      text.includes("忘れ物があります")||
+      text.includes("Забравена вещ")
     ) {
       el.textContent = t.forgot;
     }
@@ -3584,7 +3708,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Ujumbe mwingine")||
       text.includes("رسالة أخرى")||
       text.includes("其他消息")||
-      text.includes("その他のメッセージ")
+      text.includes("その他のメッセージ")||
+      text.includes("Други съобщения")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -3612,7 +3737,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bila nambari ya simu")||
       text.includes("بدون رقم هاتف")||
       text.includes("无需电话号码")||
-      text.includes("電話番号不要")
+      text.includes("電話番号不要")||
+      text.includes("Без телефонен номер")
     ) {
       el.textContent = t.noPhone;
     }
@@ -3640,7 +3766,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Bila taarifa binafsi")||
       text.includes("بدون بيانات شخصية")||
       text.includes("无需个人信息")||
-      text.includes("個人情報不要")
+      text.includes("個人情報不要")||
+      text.includes("Без лична информация")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -3668,7 +3795,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Arifa ya haraka")||
       text.includes("إشعار سريع")||
       text.includes("快速通知")||
-      text.includes("迅速な通知")
+      text.includes("迅速な通知")||
+      text.includes("Бързо известяване")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -3696,7 +3824,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Faragha")||
       text.includes("الخصوصية")||
       text.includes("隐私保护")||
-      text.includes("プライバシー保護")
+      text.includes("プライバシー保護")||
+      text.includes("Защита на личните данни")
     ) {
       el.textContent = t.privacy;
     }
@@ -3736,7 +3865,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Jaribu vipengele vyote vya Premium bila malipo."||
         text === "جرّب جميع ميزات Premium مجانًا."||
         text === "免费体验所有 Premium 功能。"||
-        text === "すべてのPremium機能を無料でお試しいただけます。"
+        text === "すべてのPremium機能を無料でお試しいただけます。"||
+        text === "Изпробвайте всички Premium функции безплатно."
 
         ) {
       el.textContent = t.premiumText;
