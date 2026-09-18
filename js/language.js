@@ -4,7 +4,7 @@
 
   const supportedLanguages = [
     "de", "en", "fr", "it", "sq", "sr", "es", 
-    "tr", "sk", "hr", "hu", "pt", "mk", "nl","sv","ro", "el", "pl","cs","sw","ar","zh"
+    "tr", "sk", "hr", "hu", "pt", "mk", "nl","sv","ro", "el", "pl","cs","sw","ar","zh","ja"
   ];
 
   const defaultLanguage = "de";
@@ -25,7 +25,7 @@
     AL: "sq", XK: "sq",
     RS: "sr", ES: "es", TR: "tr", SK: "sk",
     HR: "hr", HU: "hu", PT: "pt", MK: "mk", NL: "nl", SV: "sv", RO: "ro", EL: "el", PL: "pl", CS: "cs",SW: "sw",AR: "ar",
-    ZH: "zh"
+    ZH: "zh", JA: "ja"
   };
 
   async function detectLanguageFromIP() {
