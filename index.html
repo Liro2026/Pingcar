@@ -618,11 +618,7 @@ if (!country) {
 }
 
 console.log("Detected country:", country);
-      console.log("Detected country:", country);
-    } catch (geoError) {
-      console.error("Country detection failed:", geoError);
-    }
-
+      
     const { error } = await supabase
       .from("page_visits")
       .insert([
