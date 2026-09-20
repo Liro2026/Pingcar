@@ -599,7 +599,7 @@ try {
 
   if (response.ok) {
     const geo = await response.json();
-    country = geo.country_name || null;
+    country = geo.country_code || null;
     console.log("Country detected by ipapi.co:", country);
   }
 } catch (geoError) {
@@ -615,7 +615,7 @@ if (!country) {
 
     if (response.ok) {
       const geo = await response.json();
-      country = geo.country || null;
+      country = geo.country_code || null;
       console.log("Country detected by ipwho.is:", country);
     }
   } catch (geoError) {
@@ -632,7 +632,7 @@ if (!country) {
 
     if (response.ok) {
       const geo = await response.json();
-      country = geo.location?.country || geo.country || null;
+      country = geo.location?.country_code || geo.country_code || null;
       console.log("Country detected by ipapi.is:", country);
     }
   } catch (geoError) {
