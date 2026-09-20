@@ -591,32 +591,56 @@ async function registerPageVisit() {
 
     let country = null;
 
+// 1. ipapi.co
 try {
-  const response = await fetch("https://ipapi.co/json/");
+  const response = await fetch("https://ipapi.co/json/", {
+    signal: AbortSignal.timeout(5000)
+  });
 
   if (response.ok) {
     const geo = await response.json();
     country = geo.country_name || null;
+    console.log("Country detected by ipapi.co:", country);
   }
-
 } catch (geoError) {
-  console.warn("Primary country detection failed:", geoError);
+  console.warn("ipapi.co failed:", geoError);
 }
 
+// 2. ipwho.is
 if (!country) {
-
   try {
-    const response = await fetch("https://ipwho.is/");
+    const response = await fetch("https://ipwho.is/", {
+      signal: AbortSignal.timeout(5000)
+    });
 
     if (response.ok) {
       const geo = await response.json();
       country = geo.country || null;
+      console.log("Country detected by ipwho.is:", country);
     }
-
   } catch (geoError) {
-    console.warn("Fallback country detection failed:", geoError);
+    console.warn("ipwho.is failed:", geoError);
   }
 }
+
+// 3. ipapi.is
+if (!country) {
+  try {
+    const response = await fetch("https://ipapi.is/json/", {
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (response.ok) {
+      const geo = await response.json();
+      country = geo.location?.country || geo.country || null;
+      console.log("Country detected by ipapi.is:", country);
+    }
+  } catch (geoError) {
+    console.warn("ipapi.is failed:", geoError);
+  }
+}
+
+console.log("Final detected country:", country);
 
 console.log("Detected country:", country);
       
