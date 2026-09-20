@@ -641,7 +641,9 @@ if (!country) {
 }
 
 console.log("Final detected country:", country);
-
+if (country) {
+  localStorage.setItem("pingcar_country", country);
+}
 console.log("Detected country:", country);
       
     const { error } = await supabase
@@ -714,14 +716,19 @@ async function enablePushNotifications() {
       return;
     }
 
-    const { error } = await supabase
-      .from("device_tokens")
-      .upsert({
-        user_id: user.id,
-        fcm_token: token
-      }, {
-        onConflict: "user_id"
-      });
+    const country = localStorage.getItem("pingcar_country") || null;
+
+console.log("Country for device token:", country);
+
+const { error } = await supabase
+  .from("device_tokens")
+  .upsert({
+    user_id: user.id,
+    fcm_token: token,
+    country: country
+  }, {
+    onConflict: "user_id"
+  });
 
     if (error) {
       console.error(error);
