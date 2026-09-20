@@ -759,7 +759,19 @@ async function enablePush() {
     const token = await getToken(messaging, {vapidKey: VAPID_KEY, serviceWorkerRegistration: registration});
     if (!token) throw new Error("Firebase hat keinen FCM Token zurückgegeben.");
 
-    const { error } = await supabase.from("device_tokens").upsert({user_id: currentUser.id, fcm_token: token}, {onConflict:"user_id"});
+    const country = localStorage.getItem("pingcar_country") || null;
+
+console.log("Country for dashboard device token:", country);
+
+const { error } = await supabase
+  .from("device_tokens")
+  .upsert({
+    user_id: currentUser.id,
+    fcm_token: token,
+    country: country
+  }, {
+    onConflict: "user_id"
+  });
     if (error) throw new Error("Token konnte nicht in Supabase gespeichert werden: " + error.message);
 
     console.log("PINGCAR DEVICE TOKEN:", token);
