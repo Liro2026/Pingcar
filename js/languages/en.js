@@ -61,5 +61,12 @@ export default {
   phonePrivate: "Your phone number remains private.",
 personalDataPrivate: "Name and contact details are not displayed.",
 ownerNotified: "The vehicle owner is informed immediately.",
-privacyFocus: "Developed with a focus on data protection."
+privacyFocus: "Developed with a focus on data protection.",
+  heroTitle: "🚗 Do you have a car? Then you need PingCar.",
+  heroSubtitle: "Stay reachable without publicly sharing your phone number.",
+  heroQr: "✅ QR code on the vehicle",
+  heroContact: "✅ Be contacted directly",
+  heroPrivacy: "✅ Your phone number stays private",
+  heroTrial: "🎁 7 days free trial",
+  heroRegister: "🚗 Register my vehicle now →"
 };
