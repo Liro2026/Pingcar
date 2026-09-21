@@ -711,100 +711,86 @@ async function sendMessage(){
       "messageInput"
     );
 
-  const message =
-    input.value.trim();
-  const blockedPatterns = [
-  /\bkill\s+(you|him|her|them)\b/i,
-  /\bgo\s+die\b/i,
-  /\bi\s+will\s+kill\b/i,
-  /\bthreaten\b/i,
-  /\bnazi\b/i,
-  /\bsex\b/i,
-  /\bporn\b/i,
-  /\bporno\b/i,
-  /\bvergewalt/i,
-  /\bhurensohn\b/i,
-  /\bscheiße\b/i,
-  /\bfick\b/i,
-  /\bputana\b/i,
-  /\bmerda\b/i,
-  /\bconnard\b/i,
-  /\bpute\b/i,
-  /\bkurva\b/i,
-  /\bjebem\b/i,
-  /\bpička\b/i,
-  /\bkurac\b/i,
-  /\bkurwa\b/i,
-  /\bszex\b/i,
-  /\bkurva\b/i
-];
-
-const containsBlockedContent =
-  blockedPatterns.some(
-    pattern => pattern.test(message)
-  );
-
-if(containsBlockedContent){
-
-  statusBox.textContent =
-    "Diese Nachricht enthält unzulässige Inhalte.";
-
-  statusBox.className =
-    "status error";
-
-  return;
-}
   const statusBox =
     document.getElementById(
       "status"
     );
+
   const message =
-  input.value.trim();
+    input.value.trim();
 
-const statusBox =
-  document.getElementById(
-    "status"
-  );
-
-const blockedPatterns = [
-  // ...
-];
-
-const containsBlockedContent =
-  blockedPatterns.some(
-    pattern => pattern.test(message)
-  );
-
-if(containsBlockedContent){
-
-  statusBox.textContent =
-    "Diese Nachricht enthält unzulässige Inhalte.";
-
-  statusBox.className =
-    "status error";
-
-  return;
-}
-
-if(!message){
-  return;
-}
   if(!message){
     return;
   }
-const termsCheckbox =
-  document.getElementById("termsCheckbox");
 
-if(!termsCheckbox.checked){
+  /* =========================
+     CONTENT FILTER
+  ========================= */
 
-  statusBox.textContent =
-    t.termsRequired;
+  const blockedPatterns = [
+    /\bkill\s+(you|him|her|them)\b/i,
+    /\bgo\s+die\b/i,
+    /\bi\s+will\s+kill\b/i,
+    /\bthreaten\b/i,
+    /\bnazi\b/i,
+    /\bporn\b/i,
+    /\bporno\b/i,
+    /\bvergewalt/i,
+    /\bhurensohn\b/i,
+    /\bscheiße\b/i,
+    /\bfick\b/i,
+    /\bputana\b/i,
+    /\bmerda\b/i,
+    /\bconnard\b/i,
+    /\bpute\b/i,
+    /\bkurva\b/i,
+    /\bjebem\b/i,
+    /\bpička\b/i,
+    /\bkurac\b/i,
+    /\bkurwa\b/i,
+    /\bszex\b/i
+  ];
 
-  statusBox.className =
-    "status error";
+  const containsBlockedContent =
+    blockedPatterns.some(
+      pattern => pattern.test(message)
+    );
 
-  return;
-}
+  if(containsBlockedContent){
+
+    statusBox.textContent =
+      "Diese Nachricht enthält unzulässige Inhalte.";
+
+    statusBox.className =
+      "status error";
+
+    return;
+  }
+
+  /* =========================
+     TERMS / EULA
+  ========================= */
+
+  const termsCheckbox =
+    document.getElementById(
+      "termsCheckbox"
+    );
+
+  if(!termsCheckbox.checked){
+
+    statusBox.textContent =
+      t.termsRequired;
+
+    statusBox.className =
+      "status error";
+
+    return;
+  }
+
+  /* =========================
+     CHECK PARAMETERS
+  ========================= */
+
   if(
     !conversationId ||
     !receiverId ||
@@ -820,6 +806,10 @@ if(!termsCheckbox.checked){
 
     return;
   }
+
+  /* =========================
+     SEND
+  ========================= */
 
   const button =
     document.getElementById(
@@ -893,8 +883,7 @@ if(!termsCheckbox.checked){
 
     await loadMessages();
 
-  }
-  catch(error){
+  } catch(error){
 
     console.error(error);
 
@@ -904,8 +893,7 @@ if(!termsCheckbox.checked){
     statusBox.className =
       "status error";
 
-  }
-  finally{
+  } finally {
 
     button.disabled = false;
 
