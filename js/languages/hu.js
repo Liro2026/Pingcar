@@ -60,6 +60,13 @@ export default {
   phonePrivate: "A telefonszáma privát marad.",
 personalDataPrivate: "A név és az elérhetőségek nem jelennek meg.",
 ownerNotified: "A jármű tulajdonosa azonnal értesítést kap.",
-privacyFocus: "Az adatvédelemre összpontosítva fejlesztve."
+privacyFocus: "Az adatvédelemre összpontosítva fejlesztve.",
+  heroTitle: "🚗 Van autója? Akkor szüksége van a PingCarra.",
+  heroSubtitle: "Legyen elérhető kapcsolatfelvételre anélkül, hogy nyilvánosan megosztaná telefonszámát.",
+  heroQr: "✅ QR-kód a járművön",
+  heroContact: "✅ Közvetlenül felvehetik Önnel a kapcsolatot",
+  heroPrivacy: "✅ Telefonszáma privát marad",
+  heroTrial: "🎁 7 napos ingyenes próba",
+  heroRegister: "🚗 Regisztrálja járművét most →"
 
 };
