@@ -60,5 +60,12 @@ export default {
   phonePrivate: "Telefon numaranız gizli kalır.",
 personalDataPrivate: "İsim ve iletişim bilgileri görüntülenmez.",
 ownerNotified: "Araç sahibi hemen bilgilendirilir.",
-privacyFocus: "Veri korumasına odaklanılarak geliştirilmiştir."
+privacyFocus: "Veri korumasına odaklanılarak geliştirilmiştir.",
+  heroTitle: "🚗 Arabanız var mı? O zaman PingCar'a ihtiyacınız var.",
+  heroSubtitle: "Telefon numaranızı herkese açık şekilde paylaşmadan ulaşılabilir olun.",
+  heroQr: "✅ Araç üzerindeki QR kod",
+  heroContact: "✅ Doğrudan sizinle iletişime geçilebilir",
+  heroPrivacy: "✅ Telefon numaranız gizli kalır",
+  heroTrial: "🎁 7 gün ücretsiz deneme",
+  heroRegister: "🚗 Aracımı şimdi kaydet →"
 };
