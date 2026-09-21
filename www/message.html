@@ -716,29 +716,65 @@ if(
   reportButton.style.background = "#ef5350";
 
   reportButton.addEventListener(
-    "click",
-    function(){
+  "click",
+  async function(){
 
-      const subject =
-        encodeURIComponent(
-          "PingCar Report - Inappropriate Message"
-        );
+    const { error } =
+      await supabase.rpc(
+        "report_pingcar_message",
+        {
+          p_conversation_id: conversationId,
+          p_reporter_id: activeSenderId,
+          p_reported_user_id: msg.sender_id,
+          p_message_id: msg.id
+            ? String(msg.id)
+            : null,
+          p_message_text: msg.message || ""
+        }
+      );
 
-      const body =
-        encodeURIComponent(
-          "I would like to report an inappropriate message on PingCar.\n\n" +
-          "Conversation ID: " + conversationId + "\n" +
-          "Sender ID: " + (msg.sender_id || "") + "\n\n" +
-          "Message:\n" +
-          (msg.message || "")
-        );
-      div.remove();
-      window.location.href =
-        "mailto:info@pingcar.ch" +
-        "?subject=" + subject +
-        "&body=" + body;
+    if(error){
+
+      console.error(
+        "Report error:",
+        error
+      );
+
+      alert(
+        "Der Bericht konnte nicht gesendet werden."
+      );
+
+      return;
     }
-  );
+
+    div.remove();
+
+    const subject =
+      encodeURIComponent(
+        "PingCar Report - Inappropriate Message"
+      );
+
+    const body =
+      encodeURIComponent(
+        "I would like to report an inappropriate message on PingCar.\n\n" +
+        "Conversation ID: " +
+        conversationId +
+        "\n" +
+        "Sender ID: " +
+        (msg.sender_id || "") +
+        "\n\n" +
+        "Message:\n" +
+        (msg.message || "")
+      );
+
+    window.location.href =
+      "mailto:info@pingcar.ch" +
+      "?subject=" +
+      subject +
+      "&body=" +
+      body;
+  }
+);
 
   div.appendChild(reportButton);
   const blockButton =
