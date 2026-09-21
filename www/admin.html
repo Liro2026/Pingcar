@@ -456,7 +456,94 @@ async function showUsers(){
 
   }
 }
+async function showReports(){
 
+  content.innerHTML = `
+    <div class="card">
+      <h2>🚨 Reports</h2>
+      <p>Reports werden geladen...</p>
+    </div>
+  `;
+
+  try {
+
+    const { data, error } = await db
+      .from("pingcar_reports")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if(error){
+      throw error;
+    }
+
+    const reports = data || [];
+
+    let rows = "";
+
+    reports.forEach(report => {
+
+      rows += `
+        <tr>
+          <td>${report.id || "-"}</td>
+          <td>${report.reporter_id || "-"}</td>
+          <td>${report.reported_user_id || "-"}</td>
+          <td>${report.message_text || "-"}</td>
+          <td>${report.created_at
+            ? new Date(report.created_at).toLocaleString()
+            : "-"
+          }</td>
+          <td>${report.action || "Offen"}</td>
+        </tr>
+      `;
+
+    });
+
+    if(!rows){
+      rows = `
+        <tr>
+          <td colspan="6">
+            Keine Reports gefunden.
+          </td>
+        </tr>
+      `;
+    }
+
+    content.innerHTML = `
+      <div class="card">
+
+        <h2>🚨 Reports</h2>
+
+        <table>
+
+          <tr>
+            <th>ID</th>
+            <th>Reporter</th>
+            <th>Gemeldeter Benutzer</th>
+            <th>Nachricht</th>
+            <th>Datum</th>
+            <th>Status</th>
+          </tr>
+
+          ${rows}
+
+        </table>
+
+      </div>
+    `;
+
+  } catch(error){
+
+    console.error("Reports Fehler:", error);
+
+    content.innerHTML = `
+      <div class="card">
+        <h2>🚨 Reports</h2>
+        <p>Fehler: ${error.message}</p>
+      </div>
+    `;
+
+  }
+}
 function showEmail(){
 
   content.innerHTML = `
