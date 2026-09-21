@@ -92,6 +92,13 @@ export default {
   phonePrivate: "Ditt telefonnummer förblir privat.",
 personalDataPrivate: "Namn och kontaktuppgifter visas inte.",
 ownerNotified: "Fordonsägaren informeras omedelbart.",
-privacyFocus: "Utvecklad med fokus på dataskydd."
+privacyFocus: "Utvecklad med fokus på dataskydd.",
+  heroTitle: "🚗 Har du en bil? Då behöver du PingCar.",
+  heroSubtitle: "Var tillgänglig för kontakt utan att dela ditt telefonnummer offentligt.",
+  heroQr: "✅ QR-kod på fordonet",
+  heroContact: "✅ Bli kontaktad direkt",
+  heroPrivacy: "✅ Ditt telefonnummer förblir privat",
+  heroTrial: "🎁 7 dagars gratis provperiod",
+  heroRegister: "🚗 Registrera mitt fordon nu →"
 
 };
