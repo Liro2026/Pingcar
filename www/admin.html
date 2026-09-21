@@ -456,6 +456,42 @@ async function showUsers(){
 
   }
 }
+async function resolveReport(reportId){
+
+  if(!confirm("Diesen Report wirklich entfernen und den Benutzer sperren?")){
+    return;
+  }
+
+  try{
+
+    const { error } = await db.rpc(
+      "admin_resolve_pingcar_report",
+      {
+        p_report_id: reportId
+      }
+    );
+
+    if(error){
+      throw error;
+    }
+
+    alert("✅ Report bearbeitet. Nachricht entfernt und Benutzer gesperrt.");
+
+    showReports();
+
+  }catch(error){
+
+    console.error("Resolve Report Fehler:", error);
+
+    alert(
+      "❌ Fehler: " +
+      (error.message || "Report konnte nicht bearbeitet werden.")
+    );
+
+  }
+}
+
+
 async function showReports(){
 
   content.innerHTML = `
@@ -465,12 +501,12 @@ async function showReports(){
     </div>
   `;
 
-  try {
+  try{
 
     const { data, error } = await db
       .from("pingcar_reports")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending:false });
 
     if(error){
       throw error;
@@ -482,30 +518,67 @@ async function showReports(){
 
     reports.forEach(report => {
 
+      const status =
+        report.action || "Offen";
+
+      const actionButton =
+        !report.action
+        ? `
+          <button
+            onclick="resolveReport(${report.id})"
+            style="
+              background:#d32f2f;
+              padding:8px 12px;
+              font-size:12px;
+              width:auto;
+              margin:0;
+            "
+          >
+            🗑️ Entfernen & sperren
+          </button>
+        `
+        : "✅ Bearbeitet";
+
       rows += `
         <tr>
+
           <td>${report.id || "-"}</td>
+
           <td>${report.reporter_id || "-"}</td>
+
           <td>${report.reported_user_id || "-"}</td>
+
           <td>${report.message_text || "-"}</td>
-          <td>${report.created_at
-            ? new Date(report.created_at).toLocaleString()
-            : "-"
-          }</td>
-          <td>${report.action || "Offen"}</td>
+
+          <td>
+            ${
+              report.created_at
+                ? new Date(
+                    report.created_at
+                  ).toLocaleString()
+                : "-"
+            }
+          </td>
+
+          <td>${status}</td>
+
+          <td>${actionButton}</td>
+
         </tr>
       `;
 
     });
 
     if(!rows){
+
       rows = `
         <tr>
-          <td colspan="6">
+          <td colspan="7">
             Keine Reports gefunden.
           </td>
         </tr>
       `;
+
     }
 
     content.innerHTML = `
@@ -522,6 +595,7 @@ async function showReports(){
             <th>Nachricht</th>
             <th>Datum</th>
             <th>Status</th>
+            <th>Aktion</th>
           </tr>
 
           ${rows}
@@ -531,18 +605,28 @@ async function showReports(){
       </div>
     `;
 
-  } catch(error){
+  }catch(error){
 
-    console.error("Reports Fehler:", error);
+    console.error(
+      "Reports Fehler:",
+      error
+    );
 
     content.innerHTML = `
       <div class="card">
+
         <h2>🚨 Reports</h2>
-        <p>Fehler: ${error.message}</p>
+
+        <p>
+          Fehler:
+          ${error.message}
+        </p>
+
       </div>
     `;
 
   }
+
 }
 function showEmail(){
 
