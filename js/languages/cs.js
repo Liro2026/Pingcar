@@ -92,6 +92,13 @@ export default {
   phonePrivate: "Vaše telefonní číslo zůstává soukromé.",
 personalDataPrivate: "Jméno a kontaktní údaje se nezobrazují.",
 ownerNotified: "Majitel vozidla je okamžitě informován.",
-privacyFocus: "Vyvinuto se zaměřením na ochranu osobních údajů."
+privacyFocus: "Vyvinuto se zaměřením na ochranu osobních údajů.",
+  heroTitle: "🚗 Máte auto? Pak potřebujete PingCar.",
+  heroSubtitle: "Buďte dostupní pro kontakt, aniž byste veřejně sdíleli své telefonní číslo.",
+  heroQr: "✅ QR kód na vozidle",
+  heroContact: "✅ Buďte kontaktováni přímo",
+  heroPrivacy: "✅ Vaše telefonní číslo zůstává soukromé",
+  heroTrial: "🎁 7 dní zdarma na vyzkoušení",
+  heroRegister: "🚗 Zaregistrovat své vozidlo →"
 
 };
