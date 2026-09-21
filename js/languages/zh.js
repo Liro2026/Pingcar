@@ -96,6 +96,13 @@ export default {
 
   ownerNotified: "车主将立即收到通知。",
 
-  privacyFocus: "专注于数据隐私设计。"
+  privacyFocus: "专注于数据隐私设计。",
+    heroTitle: "🚗 你有车吗？那么你需要 PingCar。",
+  heroSubtitle: "无需公开您的电话号码，也能让别人联系到您。",
+  heroQr: "✅ 车辆上的 QR 码",
+  heroContact: "✅ 可直接联系您",
+  heroPrivacy: "✅ 您的电话号码保持私密",
+  heroTrial: "🎁 7 天免费试用",
+  heroRegister: "🚗 立即注册我的车辆 →"
 
 };
