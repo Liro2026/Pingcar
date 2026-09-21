@@ -94,7 +94,7 @@ export default {
   per_year: "pro Jahr",
   select_monthly: "Monatsabo wählen",
   select_yearly: "Jahresabo wählen",
-    heroTitle: "🚗 Hast du ein Fahrzeug?<br>Dann brauchst du PingCar.",
+  heroTitle: "🚗 Hast du ein Fahrzeug? Dann brauchst du PingCar.",
   heroSubtitle: "Erreichbar sein, ohne deine Telefonnummer öffentlich zu teilen.",
   heroQr: "✅ QR-Code am Fahrzeug",
   heroContact: "✅ Direkt kontaktiert werden",
