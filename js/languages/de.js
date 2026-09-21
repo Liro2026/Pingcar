@@ -93,5 +93,12 @@ export default {
   per_month: "pro Monat",
   per_year: "pro Jahr",
   select_monthly: "Monatsabo wählen",
-  select_yearly: "Jahresabo wählen"
+  select_yearly: "Jahresabo wählen",
+    heroTitle: "🚗 Hast du ein Fahrzeug?<br>Dann brauchst du PingCar.",
+  heroSubtitle: "Erreichbar sein, ohne deine Telefonnummer öffentlich zu teilen.",
+  heroQr: "✅ QR-Code am Fahrzeug",
+  heroContact: "✅ Direkt kontaktiert werden",
+  heroPrivacy: "✅ Telefonnummer bleibt privat",
+  heroTrial: "🎁 7 Tage kostenlos testen",
+  heroRegister: "🚗 Jetzt mein Fahrzeug registrieren →"
 };
