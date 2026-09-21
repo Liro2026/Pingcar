@@ -518,8 +518,28 @@ async function showReports(){
 
     reports.forEach(report => {
 
+      const reportDate = report.created_at
+        ? new Date(report.created_at)
+        : null;
+
+      const deadlineDate = reportDate
+        ? new Date(
+            reportDate.getTime() +
+            24 * 60 * 60 * 1000
+          )
+        : null;
+
+      const overdue =
+        !report.action &&
+        deadlineDate &&
+        deadlineDate < new Date();
+
       const status =
-        report.action || "Offen";
+        report.action
+        ? "✅ Bearbeitet"
+        : overdue
+          ? "⚠️ Überfällig"
+          : "🟠 Offen";
 
       const actionButton =
         !report.action
@@ -560,6 +580,14 @@ async function showReports(){
             }
           </td>
 
+          <td>
+            ${
+              deadlineDate
+                ? deadlineDate.toLocaleString()
+                : "-"
+            }
+          </td>
+
           <td>${status}</td>
 
           <td>${actionButton}</td>
@@ -573,7 +601,7 @@ async function showReports(){
 
       rows = `
         <tr>
-          <td colspan="7">
+          <td colspan="8">
             Keine Reports gefunden.
           </td>
         </tr>
@@ -586,6 +614,10 @@ async function showReports(){
 
         <h2>🚨 Reports</h2>
 
+        <p style="margin-bottom:15px;">
+          ⚠️ Reports müssen innerhalb von 24 Stunden bearbeitet werden.
+        </p>
+
         <table>
 
           <tr>
@@ -593,7 +625,8 @@ async function showReports(){
             <th>Reporter</th>
             <th>Gemeldeter Benutzer</th>
             <th>Nachricht</th>
-            <th>Datum</th>
+            <th>Gemeldet am</th>
+            <th>24h-Frist</th>
             <th>Status</th>
             <th>Aktion</th>
           </tr>
