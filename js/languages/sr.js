@@ -60,5 +60,12 @@ export default {
   phonePrivate: "Vaš broj telefona ostaje privatan.",
 personalDataPrivate: "Ime i kontakt podaci nisu prikazani.",
 ownerNotified: "Vlasnik vozila je odmah obavešten.",
-privacyFocus: "Razvijeno sa fokusom na zaštitu podataka."
+privacyFocus: "Razvijeno sa fokusom na zaštitu podataka.",
+  heroTitle: "🚗 Imate automobil? Onda vam je potreban PingCar.",
+  heroSubtitle: "Budite dostupni za kontakt bez javnog deljenja svog broja telefona.",
+  heroQr: "✅ QR kod na vozilu",
+  heroContact: "✅ Budite direktno kontaktirani",
+  heroPrivacy: "✅ Vaš broj telefona ostaje privatan",
+  heroTrial: "🎁 7 dana besplatnog probnog perioda",
+  heroRegister: "🚗 Registrujte moje vozilo sada →"
 };
