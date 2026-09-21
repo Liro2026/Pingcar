@@ -92,6 +92,13 @@ export default {
   phonePrivate: "Numărul tău de telefon rămâne privat.",
 personalDataPrivate: "Numele și datele de contact nu sunt afișate.",
 ownerNotified: "Proprietarul vehiculului este informat imediat.",
-privacyFocus: "Dezvoltat cu accent pe protecția datelor."
+privacyFocus: "Dezvoltat cu accent pe protecția datelor.",
+  heroTitle: "🚗 Ai o mașină? Atunci ai nevoie de PingCar.",
+  heroSubtitle: "Rămâi disponibil pentru contact fără să îți distribui public numărul de telefon.",
+  heroQr: "✅ Cod QR pe vehicul",
+  heroContact: "✅ Fii contactat direct",
+  heroPrivacy: "✅ Numărul tău de telefon rămâne privat",
+  heroTrial: "🎁 7 zile de probă gratuită",
+  heroRegister: "🚗 Înregistrează-mi vehiculul acum →"
 
 };
