@@ -690,7 +690,48 @@ async function loadMessages(){
 
     div.appendChild(text);
     div.appendChild(time);
+    if(!isMine){
 
+  const reportButton =
+    document.createElement("button");
+
+  reportButton.textContent = "🚨 Report";
+
+  reportButton.type = "button";
+
+  reportButton.style.width = "auto";
+  reportButton.style.marginTop = "6px";
+  reportButton.style.padding = "6px 10px";
+  reportButton.style.fontSize = "12px";
+  reportButton.style.background = "#ef5350";
+
+  reportButton.addEventListener(
+    "click",
+    function(){
+
+      const subject =
+        encodeURIComponent(
+          "PingCar Report - Inappropriate Message"
+        );
+
+      const body =
+        encodeURIComponent(
+          "I would like to report an inappropriate message on PingCar.\n\n" +
+          "Conversation ID: " + conversationId + "\n" +
+          "Sender ID: " + (msg.sender_id || "") + "\n\n" +
+          "Message:\n" +
+          (msg.message || "")
+        );
+
+      window.location.href =
+        "mailto:info@pingcar.ch" +
+        "?subject=" + subject +
+        "&body=" + body;
+    }
+  );
+
+  div.appendChild(reportButton);
+}
     box.appendChild(div);
 
   });
