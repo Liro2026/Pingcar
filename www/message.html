@@ -654,7 +654,17 @@ async function loadMessages(){
   box.innerHTML = "";
 
   data.forEach(msg => {
+  const blockedUsers =
+  JSON.parse(
+    localStorage.getItem("pingcar_blocked_users") || "[]"
+  );
 
+if(
+  msg.sender_id &&
+  blockedUsers.includes(msg.sender_id)
+){
+  return;
+}
     const div =
       document.createElement("div");
 
@@ -731,6 +741,47 @@ async function loadMessages(){
   );
 
   div.appendChild(reportButton);
+  const blockButton =
+  document.createElement("button");
+
+blockButton.textContent = "🚫 Block";
+
+blockButton.type = "button";
+
+blockButton.style.width = "auto";
+blockButton.style.marginTop = "6px";
+blockButton.style.marginLeft = "6px";
+blockButton.style.padding = "6px 10px";
+blockButton.style.fontSize = "12px";
+blockButton.style.background = "#555";
+
+blockButton.addEventListener(
+  "click",
+  function(){
+
+    const blockedUsers =
+      JSON.parse(
+        localStorage.getItem("pingcar_blocked_users") || "[]"
+      );
+
+    if(
+      msg.sender_id &&
+      !blockedUsers.includes(msg.sender_id)
+    ){
+
+      blockedUsers.push(msg.sender_id);
+
+      localStorage.setItem(
+        "pingcar_blocked_users",
+        JSON.stringify(blockedUsers)
+      );
+    }
+
+    div.remove();
+  }
+);
+
+div.appendChild(blockButton);
 }
     box.appendChild(div);
 
