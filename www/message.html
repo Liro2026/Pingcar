@@ -119,6 +119,35 @@ button:disabled{
   font-size:14px;
   color:#666;
 }
+.terms-row{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:12px;
+  font-size:13px;
+  color:#555;
+}
+
+.terms-row input{
+  width:18px;
+  height:18px;
+  margin-top:2px;
+  flex:0 0 auto;
+}
+
+.terms-row label{
+  line-height:1.4;
+}
+
+.terms-row a{
+  color:#1877f2;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.terms-row a:hover{
+  text-decoration:underline;
+}
 
 .error{
   color:#c62828;
@@ -147,14 +176,26 @@ button:disabled{
 
   <div class="input-area">
 
-    <textarea
-      id="messageInput"
-      placeholder="Ihre Nachricht..."
-    ></textarea>
+  <textarea
+  id="messageInput"
+  placeholder="Ihre Nachricht..."
+></textarea>
 
-    <button id="sendButton">
-      Nachricht senden
-    </button>
+<div class="terms-row">
+  <input type="checkbox" id="termsCheckbox">
+
+  <label for="termsCheckbox" id="termsLabel">
+    Ich akzeptiere die
+    <a href="terms.html" target="_blank" rel="noopener">
+      Nutzungsbedingungen / EULA
+    </a>
+    und bestätige, dass ich keine beleidigenden oder unzulässigen Inhalte sende.
+  </label>
+</div>
+
+<button id="sendButton">
+  Nachricht senden
+</button>
 
     <div id="status" class="status"></div>
 
@@ -205,7 +246,9 @@ const translations = {
     limit:"Sie haben Ihr Limit von 5 Nachrichten innerhalb von 24 Stunden erreicht.",
     error:"Fehler",
     empty:"Noch keine Nachrichten.",
-    missing:"Chat-Parameter fehlen."
+    missing:"Chat-Parameter fehlen.",
+    terms:"Ich akzeptiere die Nutzungsbedingungen / EULA und bestätige, dass ich keine beleidigenden oder unzulässigen Inhalte sende.",
+termsRequired:"Bitte akzeptieren Sie die Nutzungsbedingungen / EULA."
   },
 
   fr:{
@@ -217,7 +260,9 @@ const translations = {
     limit:"Vous avez atteint votre limite de 5 messages en 24 heures.",
     error:"Erreur",
     empty:"Aucun message pour le moment.",
-    missing:"Paramètres du chat manquants."
+    missing:"Paramètres du chat manquants.",
+    terms:"J'accepte les conditions d'utilisation / EULA et je confirme que je n'enverrai pas de contenu abusif ou inapproprié.",
+termsRequired:"Veuillez accepter les conditions d'utilisation / EULA avant d'envoyer le message."
   },
 
   it:{
@@ -229,7 +274,9 @@ const translations = {
     limit:"Hai raggiunto il limite di 5 messaggi in 24 ore.",
     error:"Errore",
     empty:"Nessun messaggio.",
-    missing:"Parametri della chat mancanti."
+    missing:"Parametri della chat mancanti.",
+    terms:"Accetto i Termini di utilizzo / EULA e confermo che non invierò contenuti offensivi o inappropriati.",
+termsRequired:"Accetta i Termini di utilizzo / EULA prima di inviare il messaggio."
   },
 
   en:{
@@ -241,7 +288,9 @@ const translations = {
     limit:"You have reached your limit of 5 messages within 24 hours.",
     error:"Error",
     empty:"No messages yet.",
-    missing:"Chat parameters are missing."
+    missing:"Chat parameters are missing.",
+    terms:"I agree to the Terms of Use / EULA and confirm that I will not send abusive or objectionable content.",
+termsRequired:"Please accept the Terms of Use / EULA before sending."
   },
 
   sq:{
@@ -253,7 +302,9 @@ const translations = {
     limit:"Keni arritur kufirin prej 5 mesazhesh brenda 24 orëve.",
     error:"Gabim",
     empty:"Ende nuk ka mesazhe.",
-    missing:"Mungojnë parametrat e chat-it."
+    missing:"Mungojnë parametrat e chat-it.",
+    terms:"Pranoj Kushtet e Përdorimit / EULA dhe konfirmoj se nuk do të dërgoj përmbajtje abuzive ose të papërshtatshme.",
+termsRequired:"Ju lutemi pranoni Kushtet e Përdorimit / EULA para se ta dërgoni mesazhin."
   },
   
 sr:{
@@ -265,7 +316,9 @@ sr:{
   limit:"Dostigli ste ograničenje od 5 poruka u roku od 24 sata.",
   error:"Greška",
   empty:"Još nema poruka.",
-  missing:"Nedostaju parametri za chat."
+  missing:"Nedostaju parametri za chat.",
+  terms:"Prihvatam Uslove korišćenja / EULA i potvrđujem da neću slati uvredljiv ili neprikladan sadržaj.",
+termsRequired:"Molimo vas da prihvatite Uslove korišćenja / EULA pre slanja poruke."
 },
   es:{
   title:"PingCar Chat",
@@ -276,7 +329,9 @@ sr:{
   limit:"Ha alcanzado el límite de 5 mensajes en 24 horas.",
   error:"Error",
   empty:"Todavía no hay mensajes.",
-  missing:"Faltan los parámetros del chat."
+  missing:"Faltan los parámetros del chat.",
+  terms:"Acepto los Términos de uso / EULA y confirmo que no enviaré contenido abusivo o inapropiado.",
+termsRequired:"Acepta los Términos de uso / EULA antes de enviar el mensaje."
 },
   tr:{
     title:"PingCar Chat",
@@ -287,7 +342,9 @@ sr:{
     limit:"24 saat içinde 5 mesajlık sınırınıza ulaştınız.",
     error:"Hata",
     empty:"Henüz mesaj yok.",
-    missing:"Sohbet parametreleri eksik."
+    missing:"Sohbet parametreleri eksik.",
+    terms:"Kullanım Koşullarını / EULA'yı kabul ediyorum ve kötüye kullanım içeren veya uygunsuz içerik göndermeyeceğimi onaylıyorum.",
+termsRequired:"Mesaj göndermeden önce lütfen Kullanım Koşullarını / EULA'yı kabul edin."
 },
 sk: {
   title: "PingCar Chat",
@@ -298,7 +355,9 @@ sk: {
   limit: "Dosiahli ste limit 5 správ za 24 hodín.",
   error: "Chyba",
   empty: "Zatiaľ žiadne správy.",
-  missing: "Chýbajú parametre chatu."
+  missing: "Chýbajú parametre chatu.",
+  terms: "Súhlasím s Podmienkami používania / EULA a potvrdzujem, že nebudem odosielať urážlivý alebo nevhodný obsah.",
+termsRequired: "Pred odoslaním správy prijmite Podmienky používania / EULA."
 },
 hr: {
 
@@ -318,7 +377,9 @@ hr: {
 
   empty: "Još nema poruka.",
 
-  missing: "Nedostaju parametri chata."
+  missing: "Nedostaju parametri chata.",
+  terms: "Prihvaćam Uvjete korištenja / EULA i potvrđujem da neću slati uvredljiv ili neprikladan sadržaj.",
+termsRequired: "Molimo prihvatite Uvjete korištenja / EULA prije slanja poruke."
 
 },
 hu: {
@@ -339,7 +400,9 @@ hu: {
 
   empty: "Még nincsenek üzenetek.",
 
-  missing: "Hiányoznak a chat paraméterei."
+  missing: "Hiányoznak a chat paraméterei.",
+  terms: "Elfogadom a Felhasználási feltételeket / EULA-t, és megerősítem, hogy nem küldök sértő vagy nem megfelelő tartalmat.",
+termsRequired: "Kérjük, az üzenet elküldése előtt fogadja el a Felhasználási feltételeket / EULA-t."
 
 },
 pt: {
@@ -360,7 +423,9 @@ pt: {
 
   empty: "Ainda não existem mensagens.",
 
-  missing: "Faltam parâmetros do chat."
+  missing: "Faltam parâmetros do chat.",
+  terms: "Aceito os Termos de Utilização / EULA e confirmo que não enviarei conteúdo abusivo ou inadequado.",
+termsRequired: "Aceite os Termos de Utilização / EULA antes de enviar a mensagem."
 
 },
 mk: {
@@ -381,7 +446,9 @@ mk: {
 
   empty: "Сè уште нема пораки.",
 
-  missing: "Недостасуваат параметри за разговорот."
+  missing: "Недостасуваат параметри за разговорот.",
+  terms: "Ги прифаќам Условите за користење / EULA и потврдувам дека нема да испраќам навредлива или несоодветна содржина.",
+termsRequired: "Ве молиме прифатете ги Условите за користење / EULA пред да ја испратите пораката."
 
 },
 nl: {
@@ -402,7 +469,9 @@ nl: {
 
   empty: "Er zijn nog geen berichten.",
 
-  missing: "Gespreksparameters ontbreken."
+  missing: "Gespreksparameters ontbreken.",
+  terms: "Ik ga akkoord met de Gebruiksvoorwaarden / EULA en bevestig dat ik geen beledigende of ongepaste inhoud zal versturen.",
+termsRequired: "Accepteer de Gebruiksvoorwaarden / EULA voordat u het bericht verzendt."
 
 },
 };
@@ -440,7 +509,13 @@ document.title = t.title;
 document.getElementById(
   "chatTitle"
 ).textContent = t.title;
-
+document.getElementById(
+  "termsLabel"
+).innerHTML =
+  t.terms.replace(
+    "Nutzungsbedingungen / EULA",
+    '<a href="terms.html" target="_blank" rel="noopener">Nutzungsbedingungen / EULA</a>'
+  );
 document.getElementById(
   "messageInput"
 ).placeholder = t.placeholder;
@@ -647,7 +722,19 @@ async function sendMessage(){
   if(!message){
     return;
   }
+const termsCheckbox =
+  document.getElementById("termsCheckbox");
 
+if(!termsCheckbox.checked){
+
+  statusBox.textContent =
+    t.termsRequired;
+
+  statusBox.className =
+    "status error";
+
+  return;
+}
   if(
     !conversationId ||
     !receiverId ||
