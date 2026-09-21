@@ -92,6 +92,13 @@ export default {
   phonePrivate: "Twój numer telefonu pozostaje prywatny.",
 personalDataPrivate: "Imię i dane kontaktowe nie są wyświetlane.",
 ownerNotified: "Właściciel pojazdu jest natychmiast informowany.",
-privacyFocus: "Opracowano z naciskiem na ochronę danych."
+privacyFocus: "Opracowano z naciskiem na ochronę danych.",
+  heroTitle: "🚗 Masz samochód? W takim razie potrzebujesz PingCar.",
+  heroSubtitle: "Pozostań dostępny bez publicznego udostępniania swojego numeru telefonu.",
+  heroQr: "✅ Kod QR na pojeździe",
+  heroContact: "✅ Odbieraj bezpośredni kontakt",
+  heroPrivacy: "✅ Twój numer telefonu pozostaje prywatny",
+  heroTrial: "🎁 7 dni bezpłatnego okresu próbnego",
+  heroRegister: "🚗 Zarejestruj mój pojazd teraz →"
 
 };
