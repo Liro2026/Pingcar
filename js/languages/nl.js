@@ -104,6 +104,13 @@ export default {
   phonePrivate: "Uw telefoonnummer blijft privé.",
 personalDataPrivate: "Naam en contactgegevens worden niet weergegeven.",
 ownerNotified: "De voertuigeigenaar wordt onmiddellijk geïnformeerd.",
-privacyFocus: "Ontwikkeld met focus op gegevensbescherming."
+privacyFocus: "Ontwikkeld met focus op gegevensbescherming.",
+  heroTitle: "🚗 Heb je een auto? Dan heb je PingCar nodig.",
+  heroSubtitle: "Blijf bereikbaar zonder je telefoonnummer openbaar te delen.",
+  heroQr: "✅ QR-code op het voertuig",
+  heroContact: "✅ Rechtstreeks gecontacteerd worden",
+  heroPrivacy: "✅ Je telefoonnummer blijft privé",
+  heroTrial: "🎁 7 dagen gratis uitproberen",
+  heroRegister: "🚗 Registreer nu mijn voertuig →"
 
 };
