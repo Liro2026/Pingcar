@@ -1384,14 +1384,27 @@ async function showStats() {
 
     document.getElementById("statsUniqueVisitors").textContent =
       uniqueVisitors.size;
+    function normalizeCountry(country) {
+  const value = String(country || "").trim();
+
+  if (value.toLowerCase() === "switzerland") {
+    return "CH";
+  }
+
+  return value.toUpperCase();
+}
+
+
     const countryCounts = {};
 
-    allVisits.forEach(visit => {
-      if (visit.country) {
-        countryCounts[visit.country] =
-          (countryCounts[visit.country] || 0) + 1;
-      }
-    });
+  allVisits.forEach(visit => {
+  const country = normalizeCountry(visit.country);
+
+  if (country) {
+    countryCounts[country] =
+      (countryCounts[country] || 0) + 1;
+  }
+});
 
     console.log("Besucher nach Ländern:", countryCounts);
 
@@ -1405,7 +1418,7 @@ async function showStats() {
     const uniqueByCountry = {};
 
     allVisits.forEach(visit => {
-      const country = visit.country;
+      const country = normalizeCountry(visit.country);
       const visitorId = visit.visitor_id;
 
       if (!country || !visitorId) return;
