@@ -1514,7 +1514,7 @@ async function showDailyVisitors() {
 
       dailyStats[dayKey].total++;
 
-      const country = visit.country || "Unbekannt";
+     const country = normalizeCountry(visit.country) || "Unbekannt";
 
       dailyStats[dayKey].countries[country] =
         (dailyStats[dayKey].countries[country] || 0) + 1;
