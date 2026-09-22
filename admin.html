@@ -1384,15 +1384,7 @@ async function showStats() {
 
     document.getElementById("statsUniqueVisitors").textContent =
       uniqueVisitors.size;
-    function normalizeCountry(country) {
-  const value = String(country || "").trim();
-
-  if (value.toLowerCase() === "switzerland") {
-    return "CH";
-  }
-
-  return value.toUpperCase();
-}
+   
 
 
     const countryCounts = {};
@@ -1466,6 +1458,15 @@ async function showStats() {
   
     
   }
+}
+function normalizeCountry(country) {
+  const value = String(country || "").trim();
+
+  if (value.toLowerCase() === "switzerland") {
+    return "CH";
+  }
+
+  return value.toUpperCase();
 }
 async function showDailyVisitors() {
 
