@@ -671,6 +671,37 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+// PingCar Live Online - Website
+async function startWebsitePresence() {
+  try {
+    const onlineChannel = supabase.channel("pingcar-online", {
+      config: {
+        presence: {
+          key: "website-" + crypto.randomUUID()
+        }
+      }
+    });
+
+    onlineChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await onlineChannel.track({
+          platform: "website",
+          user_id: null,
+          email: null
+        });
+
+        console.log("PingCar Live Online: Website connected");
+      }
+    });
+
+    window.pingcarOnlineChannel = onlineChannel;
+
+  } catch (error) {
+    console.error("PingCar Live Online error:", error);
+  }
+}
+
+startWebsitePresence();
 async function registerPageVisit() {
   try {
     let visitorId = localStorage.getItem("pingcar_visitor_id");
