@@ -103,6 +103,9 @@ export default {
   heroContact: "✅ Бъдете директно потърсени",
   heroPrivacy: "✅ Телефонният ви номер остава личен",
   heroTrial: "🎁 7 дни безплатен пробен период",
-  heroRegister: "🚗 Регистрирайте автомобила си сега →"
+  heroRegister: "🚗 Регистрирайте автомобила си сега →",
+  first_year_offer: "29,90 CHF през първата година",
+  promo_code_text: "С код",
+  after_first_year: "След това 49,90 CHF годишно"
 
 };
