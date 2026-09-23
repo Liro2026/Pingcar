@@ -54,5 +54,8 @@ export default {
   heroContact: "✅ Du kan kontaktes direkte",
   heroPrivacy: "✅ Dit telefonnummer forbliver privat",
   heroTrial: "🎁 7 dages gratis prøveperiode",
-  heroRegister: "🚗 Registrer min bil →"
+  heroRegister: "🚗 Registrer min bil →",
+  first_year_offer: "29,90 CHF det første år",
+  promo_code_text: "Med koden",
+  after_first_year: "Derefter 49,90 CHF om året"
 };
