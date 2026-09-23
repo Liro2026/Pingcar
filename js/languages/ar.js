@@ -99,6 +99,9 @@ privacyFocus: "تم تطويره مع التركيز على حماية البي�
   heroContact: "✅ يمكن التواصل معك مباشرة",
   heroPrivacy: "✅ رقم هاتفك يبقى خاصًا",
   heroTrial: "🎁 تجربة مجانية لمدة 7 أيام",
-  heroRegister: "🚗 سجّل سيارتك الآن →"
+  heroRegister: "🚗 سجّل سيارتك الآن →",
+  first_year_offer: "29,90 CHF في السنة الأولى",
+promo_code_text: "باستخدام الرمز",
+after_first_year: "بعد ذلك 49,90 CHF سنويًا"
 
 };
