@@ -99,6 +99,9 @@ privacyFocus: "Utvecklad med fokus på dataskydd.",
   heroContact: "✅ Bli kontaktad direkt",
   heroPrivacy: "✅ Ditt telefonnummer förblir privat",
   heroTrial: "🎁 7 dagars gratis provperiod",
-  heroRegister: "🚗 Registrera mitt fordon nu →"
+  heroRegister: "🚗 Registrera mitt fordon nu →",
+  first_year_offer: "29,90 CHF första året",
+  promo_code_text: "Med koden",
+  after_first_year: "Därefter 49,90 CHF per år"
 
 };
