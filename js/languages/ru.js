@@ -54,5 +54,8 @@ export default {
   heroContact: "✅ С вами можно связаться напрямую",
   heroPrivacy: "✅ Ваш номер телефона остается конфиденциальным",
   heroTrial: "🎁 7 дней бесплатного пробного периода",
-  heroRegister: "🚗 Зарегистрировать мой автомобиль →"
+  heroRegister: "🚗 Зарегистрировать мой автомобиль →",
+  first_year_offer: "29,90 CHF в первый год",
+  promo_code_text: "С кодом",
+  after_first_year: "Затем 49,90 CHF в год"
 };
