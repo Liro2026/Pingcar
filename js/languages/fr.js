@@ -68,5 +68,8 @@ export default {
   heroContact: "✅ Être contacté directement",
   heroPrivacy: "✅ Votre numéro de téléphone reste privé",
   heroTrial: "🎁 7 jours d'essai gratuit",
-  heroRegister: "🚗 Enregistrer mon véhicule maintenant →"
+  heroRegister: "🚗 Enregistrer mon véhicule maintenant →",
+   first_year_offer: "29,90 CHF la première année",
+  promo_code_text: "Avec le code",
+  after_first_year: "Ensuite 49,90 CHF par an"
 };
