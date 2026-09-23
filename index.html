@@ -228,6 +228,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('ru'); return false;"><span class="flag">🇷🇺</span> Русский (RU)</a>
     <a href="#" onclick="PingCarLanguage.set('hi'); return false;"><span class="flag">🇮🇳</span> हिन्दी (HI)</a>
     <a href="#" onclick="PingCarLanguage.set('da'); return false;"><span class="flag">🇩🇰</span> Dansk (DA)</a>
+    <a href="#" onclick="PingCarLanguage.set('fi'); return false;"><span class="flag">🇫🇮</span> Suomi (FI)</a>
 
   </div>
 </div>
@@ -3502,6 +3503,63 @@ zh: {
   select_monthly: "Vælg månedligt abonnement",
   select_yearly: "Vælg årligt abonnement"
 },
+  fi: {
+  home: "Etusivu",
+  qr: "QR",
+  contact: "Yhteystiedot",
+  dashboard: "Hallintapaneeli",
+  messages: "Viestit",
+  title: "PingCar",
+  description: "Turvallinen tapa ottaa yhteyttä ajoneuvon omistajaan ilman puhelinnumeroa tai henkilötietoja.",
+  available: "Ilmainen rekisteröityminen",
+  how: "Näin PingCar toimii",
+  afterScan: "QR-koodin skannauksen jälkeen",
+  register: "Rekisteröityminen",
+  registerText: "Luo ilmainen tili PingCar-palveluun.",
+  getQr: "Hanki QR-koodi",
+  getQrText: "Saat erityisesti ajoneuvoosi yhdistetyn QR-koodin.",
+  placeQr: "Kiinnitä QR-koodi",
+  placeQrText: "Kiinnitä QR-koodi helposti näkyvään paikkaan ajoneuvossasi.",
+  scanQr: "Skannaa QR-koodi",
+  scanQrText: "Muut voivat skannata QR-koodin älypuhelimellaan.",
+  notification: "Ilmoitus",
+  notificationText: "Saat heti ilmoituksen PingCarin kautta.",
+  blocked: "Autoni tukkii tien",
+  lights: "Valot ovat päällä",
+  damaged: "Autoni on vaurioitunut",
+  forgot: "Joku on unohtanut jotain",
+  otherMessage: "Muu viesti",
+  noPhone: "Ilman puhelinnumeroa",
+  noPersonalData: "Ilman henkilötietoja",
+  fastNotification: "Nopea ilmoitus",
+  privacy: "Henkilötietojen suoja",
+  discover: "Lue lisää PingCarista",
+  monthly: "Kuukausitilaus",
+  yearly: "Vuosittainen tilaus",
+  premiumText: "Kokeile kaikkia Premium-ominaisuuksia ilmaiseksi.",
+  perMonth: "kuukaudessa",
+  perYear: "vuodessa",
+  name: "Nimesi",
+  email: "Sähköpostiosoitteesi",
+  password: "Salasana",
+  login: "Kirjaudu sisään",
+  forgotPassword: "Unohditko salasanasi?",
+  sendLink: "Lähetä linkki",
+  logout: "Kirjaudu ulos",
+  contactTitle: "Ota yhteyttä",
+  footerText: "PingCar – ratkaisu turvalliseen yhteydenpitoon ajoneuvojen omistajien kanssa.",
+  trial_heading: "🚀 7 päivän ilmainen kokeilujakso.",
+  trial_subheading: "Kokeile kaikkia Premium-ominaisuuksia ilmaiseksi.",
+  now_new: "⭐ Uutta:",
+  trial_bullet_1: "7 päivän ilmainen kokeilujakso.",
+  trial_bullet_2: "Maksua ei tarvita tänään.",
+  trial_bullet_3: "Voit peruuttaa tilauksen milloin tahansa.",
+  rights: "Kaikki oikeudet pidätetään.",
+  monthly_plan: "Kuukausitilaus",
+  yearly_plan: "Vuosittainen tilaus",
+  select_monthly: "Valitse kuukausitilaus",
+  select_yearly: "Valitse vuosittainen tilaus"
+},
 };
 
 
@@ -3614,7 +3672,8 @@ const languageFlags = {
   bg: "BG",
   ru: "RU",
   hi: "HI",
-  da: "DA"
+  da: "DA",
+  fi: "FI"
   
 };
 
@@ -3654,7 +3713,8 @@ const languageNames = {
   bg: "BG",
   ru: "RU",
   hi: "HI",
-  da: "DA"
+  da: "DA",
+  fi: "FI"
 
   
   
@@ -3723,7 +3783,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Как работи PingCar")||
       text.includes("Как работает PingCar")||
       text.includes("PingCar कैसे काम करता है")||
-      text.includes("Sådan fungerer PingCar")
+      text.includes("Sådan fungerer PingCar")||
+      text.includes("Näin PingCar toimii")
     ) {
       el.textContent = t.how;
     }
@@ -3755,7 +3816,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Как работи PingCar")||
       text.includes("Как работает PingCar")||
       text.includes("PingCar कैसे काम करता है")||
-      text.includes("Sådan fungerer PingCar")
+      text.includes("Sådan fungerer PingCar")||
+      text.includes("Näin PingCar toimii")
       
     ) {
       el.textContent = t.afterScan;
@@ -3783,7 +3845,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "Контакти"||
       text === "Контакты"||
       text === "संपर्क"||
-      text === "Kontakt"
+      text === "Kontakt"||
+      text === "Yhteystiedot"
       
       
     ) {
@@ -3817,7 +3880,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Регистрация"||
   text === "Регистрация"||
   text === "पंजीकरण"||
-  text === "Registrering"
+  text === "Registrering"||
+  text === "Rekisteröityminen"
     ) {
       el.textContent = t.register;
     }
@@ -3849,7 +3913,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Вход"||
   text === "Войти"||
   text === "लॉग इन करें"||
-  text === "Log ind"
+  text === "Log ind"||
+  text === "Kirjaudu sisään"
   
     ) {
       el.textContent = t.login;
@@ -3954,7 +4019,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Автомобилът ми пречи на преминаването")||
       text.includes("Моят автомобил пречи на преминаването")||
       text.includes("मेरी कार रास्ता रोक रही है")||
-      text.includes("Min bil blokerer vejen")
+      text.includes("Min bil blokerer vejen")||
+      text.includes("Autoni tukkii tien")
 
 
     ) {
@@ -3988,7 +4054,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Светлините са включени")||
       text.includes("Фары включены")||
       text.includes("लाइटें चालू हैं")||
-      text.includes("Lysene er tændt")
+      text.includes("Lysene er tændt")||
+      text.includes("Valot ovat päällä")
     ) {
       el.textContent = t.lights;
     }
@@ -4020,7 +4087,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Автомобилът ми е повреден")||
       text.includes("Мой автомобиль повреждён")||
       text.includes("मेरी कार क्षतिग्रस्त है")||
-      text.includes("Min bil er beskadiget")
+      text.includes("Min bil er beskadiget")||
+      text.includes("Autoni on vaurioitunut")
     ) {
       el.textContent = t.damaged;
     }
@@ -4052,7 +4120,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Забравена вещ")||
       text.includes("Забытая вещ")||
       text.includes("किसी ने कोई सामान भूल गया है")||
-      text.includes("Nogen har glemt noget")
+      text.includes("Nogen har glemt noget")||
+      text.includes("Joku on unohtanut jotain")
     ) {
       el.textContent = t.forgot;
     }
@@ -4084,7 +4153,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Други съобщения")||
       text.includes("Другие сообщения")||
       text.includes("अन्य संदेश")||
-      text.includes("Anden besked")
+      text.includes("Anden besked")||
+      text.includes("Muu viesti")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -4116,7 +4186,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Без телефонен номер")||
       text.includes("Без номера телефона")||
       text.includes("फ़ोन नंबर के बिना")||
-      text.includes("Uden telefonnummer")
+      text.includes("Uden telefonnummer")||
+      text.includes("Ilman puhelinnumeroa")
     ) {
       el.textContent = t.noPhone;
     }
@@ -4148,7 +4219,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Без лична информация")||
       text.includes("Без личной информации")||
       text.includes("बिना व्यक्तिगत जानकारी के")||
-      text.includes("Uden personlige oplysninger")
+      text.includes("Uden personlige oplysninger")||
+      text.includes("Ilman henkilötietoja")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -4180,7 +4252,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Бързо известяване")||
       text.includes("Быстрое уведомление")||
       text.includes("त्वरित सूचना")||
-      text.includes("Hurtig notifikation")
+      text.includes("Hurtig notifikation")||
+      text.includes("Nopea ilmoitus")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -4212,7 +4285,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Защита на личните данни")||
       text.includes("Защита персональных данных")||
       text.includes("व्यक्तिगत डेटा की सुरक्षा")||
-      text.includes("Beskyttelse af personlige oplysninger")
+      text.includes("Beskyttelse af personlige oplysninger")||
+      text.includes("Henkilötietojen suoja")
     ) {
       el.textContent = t.privacy;
     }
@@ -4256,7 +4330,8 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Изпробвайте всички Premium функции безплатно."||
         text === "Бесплатно опробуйте все функции Premium."||
         text === "सभी Premium सुविधाओं को निःशुल्क आज़माएँ।"||
-        text === "Prøv alle Premium-funktioner gratis."
+        text === "Prøv alle Premium-funktioner gratis."||
+        text === "Kokeile kaikkia Premium-ominaisuuksia ilmaiseksi."
 
         ) {
       el.textContent = t.premiumText;
