@@ -67,6 +67,9 @@ privacyFocus: "Az adatvédelemre összpontosítva fejlesztve.",
   heroContact: "✅ Közvetlenül felvehetik Önnel a kapcsolatot",
   heroPrivacy: "✅ Telefonszáma privát marad",
   heroTrial: "🎁 7 napos ingyenes próba",
-  heroRegister: "🚗 Regisztrálja járművét most →"
+  heroRegister: "🚗 Regisztrálja járművét most →",
+  first_year_offer: "29,90 CHF az első évben",
+  promo_code_text: "A kóddal",
+  after_first_year: "Utána 49,90 CHF évente"
 
 };
