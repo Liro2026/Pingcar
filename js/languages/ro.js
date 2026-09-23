@@ -99,6 +99,9 @@ privacyFocus: "Dezvoltat cu accent pe protecția datelor.",
   heroContact: "✅ Fii contactat direct",
   heroPrivacy: "✅ Numărul tău de telefon rămâne privat",
   heroTrial: "🎁 7 zile de probă gratuită",
-  heroRegister: "🚗 Înregistrează-mi vehiculul acum →"
+  heroRegister: "🚗 Înregistrează-mi vehiculul acum →",
+  first_year_offer: "29,90 CHF în primul an",
+  promo_code_text: "Cu codul",
+  after_first_year: "Apoi 49,90 CHF pe an"
 
 };
