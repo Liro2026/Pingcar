@@ -69,5 +69,8 @@ privacyFocus: "Zhvilluar me fokus në mbrojtjen e të dhënave.",
   heroContact: "✅ Mund të kontaktohesh direkt",
   heroPrivacy: "✅ Numri yt i telefonit mbetet privat",
   heroTrial: "🎁 7 ditë provë falas",
-  heroRegister: "🚗 Regjistro makinën time tani →"
+  heroRegister: "🚗 Regjistro makinën time tani →",
+  first_year_offer: "29,90 CHF vitin e parë",
+  promo_code_text: "Me kodin",
+  after_first_year: "Më pas 49,90 CHF në vit"
 };
