@@ -54,5 +54,8 @@ export default {
   heroContact: "✅ आपसे सीधे संपर्क किया जा सकता है",
   heroPrivacy: "✅ आपका फ़ोन नंबर गोपनीय रहता है",
   heroTrial: "🎁 7 दिनों का निःशुल्क परीक्षण",
-  heroRegister: "🚗 मेरी कार पंजीकृत करें →"
+  heroRegister: "🚗 मेरी कार पंजीकृत करें →",
+  first_year_offer: "पहले वर्ष 29,90 CHF",
+  promo_code_text: "कोड के साथ",
+  after_first_year: "इसके बाद 49,90 CHF प्रति वर्ष"
 };
