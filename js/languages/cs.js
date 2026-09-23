@@ -99,6 +99,9 @@ privacyFocus: "Vyvinuto se zaměřením na ochranu osobních údajů.",
   heroContact: "✅ Buďte kontaktováni přímo",
   heroPrivacy: "✅ Vaše telefonní číslo zůstává soukromé",
   heroTrial: "🎁 7 dní zdarma na vyzkoušení",
-  heroRegister: "🚗 Zaregistrovat své vozidlo →"
+  heroRegister: "🚗 Zaregistrovat své vozidlo →",
+  first_year_offer: "29,90 CHF v prvním roce",
+  promo_code_text: "S kódem",
+  after_first_year: "Poté 49,90 CHF ročně"
 
 };
