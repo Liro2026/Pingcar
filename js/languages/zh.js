@@ -103,6 +103,9 @@ export default {
   heroContact: "✅ 可直接联系您",
   heroPrivacy: "✅ 您的电话号码保持私密",
   heroTrial: "🎁 7 天免费试用",
-  heroRegister: "🚗 立即注册我的车辆 →"
+  heroRegister: "🚗 立即注册我的车辆 →",
+  first_year_offer: "第一年 29,90 CHF",
+  promo_code_text: "使用代码",
+  after_first_year: "之后每年 49,90 CHF"
 
 };
