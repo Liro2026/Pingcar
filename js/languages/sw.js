@@ -99,6 +99,9 @@ privacyFocus: "Imetengenezwa kwa kuzingatia ulinzi wa data.",
   heroContact: "✅ Wasiliana nawe moja kwa moja",
   heroPrivacy: "✅ Nambari yako ya simu inabaki kuwa ya faragha",
   heroTrial: "🎁 Jaribio la bure la siku 7",
-  heroRegister: "🚗 Sajili gari langu sasa →"
+  heroRegister: "🚗 Sajili gari langu sasa →",
+   first_year_offer: "29,90 CHF katika mwaka wa kwanza",
+  promo_code_text: "Kwa kutumia msimbo",
+  after_first_year: "Baada ya hapo 49,90 CHF kwa mwaka"
 
 };
