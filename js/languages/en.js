@@ -68,5 +68,8 @@ privacyFocus: "Developed with a focus on data protection.",
   heroContact: "✅ Be contacted directly",
   heroPrivacy: "✅ Your phone number stays private",
   heroTrial: "🎁 7 days free trial",
-  heroRegister: "🚗 Register my vehicle now →"
+  heroRegister: "🚗 Register my vehicle now →",
+  first_year_offer: "29.90 CHF in the first year",
+  promo_code_text: "With the code",
+  after_first_year: "Then 49.90 CHF per year"
 };
