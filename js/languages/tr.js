@@ -67,5 +67,8 @@ privacyFocus: "Veri korumasına odaklanılarak geliştirilmiştir.",
   heroContact: "✅ Doğrudan sizinle iletişime geçilebilir",
   heroPrivacy: "✅ Telefon numaranız gizli kalır",
   heroTrial: "🎁 7 gün ücretsiz deneme",
-  heroRegister: "🚗 Aracımı şimdi kaydet →"
+  heroRegister: "🚗 Aracımı şimdi kaydet →",
+  first_year_offer: "İlk yıl 29,90 CHF",
+  promo_code_text: "Kod ile",
+  after_first_year: "Sonrasında yıllık 49,90 CHF"
 };
