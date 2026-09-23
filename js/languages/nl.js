@@ -111,6 +111,9 @@ privacyFocus: "Ontwikkeld met focus op gegevensbescherming.",
   heroContact: "✅ Rechtstreeks gecontacteerd worden",
   heroPrivacy: "✅ Je telefoonnummer blijft privé",
   heroTrial: "🎁 7 dagen gratis uitproberen",
-  heroRegister: "🚗 Registreer nu mijn voertuig →"
+  heroRegister: "🚗 Registreer nu mijn voertuig →",
+  first_year_offer: "29,90 CHF in het eerste jaar",
+  promo_code_text: "Met de code",
+  after_first_year: "Daarna 49,90 CHF per jaar"
 
 };
