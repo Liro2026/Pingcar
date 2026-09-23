@@ -103,6 +103,9 @@ export default {
   heroContact: "✅ 直接連絡を受け取れます",
   heroPrivacy: "✅ 電話番号は非公開のまま",
   heroTrial: "🎁 7日間無料トライアル",
-  heroRegister: "🚗 今すぐ車両を登録 →"
+  heroRegister: "🚗 今すぐ車両を登録 →",
+  first_year_offer: "初年度 29,90 CHF",
+  promo_code_text: "コードを使用",
+  after_first_year: "2年目以降は年間49,90 CHF"
 
 };
