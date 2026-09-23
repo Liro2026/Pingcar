@@ -54,5 +54,8 @@ export default {
   heroContact: "✅ Sinuun voidaan ottaa suoraan yhteyttä",
   heroPrivacy: "✅ Puhelinnumerosi pysyy yksityisenä",
   heroTrial: "🎁 7 päivän ilmainen kokeilujakso",
-  heroRegister: "🚗 Rekisteröi autoni →"
+  heroRegister: "🚗 Rekisteröi autoni →",
+   first_year_offer: "29,90 CHF ensimmäisenä vuonna",
+  promo_code_text: "Koodilla",
+  after_first_year: "Sen jälkeen 49,90 CHF vuodessa"
 };
