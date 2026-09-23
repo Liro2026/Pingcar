@@ -100,5 +100,8 @@ export default {
   heroContact: "✅ Direkt kontaktiert werden",
   heroPrivacy: "✅ Telefonnummer bleibt privat",
   heroTrial: "🎁 7 Tage kostenlos testen",
-  heroRegister: "🚗 Jetzt mein Fahrzeug registrieren →"
+  heroRegister: "🚗 Jetzt mein Fahrzeug registrieren →",
+  first_year_offer: "29,90 CHF im 1. Jahr",
+  promo_code_text: "Mit dem Code",
+  after_first_year: "Danach 49,90 CHF pro Jahr"
 };
