@@ -1630,7 +1630,21 @@ async function showSupport() {
           <h3 id="support-unread" style="margin:5px 0; color:#856404;">0</h3>
         </div>
       </div>
-
+      <button
+  onclick="deleteReadSupportMessages()"
+  style="
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    margin:15px 0;
+  "
+>
+  🗑️ Gelesene löschen
+</button>
       <input
         id="support-search"
         type="text"
@@ -1860,7 +1874,30 @@ async function markSupportMessageRead(messageId) {
 
   }
 }
+async function deleteReadSupportMessages() {
+  if (!confirm("Alle gelesenen Nachrichten wirklich löschen?")) {
+    return;
+  }
 
+  try {
+    const { error } = await db
+      .from("messages")
+      .delete()
+      .eq("read", true);
+
+    if (error) {
+      console.error("Fehler beim Löschen:", error);
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await showSupport();
+
+  } catch (error) {
+    console.error("Fehler beim Löschen:", error);
+    alert("Fehler beim Löschen der gelesenen Nachrichten.");
+  }
+}
 
 async function replyToSupportMessage(
   messageId,
