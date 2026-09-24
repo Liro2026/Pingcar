@@ -3354,93 +3354,490 @@ function escapeGlobalSearchHtml(value) {
 }
 async function showSubscriptions() {
   const content = document.getElementById("content");
+
   content.innerHTML = `
     <div class="card">
-      <h2>💳 Abonnemente & Stripe</h2>
-      <div style="display: flex; gap: 15px; margin-top: 15px;">
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
+      <h2>💳 Abonnemente verwalten</h2>
+
+      <div style="display:flex; gap:15px; margin-top:15px; flex-wrap:wrap;">
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; flex:1; min-width:180px; text-align:center;">
           <small>Aktive Abos</small>
-          <h3 id="active-subs-count" style="margin: 5px 0; color: #28a745;">0</h3>
+          <h3 id="active-subs-count" style="margin:5px 0; color:#28a745;">0</h3>
         </div>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; text-align: center;">
+
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; flex:1; min-width:180px; text-align:center;">
           <small>MRR (Umsatz)</small>
-          <h3 id="mrr-amount" style="margin: 5px 0; color: #007bff;">CHF 0.00</h3>
+          <h3 id="mrr-amount" style="margin:5px 0; color:#007bff;">CHF 0.00</h3>
         </div>
       </div>
 
-      <h3 style="margin-top: 25px;">Abonnierte Benutzer</h3>
-      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-        <thead>
-          <tr style="text-align: left; border-bottom: 2px solid #ddd; padding-bottom: 8px;">
-            <th style="padding: 10px;">Benutzer</th>
-            <th style="padding: 10px;">Plan</th>
-            <th style="padding: 10px;">Status</th>
-            <th style="padding: 10px;">Ablaufdatum</th>
-          </tr>
-        </thead>
-        <tbody id="subs-table-body">
-          <tr>
-            <td colspan="4" style="padding: 10px; text-align: center; color: #666;">Daten werden geladen...</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- MANUELLES ABO ERSTELLEN -->
+      <div style="margin-top:25px; padding:20px; background:#f8f9fa; border-radius:10px;">
+        <h3 style="margin-top:0;">➕ Abonnement manuell erstellen</h3>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;">
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">E-Mail</label>
+            <input
+              id="new-sub-email"
+              type="email"
+              placeholder="kunde@example.com"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Plan</label>
+            <select
+              id="new-sub-plan"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+              <option value="Kostenloses Jahr">Kostenloses Jahr</option>
+              <option value="Jahresabo">Jahresabo</option>
+              <option value="Monatsabo">Monatsabo</option>
+              <option value="Pro">Pro</option>
+              <option value="Manuell">Manuell</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Betrag (CHF)</label>
+            <input
+              id="new-sub-amount"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Laufzeit</label>
+            <select
+              id="new-sub-duration"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+              <option value="1year">1 Jahr</option>
+              <option value="1month">1 Monat</option>
+              <option value="custom">Benutzerdefiniert</option>
+              <option value="unlimited">Unbefristet</option>
+            </select>
+          </div>
+
+          <div id="custom-expiry-wrapper" style="display:none;">
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Ablaufdatum</label>
+            <input
+              id="new-sub-expiry"
+              type="date"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+          </div>
+
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="display:block; margin-bottom:5px; font-weight:bold;">Notiz</label>
+          <input
+            id="new-sub-note"
+            type="text"
+            placeholder="z.B. Erste 50 Nutzer – 1 Jahr kostenlos"
+            style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+          >
+        </div>
+
+        <button
+          id="create-sub-btn"
+          style="margin-top:15px; background:#28a745; color:white; border:none; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:bold;"
+        >
+          ➕ Abonnement aktivieren
+        </button>
+
+        <div id="sub-create-message" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- SUCHE -->
+      <div style="margin-top:25px;">
+        <h3>🔎 Abonnements</h3>
+
+        <input
+          id="subs-search"
+          type="text"
+          placeholder="Nach E-Mail oder Plan suchen..."
+          style="width:100%; max-width:500px; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+        >
+      </div>
+
+      <!-- TABELLE -->
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; margin-top:15px; min-width:850px;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid #ddd;">
+              <th style="padding:10px;">Benutzer</th>
+              <th style="padding:10px;">Plan</th>
+              <th style="padding:10px;">Betrag</th>
+              <th style="padding:10px;">Status</th>
+              <th style="padding:10px;">Ablaufdatum</th>
+              <th style="padding:10px;">Erstellt</th>
+              <th style="padding:10px;">Aktionen</th>
+            </tr>
+          </thead>
+
+          <tbody id="subs-table-body">
+            <tr>
+              <td colspan="7" style="padding:15px; text-align:center; color:#666;">
+                Daten werden geladen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   `;
 
-  try {
-const client = db;
-    let { data: subs, error } = await client
-      .from('subscriptions')
-      .select('*')
-      .order('created_at', { ascending: false });
+  const client = db;
+  let allSubscriptions = [];
 
-    if (error) {
-      console.error("Supabase Error:", error);
-      subs = [];
+  // Laufzeit-Auswahl
+  const durationSelect = document.getElementById("new-sub-duration");
+  const customExpiryWrapper = document.getElementById("custom-expiry-wrapper");
+
+  durationSelect.addEventListener("change", () => {
+    customExpiryWrapper.style.display =
+      durationSelect.value === "custom" ? "block" : "none";
+  });
+
+  // Plan automatisch mit Betrag vorbelegen
+  const planSelect = document.getElementById("new-sub-plan");
+  const amountInput = document.getElementById("new-sub-amount");
+  const noteInput = document.getElementById("new-sub-note");
+
+  planSelect.addEventListener("change", () => {
+    const plan = planSelect.value;
+
+    if (plan === "Kostenloses Jahr") {
+      amountInput.value = "0";
+      durationSelect.value = "1year";
+      noteInput.value = "Erste 50 Nutzer – 1 Jahr kostenlos";
+      customExpiryWrapper.style.display = "none";
     }
 
-    const tbody = document.getElementById("subs-table-body");
-    
-    if (!subs || subs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="padding: 10px; text-align: center; color: #666;">Keine Abonnements vorhanden</td></tr>`;
-      document.getElementById("active-subs-count").textContent = "0";
-      document.getElementById("mrr-amount").textContent = "CHF 0.00";
+    if (plan === "Jahresabo") {
+      amountInput.value = "49.90";
+      durationSelect.value = "1year";
+      noteInput.value = "";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Monatsabo") {
+      amountInput.value = "4.90";
+      durationSelect.value = "1month";
+      noteInput.value = "";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Pro") {
+      amountInput.value = "4.90";
+      durationSelect.value = "1month";
+      noteInput.value = "";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Manuell") {
+      amountInput.value = "0";
+      noteInput.value = "";
+    }
+  });
+
+  // Neues Abo erstellen
+  document.getElementById("create-sub-btn").addEventListener("click", async () => {
+    const email = document.getElementById("new-sub-email").value.trim().toLowerCase();
+    const plan = document.getElementById("new-sub-plan").value;
+    const amount = Number(document.getElementById("new-sub-amount").value || 0);
+    const duration = document.getElementById("new-sub-duration").value;
+    const customExpiry = document.getElementById("new-sub-expiry").value;
+    const note = document.getElementById("new-sub-note").value.trim();
+    const message = document.getElementById("sub-create-message");
+    const button = document.getElementById("create-sub-btn");
+
+    message.innerHTML = "";
+
+    if (!email) {
+      message.innerHTML = `<span style="color:#dc3545;">Bitte E-Mail-Adresse eingeben.</span>`;
       return;
     }
 
-    let activeCount = 0;
-    let totalMRR = 0;
+    if (!email.includes("@")) {
+      message.innerHTML = `<span style="color:#dc3545;">Bitte eine gültige E-Mail-Adresse eingeben.</span>`;
+      return;
+    }
 
-    const rows = subs.map(sub => {
-      const isActive = sub.status === 'active';
-      if (isActive) {
-        activeCount++;
-        totalMRR += Number(sub.amount || 0);
+    if (duration === "custom" && !customExpiry) {
+      message.innerHTML = `<span style="color:#dc3545;">Bitte ein Ablaufdatum auswählen.</span>`;
+      return;
+    }
+
+    let expiresAt = null;
+
+    if (duration === "1year") {
+      const date = new Date();
+      date.setFullYear(date.getFullYear() + 1);
+      expiresAt = date.toISOString();
+    }
+
+    if (duration === "1month") {
+      const date = new Date();
+      date.setMonth(date.getMonth() + 1);
+      expiresAt = date.toISOString();
+    }
+
+    if (duration === "custom") {
+      const date = new Date(customExpiry + "T23:59:59");
+      expiresAt = date.toISOString();
+    }
+
+    if (duration === "unlimited") {
+      expiresAt = null;
+    }
+
+    button.disabled = true;
+    button.textContent = "⏳ Wird aktiviert...";
+
+    try {
+      const { error } = await client
+        .from("subscriptions")
+        .insert({
+          email: email,
+          status: "active",
+          plan_name: plan,
+          amount: amount,
+          expires_at: expiresAt
+        });
+
+      if (error) {
+        console.error("Create subscription error:", error);
+        message.innerHTML = `<span style="color:#dc3545;">Fehler: ${error.message}</span>`;
+      } else {
+        message.innerHTML = `<span style="color:#28a745; font-weight:bold;">✅ Abonnement erfolgreich aktiviert.</span>`;
+
+        document.getElementById("new-sub-email").value = "";
+        document.getElementById("new-sub-amount").value = "0";
+        document.getElementById("new-sub-plan").value = "Kostenloses Jahr";
+        document.getElementById("new-sub-duration").value = "1year";
+        document.getElementById("new-sub-expiry").value = "";
+        document.getElementById("new-sub-note").value = "";
+        customExpiryWrapper.style.display = "none";
+
+        await loadSubscriptions();
       }
+    } catch (err) {
+      console.error(err);
+      message.innerHTML = `<span style="color:#dc3545;">Unerwarteter Fehler.</span>`;
+    }
 
-      const expiryDate = sub.expires_at ? new Date(sub.expires_at).toLocaleDateString('de-CH') : 'Unbefristet';
+    button.disabled = false;
+    button.textContent = "➕ Abonnement aktivieren";
+  });
 
-      return `
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 10px;">${sub.email || 'Unbekannt'}</td>
-          <td style="padding: 10px;">${sub.plan_name || 'Pro'}</td>
-          <td style="padding: 10px;">
-            <span style="background: ${isActive ? '#d4edda' : '#f8d7da'}; color: ${isActive ? '#155724' : '#721c24'}; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
-              ${sub.status || 'inactive'}
-            </span>
+  async function loadSubscriptions() {
+    const tbody = document.getElementById("subs-table-body");
+
+    const { data: subs, error } = await client
+      .from("subscriptions")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase Error:", error);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="padding:15px; text-align:center; color:#dc3545;">
+            Fehler beim Laden: ${error.message}
           </td>
-          <td style="padding: 10px;">${expiryDate}</td>
         </tr>
       `;
-    }).join('');
+      return;
+    }
 
-    tbody.innerHTML = rows;
-    document.getElementById("active-subs-count").textContent = activeCount;
-    document.getElementById("mrr-amount").textContent = `CHF ${totalMRR.toFixed(2)}`;
-  } catch (err) {
-    console.error("JS Error:", err);
+    allSubscriptions = subs || [];
+    renderSubscriptions();
   }
+
+  function renderSubscriptions() {
+    const tbody = document.getElementById("subs-table-body");
+    const search = (document.getElementById("subs-search").value || "").toLowerCase();
+
+    const filtered = allSubscriptions.filter(sub => {
+      const email = String(sub.email || "").toLowerCase();
+      const plan = String(sub.plan_name || "").toLowerCase();
+      return email.includes(search) || plan.includes(search);
+    });
+
+    if (!filtered.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="padding:15px; text-align:center; color:#666;">
+            Keine Abonnements vorhanden
+          </td>
+        </tr>
+      `;
+    } else {
+      tbody.innerHTML = filtered.map(sub => {
+        const isActive = sub.status === "active";
+
+        const expiryDate = sub.expires_at
+          ? new Date(sub.expires_at).toLocaleDateString("de-CH")
+          : "Unbefristet";
+
+        const createdDate = sub.created_at
+          ? new Date(sub.created_at).toLocaleDateString("de-CH")
+          : "-";
+
+        const statusText = isActive ? "Aktiv" : "Inaktiv";
+
+        return `
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:10px;">
+              ${escapeGlobalSearchHtml(sub.email || "Unbekannt")}
+            </td>
+
+            <td style="padding:10px;">
+              ${escapeGlobalSearchHtml(sub.plan_name || "-")}
+            </td>
+
+            <td style="padding:10px;">
+              CHF ${Number(sub.amount || 0).toFixed(2)}
+            </td>
+
+            <td style="padding:10px;">
+              <span style="
+                background:${isActive ? "#d4edda" : "#f8d7da"};
+                color:${isActive ? "#155724" : "#721c24"};
+                padding:4px 8px;
+                border-radius:4px;
+                font-size:12px;
+                font-weight:bold;
+              ">
+                ${statusText}
+              </span>
+            </td>
+
+            <td style="padding:10px;">
+              ${expiryDate}
+            </td>
+
+            <td style="padding:10px;">
+              ${createdDate}
+            </td>
+
+            <td style="padding:10px; white-space:nowrap;">
+              ${
+                isActive
+                  ? `
+                    <button
+                      onclick="window.deactivateSubscription(${sub.id})"
+                      style="background:#ffc107; color:#212529; border:none; padding:7px 10px; border-radius:5px; cursor:pointer; margin-right:5px;"
+                    >
+                      ⏸ Deaktivieren
+                    </button>
+                  `
+                  : `
+                    <button
+                      onclick="window.activateSubscription(${sub.id})"
+                      style="background:#28a745; color:white; border:none; padding:7px 10px; border-radius:5px; cursor:pointer; margin-right:5px;"
+                    >
+                      ▶ Aktivieren
+                    </button>
+                  `
+              }
+
+              <button
+                onclick="window.deleteSubscription(${sub.id})"
+                style="background:#dc3545; color:white; border:none; padding:7px 10px; border-radius:5px; cursor:pointer;"
+              >
+                🗑 Löschen
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    const active = allSubscriptions.filter(sub => sub.status === "active");
+
+    document.getElementById("active-subs-count").textContent = active.length;
+
+    const mrr = active.reduce((total, sub) => {
+      return total + Number(sub.amount || 0);
+    }, 0);
+
+    document.getElementById("mrr-amount").textContent =
+      `CHF ${mrr.toFixed(2)}`;
+  }
+
+  document.getElementById("subs-search").addEventListener("input", renderSubscriptions);
+
+  // DEAKTIVIEREN
+  window.deactivateSubscription = async function(id) {
+    if (!confirm("Dieses Abonnement wirklich deaktivieren?")) {
+      return;
+    }
+
+    const { error } = await client
+      .from("subscriptions")
+      .update({ status: "inactive" })
+      .eq("id", id);
+
+    if (error) {
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await loadSubscriptions();
+  };
+
+  // AKTIVIEREN
+  window.activateSubscription = async function(id) {
+    if (!confirm("Dieses Abonnement wieder aktivieren?")) {
+      return;
+    }
+
+    const { error } = await client
+      .from("subscriptions")
+      .update({ status: "active" })
+      .eq("id", id);
+
+    if (error) {
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await loadSubscriptions();
+  };
+
+  // LÖSCHEN
+  window.deleteSubscription = async function(id) {
+    if (!confirm("ACHTUNG: Dieses Abonnement wirklich endgültig löschen?")) {
+      return;
+    }
+
+    const { error } = await client
+      .from("subscriptions")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await loadSubscriptions();
+  };
+
+  await loadSubscriptions();
 }
+
 
 requireAdmin().then(isAdmin => {
   if (isAdmin) showDashboard();
