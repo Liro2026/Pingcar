@@ -3841,24 +3841,82 @@ Dein PingCar Team
 
   document.getElementById("subs-search").addEventListener("input", renderSubscriptions);
 
-  // DEAKTIVIEREN
-  window.deactivateSubscription = async function(id) {
-    if (!confirm("Dieses Abonnement wirklich deaktivieren?")) {
-      return;
+// DEAKTIVIEREN
+window.deactivateSubscription = async function(id) {
+  if (!confirm("Dieses Abonnement wirklich deaktivieren?")) {
+    return;
+  }
+
+  // Abonnement zuerst laden
+  const { data: subscription, error: fetchError } = await client
+    .from("subscriptions")
+    .select("email, plan_name, amount, expires_at")
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !subscription) {
+    alert("Abonnement konnte nicht geladen werden.");
+    console.error(fetchError);
+    return;
+  }
+
+  // Abonnement deaktivieren
+  const { error } = await client
+    .from("subscriptions")
+    .update({ status: "inactive" })
+    .eq("id", id);
+
+  if (error) {
+    alert("Fehler: " + error.message);
+    return;
+  }
+
+  // 📧 E-Mail an den Benutzer senden
+  try {
+    const expiryText = subscription.expires_at
+      ? new Date(subscription.expires_at).toLocaleDateString("de-CH")
+      : "Unbefristet";
+
+    const emailMessage = `
+Hallo,
+
+dein PingCar Abonnement wurde deaktiviert.
+
+Plan: ${subscription.plan_name || "-"}
+Preis: CHF ${Number(subscription.amount || 0).toFixed(2)}
+Status: Inaktiv
+Gültig bis: ${expiryText}
+
+Wenn du PingCar wieder nutzen möchtest, kann dein Abonnement erneut aktiviert werden.
+
+Vielen Dank, dass du PingCar nutzt!
+
+Dein PingCar Team
+    `.trim();
+
+    const { data: emailData, error: emailError } =
+      await db.functions.invoke("send-email", {
+        body: {
+          to: subscription.email,
+          subject: "⚠️ Dein PingCar Abonnement wurde deaktiviert",
+          message: emailMessage
+        }
+      });
+
+    if (emailError || emailData?.error) {
+      console.error("E-Mail Fehler:", emailError || emailData?.error);
+      alert("Abonnement deaktiviert, aber die E-Mail konnte nicht gesendet werden.");
+    } else {
+      alert("✅ Abonnement deaktiviert & 📧 E-Mail gesendet.");
     }
 
-    const { error } = await client
-      .from("subscriptions")
-      .update({ status: "inactive" })
-      .eq("id", id);
+  } catch (emailErr) {
+    console.error("E-Mail Fehler:", emailErr);
+    alert("Abonnement deaktiviert, aber die E-Mail konnte nicht gesendet werden.");
+  }
 
-    if (error) {
-      alert("Fehler: " + error.message);
-      return;
-    }
-
-    await loadSubscriptions();
-  };
+  await loadSubscriptions();
+};
 
   // AKTIVIEREN
   window.activateSubscription = async function(id) {
