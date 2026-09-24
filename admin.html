@@ -1880,10 +1880,11 @@ async function deleteReadSupportMessages() {
   }
 
   try {
-    const { error } = await db
-      .from("messages")
-      .delete()
-      .eq("read", true);
+   const { data, error } = await db
+  .from("messages")
+  .delete()
+  .eq("read", true)
+  .select("id");
 
     if (error) {
       console.error("Fehler beim Löschen:", error);
