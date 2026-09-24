@@ -533,6 +533,14 @@ async function showUsers() {
         user.user_metadata?.full_name ||
         user.user_metadata?.name ||
         "-";
+      const meta = user.user_metadata || {};
+
+const countryCode = String(
+  meta.location_country_code || ""
+).toUpperCase();
+
+const country = meta.location_country || countryCode || "-";
+const ip = meta.location_ip || "-";
 
       const email = user.email || "-";
 
@@ -544,9 +552,11 @@ async function showUsers() {
 
    rows += `
   <tr>
-    <td>${name}</td>
-    <td>${email}</td>
-    <td>${status}</td>
+  <td>${name}</td>
+  <td>${email}</td>
+  <td>${country}</td>
+  <td>${ip}</td>
+  <td>${status}</td>
     <td>
       ${
         user.banned_until
@@ -582,10 +592,12 @@ async function showUsers() {
 
         <table>
           <tr>
-            <th>Name</th>
-            <th>E-Mail</th>
-            <th>Status</th>
-            <th>Aktion</th>
+           <th>Name</th>
+           <th>E-Mail</th>
+           <th>Country</th>
+           <th>IP-Adresse</th>
+           <th>Status</th>
+           <th>Aktion</th>
           </tr>
 
           ${rows}
