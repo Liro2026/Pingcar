@@ -700,6 +700,83 @@ if(
 
     div.appendChild(text);
     div.appendChild(time);
+
+    /* Apple Guideline 1.2:
+       allow the author to immediately remove their own message from the feed. */
+    if(isMine && msg.id){
+      const removeButton =
+        document.createElement("button");
+
+      const removeLabels = {
+        de:"Entfernen",
+        en:"Remove",
+        fr:"Supprimer",
+        it:"Rimuovi",
+        sq:"Hiq",
+        sr:"Ukloni",
+        es:"Eliminar",
+        tr:"Kaldır",
+        sk:"Odstrániť",
+        hr:"Ukloni",
+        hu:"Eltávolítás",
+        pt:"Remover",
+        mk:"Отстрани",
+        nl:"Verwijderen"
+      };
+
+      removeButton.textContent =
+        "🗑 " + (removeLabels[lang] || "Remove");
+
+      removeButton.type = "button";
+      removeButton.style.width = "auto";
+      removeButton.style.marginTop = "6px";
+      removeButton.style.padding = "6px 10px";
+      removeButton.style.fontSize = "12px";
+      removeButton.style.background = "#666";
+
+      removeButton.addEventListener("click", async function(){
+        const messageId = String(msg.id);
+
+        removeButton.disabled = true;
+
+        try{
+          const { data, error } =
+            await supabase.rpc(
+              "remove_pingcar_message",
+              {
+                p_message_id: messageId,
+                p_user_id: activeSenderId
+              }
+            );
+
+          if(error){
+            console.error("Remove message error:", error);
+            alert("Die Nachricht konnte nicht entfernt werden.");
+            removeButton.disabled = false;
+            return;
+          }
+
+          if(data !== true){
+            alert("Die Nachricht konnte nicht entfernt werden.");
+            removeButton.disabled = false;
+            return;
+          }
+
+          /* Remove immediately from the visible feed.
+             The database soft-delete also prevents it from returning
+             after refresh or on the other participant's feed. */
+          div.remove();
+
+        } catch(error){
+          console.error("Remove message error:", error);
+          alert("Die Nachricht konnte nicht entfernt werden.");
+          removeButton.disabled = false;
+        }
+      });
+
+      div.appendChild(removeButton);
+    }
+
     if(!isMine){
 
   const reportButton =
