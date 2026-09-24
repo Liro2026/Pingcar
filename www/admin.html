@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PingCar Administrator</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <style>
 
@@ -161,12 +162,25 @@ PingCar Administrator
 <a onclick="showDashboard()">📊 Dashboard</a>
 
 <a onclick="showUsers()">👥 Benutzer</a>
-<a onclick="showReports()">🚨 Reports</a>
+<a onclick="showUserVehicles()">👤🚗 Benutzer & Fahrzeuge</a>
 <a onclick="showEmail()">📧 E-Mail senden</a>
 
 <a onclick="showPush()">🔔 Push-Benachrichtigungen</a>
 
 <a onclick="showStats()">📈 Statistik</a>
+<a onclick="showDailyVisitors()">🌍 Besucher nach Tagen</a>
+<a onclick="showSubscriptions()">💳 Abonnemente</a>
+<a onclick="showSupport()">💬 Meldungen / Support</a>
+<a onclick="showReports()">🚨 Reports / Meldungen</a>
+<a onclick="showErrorLogs()">🛠️ Error Logs</a>
+<a onclick="showAdminAlerts()">🚨 Admin Alerts</a>
+<a onclick="showDevices()">📱 Geräte / Push Tokens</a>
+<a onclick="showOnline()">🟢 Live Online</a>
+<a onclick="showSystemStatus()">🔐 Sicherheit / Systemstatus</a>
+<a onclick="showActivityLog()">📋 Aktivitätsprotokoll</a>
+<a onclick="showGlobalSearch()">🔎 Globale Suche</a>
+<a onclick="showCompanies()">🏢 Firmenkunden</a>
+<a onclick="showConversionAnalytics()">📊 Conversion Analytics</a>
 
 </nav>
 
@@ -174,17 +188,77 @@ PingCar Administrator
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-console.log("Supabase u lidh me sukses!");
-const content=document.getElementById("content");
+const ADMIN_EMAIL = "lirim.salihu2017@gmail.com";
+const content = document.getElementById("content");
 
-async function showDashboard(){
+async function requireAdmin() {
+  const { data, error } = await db.auth.getSession();
+  const session = data?.session;
+
+  if (error || !session) {
+    content.innerHTML = `
+      <div class="card">
+        <h2>Zugriff verweigert</h2>
+        <p>Bitte zuerst als Administrator anmelden.</p>
+      </div>
+    `;
+    return false;
+  }
+
+  const email = (session.user?.email || "").toLowerCase();
+
+  if (email !== ADMIN_EMAIL.toLowerCase()) {
+    await db.auth.signOut();
+    content.innerHTML = `
+      <div class="card">
+        <h2>Zugriff verweigert</h2>
+        <p>Dieser Bereich ist nur für den Administrator verfügbar.</p>
+      </div>
+    `;
+    return false;
+  }
+
+  return true;
+}
+
+/*
+  Liest page_visits in Seiten von 1000 Datensätzen.
+  Damit wird nicht mehr nur das erste 1000er-Paket verwendet.
+*/
+async function loadAllVisits() {
+  const PAGE_SIZE = 1000;
+  const allVisits = [];
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await db
+      .from("page_visits")
+      .select("visitor_id, visited_at, country")
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    const rows = data || [];
+    allVisits.push(...rows);
+
+    if (rows.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
+  }
+
+  return allVisits;
+}
+
+async function showDashboard() {
+
+  if (!(await requireAdmin())) return;
 
   content.innerHTML = `
     <div class="statbox">
@@ -201,12 +275,12 @@ async function showDashboard(){
 
       <div class="stat">
         E-Mails
-        <h3 id="emailCount">...</h3>
+        <h3 id="emailCount">0</h3>
       </div>
 
       <div class="stat">
         Push
-        <h3 id="pushCount">...</h3>
+        <h3 id="pushCount">0</h3>
       </div>
 
       <div class="stat">
@@ -234,6 +308,7 @@ async function showDashboard(){
 
   try {
 
+    /* Benutzer */
     const { data: sessionData, error: sessionError } =
       await db.auth.getSession();
 
@@ -262,80 +337,60 @@ async function showDashboard(){
     document.getElementById("userCount").textContent =
       (result.users || []).length;
 
+    /* Fahrzeuge */
     const { count: vehicleCount, error: vehicleError } =
       await db
         .from("user_qr")
         .select("*", { count: "exact", head: true })
-      .eq("active", true);
+        .eq("active", true);
 
     if (vehicleError) {
       console.error("Fahrzeuge Fehler:", vehicleError);
       document.getElementById("vehicleCount").textContent = "0";
     } else {
       document.getElementById("vehicleCount").textContent =
-        vehicleCount || 0;
+        vehicleCount ?? 0;
     }
 
-    document.getElementById("emailCount").textContent = "0";
-    document.getElementById("pushCount").textContent = "0";
+    /* Alle Seitenbesuche */
+    const allVisits = await loadAllVisits();
 
+    document.getElementById("visitCount").textContent =
+      allVisits.length;
 
-    const { data: visits, error: visitsError } =
-      await db
-        .from("page_visits")
-        .select("visitor_id, visited_at");
+    /* Besuche heute */
+    const now = new Date();
 
-    if (visitsError) {
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
 
-      console.error("Besuche Fehler:", visitsError);
+    const todayEnd = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1
+    );
 
-      document.getElementById("visitCount").textContent = "0";
-      document.getElementById("todayVisitCount").textContent = "0";
-      document.getElementById("uniqueVisitCount").textContent = "0";
+    const todayVisits = allVisits.filter(visit => {
+      const visitDate = new Date(visit.visited_at);
+      return visitDate >= todayStart && visitDate < todayEnd;
+    });
 
-    } else {
+    document.getElementById("todayVisitCount").textContent =
+      todayVisits.length;
 
-      const allVisits = visits || [];
+    /* Einzigartige Besucher */
+    const uniqueVisitors = new Set(
+      allVisits
+        .map(visit => visit.visitor_id)
+        .filter(Boolean)
+    );
 
-      document.getElementById("visitCount").textContent =
-        allVisits.length;
-
-      const today = new Date();
-
-      const todayStart = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
-      const todayEnd = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() + 1
-      );
-
-      const todayVisits = allVisits.filter(visit => {
-
-        const visitDate = new Date(visit.visited_at);
-
-        return visitDate >= todayStart && visitDate < todayEnd;
-
-      });
-
-      document.getElementById("todayVisitCount").textContent =
-        todayVisits.length;
-
-      const uniqueVisitors = new Set(
-        allVisits
-          .map(visit => visit.visitor_id)
-          .filter(Boolean)
-      );
-
-      document.getElementById("uniqueVisitCount").textContent =
-        uniqueVisitors.size;
-    }
-
-
+    document.getElementById("uniqueVisitCount").textContent =
+      uniqueVisitors.size;
+  
   } catch (error) {
 
     console.error("Dashboard Fehler:", error);
@@ -344,13 +399,91 @@ async function showDashboard(){
     document.getElementById("vehicleCount").textContent = "!";
     document.getElementById("emailCount").textContent = "0";
     document.getElementById("pushCount").textContent = "0";
-    document.getElementById("visitCount").textContent = "0";
-    document.getElementById("todayVisitCount").textContent = "0";
-    document.getElementById("uniqueVisitCount").textContent = "0";
+    document.getElementById("visitCount").textContent = "!";
+    document.getElementById("todayVisitCount").textContent = "!";
+    document.getElementById("uniqueVisitCount").textContent = "!";
   }
 }
+async function manageUser(userId, action) {
 
-async function showUsers(){
+  if (!(await requireAdmin())) return;
+
+  if (action === "delete") {
+    const confirmed = confirm(
+      "Möchtest du diesen Benutzer wirklich löschen?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  if (action === "block") {
+    const confirmed = confirm(
+      "Möchtest du diesen Benutzer wirklich blockieren?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  if (action === "unblock") {
+    const confirmed = confirm(
+      "Möchtest du diesen Benutzer wieder entsperren?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  try {
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      alert("Bitte zuerst als Administrator einloggen.");
+      return;
+    }
+
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action: action,
+          userId: userId
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Aktion konnte nicht ausgeführt werden."
+      );
+    }
+
+    alert(result.message || "Aktion erfolgreich.");
+
+    await showUsers();
+
+  } catch (error) {
+
+    console.error("manageUser error:", error);
+
+    alert(
+      error instanceof Error
+        ? error.message
+        : "Ein Fehler ist aufgetreten."
+    );
+  }
+}
+async function showUsers() {
+
+  if (!(await requireAdmin())) return;
 
   content.innerHTML = `
     <div class="card">
@@ -393,7 +526,6 @@ async function showUsers(){
     }
 
     const users = result.users || [];
-
     let rows = "";
 
     users.forEach(user => {
@@ -402,26 +534,53 @@ async function showUsers(){
         user.user_metadata?.full_name ||
         user.user_metadata?.name ||
         "-";
+      const meta = user.user_metadata || {};
+
+const countryCode = String(
+  meta.location_country_code || ""
+).toUpperCase();
+
+const country = meta.location_country || countryCode || "-";
+const ip = meta.location_ip || "-";
 
       const email = user.email || "-";
 
-      const status = user.email_confirmed_at
-        ? "Bestätigt"
-        : "Nicht bestätigt";
+     const status = user.banned_until
+  ? "Gesperrt"
+  : user.email_confirmed_at
+    ? "Bestätigt"
+    : "Nicht bestätigt";
 
-      rows += `
-        <tr>
-          <td>${name}</td>
-          <td>${email}</td>
-          <td>${status}</td>
-        </tr>
-      `;
+   rows += `
+  <tr>
+  <td>${name}</td>
+  <td>${email}</td>
+  <td>${country}</td>
+  <td>${ip}</td>
+  <td>${status}</td>
+    <td>
+      ${
+        user.banned_until
+          ? `<button onclick="manageUser('${user.id}', 'unblock')">
+               🔓 Entsperren
+             </button>`
+          : `<button onclick="manageUser('${user.id}', 'block')">
+               🚫 Blockieren
+             </button>`
+      }
+
+      <button onclick="manageUser('${user.id}', 'delete')">
+        🗑️ Löschen
+      </button>
+    </td>
+  </tr>
+`;
     });
 
     if (!rows) {
       rows = `
         <tr>
-          <td colspan="3">Keine Benutzer gefunden.</td>
+          <td colspan="4">Keine Benutzer gefunden.</td>
         </tr>
       `;
     }
@@ -434,9 +593,12 @@ async function showUsers(){
 
         <table>
           <tr>
-            <th>Name</th>
-            <th>E-Mail</th>
-            <th>Status</th>
+           <th>Name</th>
+           <th>E-Mail</th>
+           <th>Country</th>
+           <th>IP-Adresse</th>
+           <th>Status</th>
+           <th>Aktion</th>
           </tr>
 
           ${rows}
@@ -453,239 +615,499 @@ async function showUsers(){
         <p>${error.message}</p>
       </div>
     `;
-
   }
 }
-async function resolveReport(reportId){
+async function showUserVehicles() {
 
-  if(!confirm("Diesen Report wirklich entfernen und den Benutzer sperren?")){
-    return;
-  }
-
-  try{
-
-    const { error } = await db.rpc(
-      "admin_resolve_pingcar_report",
-      {
-        p_report_id: reportId
-      }
-    );
-
-    if(error){
-      throw error;
-    }
-
-    alert("✅ Report bearbeitet. Nachricht entfernt und Benutzer gesperrt.");
-
-    showReports();
-
-  }catch(error){
-
-    console.error("Resolve Report Fehler:", error);
-
-    alert(
-      "❌ Fehler: " +
-      (error.message || "Report konnte nicht bearbeitet werden.")
-    );
-
-  }
-}
-
-
-async function showReports(){
+  if (!(await requireAdmin())) return;
 
   content.innerHTML = `
     <div class="card">
-      <h2>🚨 Reports</h2>
-      <p>Reports werden geladen...</p>
+      <h2>Benutzer & Fahrzeuge</h2>
+
+      <input
+        id="userVehicleSearch"
+        placeholder="Nach Name, E-Mail oder QR-Code suchen..."
+        oninput="filterUserVehicles()"
+      >
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>E-Mail Status</th>
+            <th>QR-Code</th>
+            <th>Fahrzeug Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="userVehicleRows">
+          <tr>
+            <td colspan="5">Daten werden geladen...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   `;
 
-  try{
+  try {
 
-    const { data, error } = await db
-      .from("pingcar_reports")
-      .select("*")
-      .order("created_at", { ascending:false });
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
 
-    if(error){
-      throw error;
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
     }
 
-    const reports = data || [];
+    /* Benutzer laden */
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Fehler beim Laden der Benutzer"
+      );
+    }
+
+    const users = result.users || [];
+
+    /* Fahrzeuge / QR laden */
+    const {
+      data: vehicles,
+      error: vehicleError
+    } = await db
+      .from("user_qr")
+      .select("*");
+
+    if (vehicleError) {
+      throw vehicleError;
+    }
+
+    const vehicleMap = new Map();
+
+    (vehicles || []).forEach(vehicle => {
+      vehicleMap.set(vehicle.user_id, vehicle);
+    });
 
     let rows = "";
 
-    reports.forEach(report => {
+    users.forEach(user => {
 
-      const reportDate = report.created_at
-        ? new Date(report.created_at)
-        : null;
+      const vehicle = vehicleMap.get(user.id);
 
-      const deadlineDate = reportDate
-        ? new Date(
-            reportDate.getTime() +
-            24 * 60 * 60 * 1000
-          )
-        : null;
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        "-";
 
-      const overdue =
-        !report.action &&
-        deadlineDate &&
-        deadlineDate < new Date();
+      const email = user.email || "-";
 
-      const status =
-        report.action
-        ? "✅ Bearbeitet"
-        : overdue
-          ? "⚠️ Überfällig"
-          : "🟠 Offen";
+      const emailStatus = user.email_confirmed_at
+        ? "Bestätigt"
+        : "Nicht bestätigt";
 
-      const actionButton =
-        !report.action
-        ? `
-          <button
-            onclick="resolveReport(${report.id})"
-            style="
-              background:#d32f2f;
-              padding:8px 12px;
-              font-size:12px;
-              width:auto;
-              margin:0;
-            "
-          >
-            🗑️ Entfernen & sperren
-          </button>
-        `
-        : "✅ Bearbeitet";
+      const qrCode = vehicle?.qr_code || "-";
+
+      const vehicleStatus = vehicle
+        ? (vehicle.active ? "Aktiv" : "Inaktiv")
+        : "Kein Fahrzeug";
 
       rows += `
         <tr>
-
-          <td>${report.id || "-"}</td>
-
-          <td>${report.reporter_id || "-"}</td>
-
-          <td>${report.reported_user_id || "-"}</td>
-
-          <td>${report.message_text || "-"}</td>
-
-          <td>
-            ${
-              report.created_at
-                ? new Date(
-                    report.created_at
-                  ).toLocaleString()
-                : "-"
-            }
-          </td>
-
-          <td>
-            ${
-              deadlineDate
-                ? deadlineDate.toLocaleString()
-                : "-"
-            }
-          </td>
-
-          <td>${status}</td>
-
-          <td>${actionButton}</td>
-
+          <td>${escapeAdminText(name)}</td>
+          <td>${escapeAdminText(email)}</td>
+          <td>${emailStatus}</td>
+          <td>${escapeAdminText(qrCode)}</td>
+          <td>${vehicleStatus}</td>
         </tr>
       `;
-
     });
 
-    if(!rows){
-
+    if (!rows) {
       rows = `
         <tr>
-          <td colspan="8">
-            Keine Reports gefunden.
+          <td colspan="5">Keine Benutzer gefunden.</td>
+        </tr>
+      `;
+    }
+
+    document.getElementById("userVehicleRows").innerHTML = rows;
+
+  } catch (error) {
+
+    console.error("Benutzer & Fahrzeuge Fehler:", error);
+
+    document.getElementById("userVehicleRows").innerHTML = `
+      <tr>
+        <td colspan="5">
+          Fehler: ${escapeAdminText(error.message)}
+        </td>
+      </tr>
+    `;
+  }
+}
+
+
+function filterUserVehicles() {
+
+  const search =
+    document
+      .getElementById("userVehicleSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const rows =
+    document.querySelectorAll("#userVehicleRows tr");
+
+  rows.forEach(row => {
+
+    const text =
+      row.textContent.toLowerCase();
+
+    row.style.display =
+      text.includes(search)
+        ? ""
+        : "none";
+  });
+}
+
+
+function escapeAdminText(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+async function showAdminAlerts() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🚨 Admin Alerts</h2>
+      <div id="adminAlertsStatus">Wird geladen...</div>
+    </div>
+  `;
+
+  try {
+    const { data, error } = await db
+      .from("error_logs")
+      .select("*");
+
+    if (error) throw error;
+
+    const errors = data || [];
+
+    const status = document.getElementById("adminAlertsStatus");
+
+    if (errors.length === 0) {
+      status.innerHTML = `
+        <p style="color:green;font-size:18px;">
+          🟢 System normal – keine Fehler vorhanden.
+        </p>
+      `;
+      return;
+    }
+
+    status.innerHTML = `
+      <p style="color:red;font-size:18px;">
+        🔴 ${errors.length} Fehler im System gefunden.
+      </p>
+
+      <p>
+        Bitte <strong>Error Logs</strong> öffnen, um die Details zu prüfen.
+      </p>
+
+      <button onclick="showErrorLogs()">
+        🛠️ Error Logs öffnen
+      </button>
+    `;
+  } catch (error) {
+    console.error("Admin Alerts Fehler:", error);
+
+    document.getElementById("adminAlertsStatus").innerHTML = `
+      <p style="color:red;font-size:18px;">
+        ❌ Admin Alerts konnten nicht geladen werden.
+      </p>
+    `;
+  }
+}
+async function showConversionAnalytics() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>📊 Conversion Analytics</h2>
+      <p>Wie viele Besucher zu registrierten Benutzern und Premium-Kunden werden.</p>
+
+      <div class="statbox">
+        <div class="stat">
+          Unique Besucher
+          <h3 id="conversionVisitors">...</h3>
+        </div>
+
+        <div class="stat">
+          Registrierte Benutzer
+          <h3 id="conversionUsers">...</h3>
+        </div>
+
+        <div class="stat">
+          Premium Benutzer
+          <h3 id="conversionPremium">...</h3>
+        </div>
+      </div>
+
+      <div style="margin-top:25px;">
+        <p>
+          Besucher → Registrierung:
+          <strong id="visitorToUser">...</strong>
+        </p>
+
+        <p>
+          Registrierung → Premium:
+          <strong id="userToPremium">...</strong>
+        </p>
+
+        <p>
+          Besucher → Premium:
+          <strong id="visitorToPremium">...</strong>
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    const allVisits = await loadAllVisits();
+
+    const uniqueVisitors = new Set(
+      allVisits
+        .map(visit => visit.visitor_id)
+        .filter(Boolean)
+    ).size;
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      throw new Error("Keine aktive Admin-Sitzung.");
+    }
+
+    const usersResponse = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        headers: {
+          "Authorization": "Bearer " + accessToken
+        }
+      }
+    );
+
+    if (!usersResponse.ok) {
+      throw new Error("Benutzer konnten nicht geladen werden.");
+    }
+
+    const usersResult = await usersResponse.json();
+
+    const users = Array.isArray(usersResult)
+      ? usersResult
+      : (usersResult.users || usersResult.data || []);
+
+    const registeredUsers = users.length;
+
+    const { data: subscriptions, error: subscriptionError } =
+      await db
+        .from("subscriptions")
+        .select("status");
+
+    if (subscriptionError) throw subscriptionError;
+
+    const premiumUsers = (subscriptions || []).filter(
+      subscription =>
+        String(subscription.status || "").toLowerCase() === "active"
+    ).length;
+
+    const visitorToUser =
+      uniqueVisitors > 0
+        ? ((registeredUsers / uniqueVisitors) * 100).toFixed(1)
+        : "0.0";
+
+    const userToPremium =
+      registeredUsers > 0
+        ? ((premiumUsers / registeredUsers) * 100).toFixed(1)
+        : "0.0";
+
+    const visitorToPremium =
+      uniqueVisitors > 0
+        ? ((premiumUsers / uniqueVisitors) * 100).toFixed(1)
+        : "0.0";
+
+    document.getElementById("conversionVisitors").textContent =
+      uniqueVisitors;
+
+    document.getElementById("conversionUsers").textContent =
+      registeredUsers;
+
+    document.getElementById("conversionPremium").textContent =
+      premiumUsers;
+
+    document.getElementById("visitorToUser").textContent =
+      visitorToUser + "%";
+
+    document.getElementById("userToPremium").textContent =
+      userToPremium + "%";
+
+    document.getElementById("visitorToPremium").textContent =
+      visitorToPremium + "%";
+
+  } catch (error) {
+    console.error("Conversion Analytics Fehler:", error);
+
+    document.getElementById("conversionVisitors").textContent = "!";
+    document.getElementById("conversionUsers").textContent = "!";
+    document.getElementById("conversionPremium").textContent = "!";
+    document.getElementById("visitorToUser").textContent = "!";
+    document.getElementById("userToPremium").textContent = "!";
+    document.getElementById("visitorToPremium").textContent = "!";
+  }
+}
+async function showErrorLogs() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🛠️ Error Logs</h2>
+
+      <button onclick="showErrorLogs()">
+        🔄 Aktualisieren
+      </button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Schweregrad</th>
+            <th>Quelle</th>
+            <th>Fehler</th>
+            <th>Seite</th>
+          </tr>
+        </thead>
+
+        <tbody id="errorLogRows">
+          <tr>
+            <td colspan="5">Fehler werden geladen...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  try {
+
+    const { data, error } = await db
+      .from("error_logs")
+      .select("id, created_at, severity, source, message, page_url")
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    if (error) {
+      throw error;
+    }
+
+    const rows = data || [];
+
+    if (!rows.length) {
+      document.getElementById("errorLogRows").innerHTML = `
+        <tr>
+          <td colspan="5">
+            ✅ Keine Fehler gespeichert.
           </td>
         </tr>
       `;
-
+      return;
     }
 
-    content.innerHTML = `
-      <div class="card">
+    document.getElementById("errorLogRows").innerHTML =
+      rows.map(log => `
+        <tr>
+          <td>${escapeAdminText(
+            new Date(log.created_at).toLocaleString("de-CH")
+          )}</td>
 
-        <h2>🚨 Reports</h2>
+          <td>${escapeAdminText(log.severity)}</td>
 
-        <p style="margin-bottom:15px;">
-          ⚠️ Reports müssen innerhalb von 24 Stunden bearbeitet werden.
-        </p>
+          <td>${escapeAdminText(log.source || "-")}</td>
 
-        <table>
+          <td>${escapeAdminText(log.message)}</td>
 
-          <tr>
-            <th>ID</th>
-            <th>Reporter</th>
-            <th>Gemeldeter Benutzer</th>
-            <th>Nachricht</th>
-            <th>Gemeldet am</th>
-            <th>24h-Frist</th>
-            <th>Status</th>
-            <th>Aktion</th>
-          </tr>
+          <td>${escapeAdminText(log.page_url || "-")}</td>
+        </tr>
+      `).join("");
 
-          ${rows}
+  } catch (error) {
 
-        </table>
+    console.error("Error Logs Fehler:", error);
 
-      </div>
+    document.getElementById("errorLogRows").innerHTML = `
+      <tr>
+        <td colspan="5">
+          ❌ Fehler beim Laden:
+          ${escapeAdminText(error.message)}
+        </td>
+      </tr>
     `;
-
-  }catch(error){
-
-    console.error(
-      "Reports Fehler:",
-      error
-    );
-
-    content.innerHTML = `
-      <div class="card">
-
-        <h2>🚨 Reports</h2>
-
-        <p>
-          Fehler:
-          ${error.message}
-        </p>
-
-      </div>
-    `;
-
   }
-
 }
-function showEmail(){
+async function showEmail() {
+
+  if (!(await requireAdmin())) return;
 
   content.innerHTML = `
     <div class="card">
       <h2>E-Mail senden</h2>
 
-<input id="emailTo" placeholder="Empfänger">
+      <input id="emailTo" placeholder="Empfänger">
 
-<label style="display:block;margin:10px 0;">
-  <input type="checkbox" id="sendToAll">
-  An alle bestätigten Benutzer senden
-</label>
+      <label style="display:block;margin:10px 0;">
+        <input type="checkbox" id="sendToAll">
+        An alle bestätigten Benutzer senden
+      </label>
 
-<input id="emailSubject" placeholder="Betreff">
+      <input id="emailSubject" placeholder="Betreff">
 
-<textarea id="emailMessage" placeholder="Nachricht"></textarea>
+      <textarea id="emailMessage" placeholder="Nachricht"></textarea>
 
-<button onclick="sendAdminEmail()">Senden</button>
+      <button onclick="sendAdminEmail()">Senden</button>
 
-<div id="emailResult" style="margin-top:15px;"></div>
+      <div id="emailResult" style="margin-top:15px;"></div>
     </div>
   `;
 }
 
-async function sendAdminEmail(){
+async function sendAdminEmail() {
+
+  if (!(await requireAdmin())) return;
 
   const to = document.getElementById("emailTo").value.trim();
   const subject = document.getElementById("emailSubject").value.trim();
@@ -714,7 +1136,6 @@ async function sendAdminEmail(){
       return;
     }
 
-    // Nur ein Empfänger
     if (!sendToAll) {
 
       const { data, error } = await db.functions.invoke(
@@ -743,7 +1164,6 @@ async function sendAdminEmail(){
       return;
     }
 
-    // Alle Benutzer holen
     const {
       data: usersData,
       error: usersError
@@ -769,7 +1189,6 @@ async function sendAdminEmail(){
     let sent = 0;
     let failed = 0;
 
-    // E-Mails nacheinander senden
     for (const email of emails) {
 
       try {
@@ -816,54 +1235,100 @@ async function sendAdminEmail(){
   }
 }
 
-function showPush(){
+async function showPush() {
 
-    content.innerHTML = `
+  if (!(await requireAdmin())) return;
 
+  content.innerHTML = `
     <div class="card">
 
-        <h2>Push-Benachrichtigung</h2>
+      <h2>Push-Benachrichtigung</h2>
+  <label for="pushCountry">Dërgo te:</label>
 
-        <textarea id="pushMessage" placeholder="Nachricht"></textarea>
+<select id="pushCountry">
+  <option value="">🌍 Të gjithë</option>
+  <option value="CH">🇨🇭 Switzerland</option>
+  <option value="DE">🇩🇪 Germany</option>
+  <option value="XK">🇽🇰 Kosovo</option>
+  <option value="AL">🇦🇱 Albania</option>
+  <option value="RS">🇷🇸 Serbia</option>
+  <option value="US">🇺🇸 USA</option>
+</select>
+      <textarea id="pushMessage" placeholder="Nachricht"></textarea>
 
-        <button onclick="sendPush()">Push senden</button>
+      <button onclick="sendPush()">Push senden</button>
+      <hr style="margin:25px 0;">
+
+<h3>📜 Push History</h3>
+<div id="pushHistory">Wird geladen...</div>
 
     </div>
-
-    `;
-
+  `;
+ 
 }
 
-async function sendPush(){
+async function sendPush() {
+  if (!(await requireAdmin())) return;
 
-    const message = document.getElementById("pushMessage").value.trim();
+  const message =
+    document.getElementById("pushMessage").value.trim();
 
-    if(!message){
-        alert("Bitte Nachricht eingeben.");
-        return;
+  if (!message) {
+    alert("Bitte Nachricht eingeben.");
+    return;
+  }
+
+  const country =
+    document.getElementById("pushCountry")?.value || "";
+
+  try {
+    const { data, error } = await db.functions.invoke(
+      "send-push",
+      {
+        body: {
+          message: message,
+          country: country || null
+        }
+      }
+    );
+
+    if (error) {
+      throw error;
     }
 
-    const { data, error } = await db
-        .from("notifications")
-        .insert([
-            {
-                message: message
-            }
-        ]);
-
-    if(error){
-        console.error(error);
-        alert("Fehler: " + error.message);
-        return;
+    if (!data?.success) {
+      throw new Error(data?.error || "Push konnte nicht gesendet werden.");
     }
 
-    alert("Push gespeichert!");
+    await db
+      .from("notifications")
+      .insert([
+        {
+          message: message
+        }
+      ]);
+
+    alert(
+      `Push gesendet!\n\n` +
+      `Land: ${country || "Alle Länder"}\n` +
+      `Gesendet: ${data.sent || 0}\n` +
+      `Fehler: ${data.failed || 0}`
+    );
 
     document.getElementById("pushMessage").value = "";
 
-}
+  } catch (error) {
+    console.error("SEND PUSH ERROR:", error);
 
-async function showStats(){
+    alert(
+      "Push-Fehler:\n" +
+      (error?.message || String(error))
+    );
+  }
+}
+async function showStats() {
+
+  if (!(await requireAdmin())) return;
 
   content.innerHTML = `
     <div class="statbox">
@@ -889,52 +1354,41 @@ async function showStats(){
       <h2>Statistik</h2>
       <p>Aktuelle PingCar Seitenbesuche</p>
     </div>
+        <div class="card">
+      <h2>🌍 Besucher nach Ländern</h2>
+      <div id="countryStats">Wird geladen...</div>
+    </div>
   `;
 
   try {
 
-    const { data: visits, error } =
-      await db
-        .from("page_visits")
-        .select("visitor_id, visited_at");
+    const allVisits = await loadAllVisits();
 
-    if (error) {
-      throw error;
-    }
-
-    const allVisits = visits || [];
-
-    // Alle Besuche
     document.getElementById("statsTotalVisits").textContent =
       allVisits.length;
 
-    // Besuche heute
-    const today = new Date();
+    const now = new Date();
 
     const todayStart = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
     );
 
     const todayEnd = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 1
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1
     );
 
     const todayVisits = allVisits.filter(visit => {
-
       const visitDate = new Date(visit.visited_at);
-
       return visitDate >= todayStart && visitDate < todayEnd;
-
     });
 
     document.getElementById("statsTodayVisits").textContent =
       todayVisits.length;
 
-    // Einzigartige Besucher
     const uniqueVisitors = new Set(
       allVisits
         .map(visit => visit.visitor_id)
@@ -943,7 +1397,69 @@ async function showStats(){
 
     document.getElementById("statsUniqueVisitors").textContent =
       uniqueVisitors.size;
+   
 
+
+    const countryCounts = {};
+
+  allVisits.forEach(visit => {
+  const country = normalizeCountry(visit.country);
+
+  if (country) {
+    countryCounts[country] =
+      (countryCounts[country] || 0) + 1;
+  }
+});
+
+    console.log("Besucher nach Ländern:", countryCounts);
+
+    const countryStats = document.getElementById("countryStats");
+
+    countryStats.innerHTML = Object.entries(countryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([country, count]) => `<p>🌍 ${country}: <strong>${count}</strong></p>`)
+      .join("");
+        /* Unique Besucher nach Ländern */
+    const uniqueByCountry = {};
+
+    allVisits.forEach(visit => {
+      const country = normalizeCountry(visit.country);
+      const visitorId = visit.visitor_id;
+
+      if (!country || !visitorId) return;
+
+      if (!uniqueByCountry[country]) {
+        uniqueByCountry[country] = new Set();
+      }
+
+      uniqueByCountry[country].add(visitorId);
+    });
+
+    const uniqueCountryStats = Object.entries(uniqueByCountry)
+      .map(([country, visitors]) => [country, visitors.size])
+      .sort((a, b) => b[1] - a[1]);
+
+    const uniqueCountryCard = document.createElement("div");
+    uniqueCountryCard.className = "card";
+
+    uniqueCountryCard.innerHTML = `
+      <h2>👤🌍 Unique Besucher nach Ländern</h2>
+      ${
+        uniqueCountryStats.length
+          ? uniqueCountryStats
+              .map(
+                ([country, count]) =>
+                  `<p>👤🌍 ${escapeAdminText(country)}: <strong>${count}</strong></p>`
+              )
+              .join("")
+          : "<p>Keine eindeutigen Besucher mit Land gefunden.</p>"
+      }
+    `;
+
+    document
+      .getElementById("countryStats")
+      .closest(".card")
+      .insertAdjacentElement("afterend", uniqueCountryCard);
   } catch (error) {
 
     console.error("Statistik Fehler:", error);
@@ -951,13 +1467,2880 @@ async function showStats(){
     document.getElementById("statsTotalVisits").textContent = "!";
     document.getElementById("statsTodayVisits").textContent = "!";
     document.getElementById("statsUniqueVisitors").textContent = "!";
+    
+  
+    
+  }
+}
+function normalizeCountry(country) {
+  const value = String(country || "").trim();
+
+  if (value.toLowerCase() === "switzerland") {
+    return "CH";
+  }
+
+  return value.toUpperCase();
+}
+async function showDailyVisitors() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🌍 Besucher nach Tagen</h2>
+
+      <p>
+        Jeder Tag wird separat angezeigt. Die Länder werden nach den
+        gespeicherten Seitenbesuchen dieses Tages gezählt.
+      </p>
+
+      <div id="dailyVisitorStats">
+        Wird geladen...
+      </div>
+    </div>
+  `;
+
+  try {
+
+    const allVisits = await loadAllVisits();
+
+    const dailyStats = {};
+
+    allVisits.forEach(visit => {
+
+      if (!visit.visited_at) return;
+
+      const date = new Date(visit.visited_at);
+
+      if (Number.isNaN(date.getTime())) return;
+
+      const dayKey =
+        date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+
+      if (!dailyStats[dayKey]) {
+        dailyStats[dayKey] = {
+          total: 0,
+          countries: {}
+        };
+      }
+
+      dailyStats[dayKey].total++;
+
+     const country = normalizeCountry(visit.country) || "Unbekannt";
+
+      dailyStats[dayKey].countries[country] =
+        (dailyStats[dayKey].countries[country] || 0) + 1;
+    });
+
+    const days = Object.entries(dailyStats)
+      .sort((a, b) => b[0].localeCompare(a[0]));
+
+    const container =
+      document.getElementById("dailyVisitorStats");
+
+    if (!days.length) {
+      container.innerHTML =
+        "<p>Noch keine Besucher gespeichert.</p>";
+      return;
+    }
+
+    container.innerHTML = days.map(([day, stats]) => {
+
+      const [year, month, date] = day.split("-");
+
+      const formattedDate =
+        new Date(
+          Number(year),
+          Number(month) - 1,
+          Number(date)
+        ).toLocaleDateString("de-CH", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        });
+
+      const countries = Object.entries(stats.countries)
+        .sort((a, b) => b[1] - a[1])
+        .map(([country, count]) =>
+          `<p style="margin:6px 0;">
+            🌍 ${escapeAdminText(country)}:
+            <strong>${count}</strong>
+          </p>`
+        )
+        .join("");
+
+      return `
+        <div style="
+          padding:18px;
+          margin-bottom:15px;
+          background:#f8f9fa;
+          border:1px solid #ddd;
+          border-radius:10px;
+        ">
+
+          <h3 style="margin-bottom:10px;">
+            📅 ${formattedDate}
+          </h3>
+
+          <p style="margin-bottom:10px;">
+            <strong>${stats.total}</strong> Seitenbesuche
+          </p>
+
+          ${countries}
+
+        </div>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error(
+      "Besucher nach Tagen Fehler:",
+      error
+    );
+
+    document.getElementById(
+      "dailyVisitorStats"
+    ).innerHTML = `
+      <p style="color:red;">
+        ❌ Fehler beim Laden:
+        ${escapeAdminText(error.message)}
+      </p>
+    `;
   }
 }
 
-showDashboard();
+async function showSupport() {
+  const content = document.getElementById("content");
 
+  content.innerHTML = `
+    <div class="card">
+      <h2>💬 Meldungen / Support</h2>
+
+      <div style="display:flex; gap:15px; margin-top:15px;">
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; flex:1; text-align:center;">
+          <small>Nachrichten</small>
+          <h3 id="support-total" style="margin:5px 0; color:#007bff;">0</h3>
+        </div>
+
+        <div style="background:#fff3cd; padding:15px; border-radius:8px; flex:1; text-align:center;">
+          <small>Ungelesen</small>
+          <h3 id="support-unread" style="margin:5px 0; color:#856404;">0</h3>
+        </div>
+      </div>
+      <button
+  onclick="deleteReadSupportMessages()"
+  style="
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    margin:15px 0;
+  "
+>
+  🗑️ Gelesene löschen
+</button>
+      <input
+        id="support-search"
+        type="text"
+        placeholder="🔎 Suche nach QR-Code, Nachricht oder Absender..."
+        oninput="filterSupportMessages()"
+        style="width:100%; box-sizing:border-box; padding:12px; margin:20px 0 15px; border:1px solid #ddd; border-radius:6px;"
+      >
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="background:#0d6efd; color:white; text-align:left;">
+              <th style="padding:10px;">QR-Code</th>
+              <th style="padding:10px;">Nachricht</th>
+              <th style="padding:10px;">Absender</th>
+              <th style="padding:10px;">Datum</th>
+              <th style="padding:10px;">Status</th>
+              <th style="padding:10px;">Aktion</th>
+            </tr>
+          </thead>
+
+          <tbody id="support-table-body">
+            <tr>
+              <td colspan="6" style="padding:15px; text-align:center;">
+                Nachrichten werden geladen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  try {
+    const { data: messages, error } = await db
+      .from("messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Support Fehler:", error);
+      document.getElementById("support-table-body").innerHTML = `
+        <tr>
+          <td colspan="6" style="padding:15px; text-align:center; color:#dc3545;">
+            Fehler beim Laden: ${error.message}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    window.pingcarSupportMessages = messages || [];
+    renderSupportMessages(window.pingcarSupportMessages);
+
+  } catch (error) {
+    console.error("Support JS Fehler:", error);
+  }
+}
+
+function escapeSupportText(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderSupportMessages(messages) {
+  const tbody = document.getElementById("support-table-body");
+
+  const total = messages.length;
+  const unread = messages.filter(m => m.read !== true).length;
+
+  document.getElementById("support-total").textContent = total;
+  document.getElementById("support-unread").textContent = unread;
+
+  if (total === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="padding:15px; text-align:center; color:#666;">
+          Keine Nachrichten vorhanden
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = messages.map(message => {
+
+    const isRead = message.read === true;
+
+    const date = message.created_at
+      ? new Date(message.created_at).toLocaleString("de-CH")
+      : "-";
+
+    return `
+      <tr style="border-bottom:1px solid #eee;">
+
+        <td style="padding:10px;">
+          <strong>${escapeSupportText(message.qr_code || "-")}</strong>
+        </td>
+
+        <td style="padding:10px;">
+          ${escapeSupportText(message.message || "-")}
+        </td>
+
+        <td style="padding:10px; font-size:12px;">
+          ${escapeSupportText(message.sender_id || "-")}
+        </td>
+
+        <td style="padding:10px; white-space:nowrap;">
+          ${date}
+        </td>
+
+        <td style="padding:10px;">
+          <span style="
+            background:${isRead ? "#d4edda" : "#f8d7da"};
+            color:${isRead ? "#155724" : "#721c24"};
+            padding:4px 8px;
+            border-radius:4px;
+            font-size:12px;
+            font-weight:bold;
+          ">
+            ${isRead ? "Gelesen" : "Neu"}
+          </span>
+        </td>
+
+        <td style="padding:10px;">
+
+          <button
+            onclick="replyToSupportMessage(
+              '${message.id}',
+              '${escapeSupportText(message.conversation_id || "")}',
+              '${escapeSupportText(message.sender_id || "")}',
+              '${escapeSupportText(message.qr_code || "")}'
+            )"
+            style="
+              background:#198754;
+              color:white;
+              border:none;
+              padding:7px 12px;
+              border-radius:5px;
+              cursor:pointer;
+              font-size:13px;
+              margin-right:5px;
+            "
+          >
+            💬 Antworten
+          </button>
+
+          ${
+            isRead
+              ? ""
+              : `
+                <button
+                  onclick="markSupportMessageRead('${message.id}')"
+                  style="
+                    background:#0d6efd;
+                    color:white;
+                    border:none;
+                    padding:7px 12px;
+                    border-radius:5px;
+                    cursor:pointer;
+                    font-size:13px;
+                  "
+                >
+                  ✓ Gelesen
+                </button>
+              `
+          }
+
+        </td>
+
+      </tr>
+    `;
+  }).join("");
+}
+
+
+function filterSupportMessages() {
+  const input = document.getElementById("support-search");
+
+  if (!input) return;
+
+  const search = input.value.toLowerCase().trim();
+  const messages = window.pingcarSupportMessages || [];
+
+  if (!search) {
+    renderSupportMessages(messages);
+    return;
+  }
+
+  const filtered = messages.filter(message =>
+    String(message.qr_code || "").toLowerCase().includes(search) ||
+    String(message.message || "").toLowerCase().includes(search) ||
+    String(message.sender_id || "").toLowerCase().includes(search)
+  );
+
+  renderSupportMessages(filtered);
+}
+
+
+async function markSupportMessageRead(messageId) {
+
+  try {
+
+    const { error } = await db
+      .from("messages")
+      .update({ read: true })
+      .eq("id", messageId);
+
+    if (error) {
+      console.error("Fehler:", error);
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await showSupport();
+
+  } catch (error) {
+
+    console.error(
+      "Fehler beim Aktualisieren:",
+      error
+    );
+
+  }
+}
+async function deleteReadSupportMessages() {
+  if (!confirm("Alle gelesenen Nachrichten wirklich löschen?")) {
+    return;
+  }
+
+  try {
+   const { data, error } = await db
+  .from("messages")
+  .delete()
+  .eq("read", true)
+  .select("id");
+
+    if (error) {
+      console.error("Fehler beim Löschen:", error);
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await showSupport();
+
+  } catch (error) {
+    console.error("Fehler beim Löschen:", error);
+    alert("Fehler beim Löschen der gelesenen Nachrichten.");
+  }
+}
+
+async function replyToSupportMessage(
+  messageId,
+  conversationId,
+  receiverId,
+  qrCode
+) {
+
+  const answer = prompt(
+    "💬 Antwort auf diese Nachricht:"
+  );
+
+  if (answer === null) {
+    return;
+  }
+
+  const text = answer.trim();
+
+  if (!text) {
+    alert("Bitte eine Nachricht eingeben.");
+    return;
+  }
+
+  try {
+
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      alert("Nicht eingeloggt.");
+      return;
+    }
+
+    const adminId =
+      sessionData.session.user.id;
+
+
+    /* Besitzer des QR-Codes finden */
+
+    const {
+      data: qrData,
+      error: qrError
+    } = await db
+      .from("user_qr")
+      .select("user_id")
+      .eq("qr_code", qrCode)
+      .eq("active", true)
+      .maybeSingle();
+
+    if (qrError) {
+
+      console.error(
+        "QR Besitzer Fehler:",
+        qrError
+      );
+
+      alert(
+        "Besitzer des QR-Codes konnte nicht gefunden werden:\n" +
+        qrError.message
+      );
+
+      return;
+    }
+
+    if (!qrData?.user_id) {
+
+      alert(
+        "Kein Benutzer für diesen QR-Code gefunden."
+      );
+
+      return;
+    }
+
+    const ownerId = qrData.user_id;
+
+
+    /* Antwort in messages speichern */
+
+    const { error: messageError } = await db
+      .from("messages")
+      .insert({
+        conversation_id: conversationId,
+        sender_id: adminId,
+        receiver_id: receiverId,
+        qr_code: qrCode,
+        message: text,
+        read: false
+      });
+
+    if (messageError) {
+
+      console.error(
+        "Antwort Fehler:",
+        messageError
+      );
+
+      alert(
+        "Antwort konnte nicht gesendet werden:\n" +
+        messageError.message
+      );
+
+      return;
+    }
+
+
+    /* Benachrichtigung für den Benutzer erstellen */
+
+    const { error: notificationError } = await db
+      .from("notifications")
+      .insert({
+        message: text,
+        sender_id: adminId,
+        owner_id: ownerId,
+        qr_code: qrCode
+      });
+
+    if (notificationError) {
+
+      console.error(
+        "Benachrichtigung Fehler:",
+        notificationError
+      );
+
+      alert(
+        "Antwort wurde gesendet, aber die Benachrichtigung konnte nicht erstellt werden:\n" +
+        notificationError.message
+      );
+
+      return;
+    }
+
+
+    /* ursprüngliche Nachricht als gelesen markieren */
+
+    const { error: readError } = await db
+      .from("messages")
+      .update({ read: true })
+      .eq("id", messageId);
+
+    if (readError) {
+
+      console.error(
+        "Gelesen Fehler:",
+        readError
+      );
+    }
+
+
+    alert(
+      "✅ Antwort wurde erfolgreich gesendet."
+    );
+
+    await showSupport();
+
+  } catch (error) {
+
+    console.error(
+      "Support Antwort Fehler:",
+      error
+    );
+
+    alert(
+      "Fehler: " + error.message
+    );
+
+  }
+}
+
+function filterSupportMessages() {
+  const input = document.getElementById("support-search");
+  if (!input) return;
+
+  const search = input.value.toLowerCase().trim();
+  const messages = window.pingcarSupportMessages || [];
+
+  if (!search) {
+    renderSupportMessages(messages);
+    return;
+  }
+
+  const filtered = messages.filter(message =>
+    String(message.qr_code || "").toLowerCase().includes(search) ||
+    String(message.message || "").toLowerCase().includes(search) ||
+    String(message.sender_id || "").toLowerCase().includes(search)
+  );
+
+  renderSupportMessages(filtered);
+}
+
+async function markSupportMessageRead(messageId) {
+  try {
+    const { error } = await db
+      .from("messages")
+      .update({ read: true })
+      .eq("id", messageId);
+
+    if (error) {
+      console.error("Fehler:", error);
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await showSupport();
+
+  } catch (error) {
+    console.error("Fehler beim Aktualisieren:", error);
+  }
+}
+
+
+async function showReports() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🚨 Reports / Gemeldete Inhalte</h2>
+
+      <div style="display:flex; gap:15px; margin:15px 0; flex-wrap:wrap;">
+        <div style="background:#fff3cd; padding:15px; border-radius:8px; flex:1; min-width:160px; text-align:center;">
+          <small>Offene Reports</small>
+          <h3 id="reports-open" style="margin:5px 0; color:#856404;">0</h3>
+        </div>
+
+        <div style="background:#d4edda; padding:15px; border-radius:8px; flex:1; min-width:160px; text-align:center;">
+          <small>Erledigt</small>
+          <h3 id="reports-resolved" style="margin:5px 0; color:#155724;">0</h3>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="background:#dc3545; color:white; text-align:left;">
+              <th style="padding:10px;">Datum</th>
+              <th style="padding:10px;">Gemeldeter User</th>
+              <th style="padding:10px;">Reporter</th>
+              <th style="padding:10px;">Nachricht</th>
+              <th style="padding:10px;">Status</th>
+              <th style="padding:10px;">Aktion</th>
+            </tr>
+          </thead>
+
+          <tbody id="reports-table-body">
+            <tr>
+              <td colspan="6" style="padding:15px; text-align:center;">
+                Reports werden geladen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  try {
+
+    const { data: reports, error } = await db
+      .from("pingcar_reports")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    window.pingcarReports = reports || [];
+    renderReports(window.pingcarReports);
+
+  } catch (error) {
+
+    console.error("Reports Fehler:", error);
+
+    const tbody = document.getElementById("reports-table-body");
+
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="padding:15px; text-align:center; color:#dc3545;">
+            Fehler beim Laden: ${escapeAdminText(error.message)}
+          </td>
+        </tr>
+      `;
+    }
+  }
+}
+
+
+function renderReports(reports) {
+
+  const tbody = document.getElementById("reports-table-body");
+
+  if (!tbody) return;
+
+  const open = reports.filter(r => !r.resolved_at).length;
+  const resolved = reports.filter(r => !!r.resolved_at).length;
+
+  const openBox = document.getElementById("reports-open");
+  const resolvedBox = document.getElementById("reports-resolved");
+
+  if (openBox) openBox.textContent = open;
+  if (resolvedBox) resolvedBox.textContent = resolved;
+
+  if (reports.length === 0) {
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="padding:15px; text-align:center; color:#666;">
+          Keine Reports vorhanden.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tbody.innerHTML = reports.map(report => {
+
+    const date = report.created_at
+      ? new Date(report.created_at).toLocaleString("de-CH")
+      : "-";
+
+    const isResolved = !!report.resolved_at;
+
+    const status = isResolved
+      ? `
+        <span style="
+          background:#d4edda;
+          color:#155724;
+          padding:4px 8px;
+          border-radius:4px;
+          font-size:12px;
+          font-weight:bold;
+        ">
+          Erledigt
+        </span>
+      `
+      : `
+        <span style="
+          background:#f8d7da;
+          color:#721c24;
+          padding:4px 8px;
+          border-radius:4px;
+          font-size:12px;
+          font-weight:bold;
+        ">
+          Offen
+        </span>
+      `;
+
+    const actionButtons = isResolved
+      ? `
+        <span style="font-size:12px; color:#666;">
+          ${escapeAdminText(report.action || "Bearbeitet")}
+        </span>
+      `
+      : `
+        <button
+          onclick="adminRemoveReportedMessage('${escapeAdminText(report.message_id || "")}', '${escapeAdminText(report.id || "")}')"
+          style="
+            background:#dc3545;
+            color:white;
+            border:none;
+            padding:7px 10px;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:12px;
+            margin:2px;
+          "
+        >
+          🗑️ Nachricht entfernen
+        </button>
+
+        <button
+          onclick="adminBlockReportedUser('${escapeAdminText(report.reported_user_id || "")}')"
+          style="
+            background:#212529;
+            color:white;
+            border:none;
+            padding:7px 10px;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:12px;
+            margin:2px;
+          "
+        >
+          🚫 User blockieren
+        </button>
+      `;
+
+    return `
+      <tr style="border-bottom:1px solid #eee; vertical-align:top;">
+
+        <td style="padding:10px; white-space:nowrap;">
+          ${date}
+        </td>
+
+        <td style="padding:10px; font-size:12px;">
+          ${escapeAdminText(report.reported_user_id || "-")}
+        </td>
+
+        <td style="padding:10px; font-size:12px;">
+          ${escapeAdminText(report.reporter_id || "-")}
+        </td>
+
+        <td style="padding:10px; max-width:350px; word-break:break-word;">
+          ${escapeAdminText(report.message_text || "-")}
+        </td>
+
+        <td style="padding:10px;">
+          ${status}
+        </td>
+
+        <td style="padding:10px; min-width:220px;">
+          ${actionButtons}
+        </td>
+
+      </tr>
+    `;
+
+  }).join("");
+}
+
+
+async function adminRemoveReportedMessage(messageId, reportId) {
+
+  if (!messageId) {
+    alert("Keine gültige Message-ID vorhanden.");
+    return;
+  }
+
+  if (!confirm("Diese gemeldete Nachricht wirklich entfernen?")) {
+    return;
+  }
+
+  try {
+
+    if (!(await requireAdmin())) return;
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      alert("Nicht eingeloggt.");
+      return;
+    }
+
+    const adminEmail =
+      sessionData.session.user.email || "";
+
+    const { data, error } = await db.rpc(
+      "admin_remove_pingcar_message",
+      {
+        p_message_id: messageId,
+        p_admin_id: adminEmail
+      }
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    if (data !== true) {
+      throw new Error("Nachricht konnte nicht entfernt werden.");
+    }
+
+    alert("✅ Nachricht wurde entfernt.");
+
+    await showReports();
+
+  } catch (error) {
+
+    console.error("Admin Remove Report Fehler:", error);
+
+    alert("Fehler: " + error.message);
+  }
+}
+
+
+async function adminBlockReportedUser(userId) {
+
+  if (!userId) {
+    alert("Keine gültige User-ID vorhanden.");
+    return;
+  }
+
+  if (!confirm("Diesen Benutzer wirklich blockieren?")) {
+    return;
+  }
+
+  try {
+
+    if (!(await requireAdmin())) return;
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      alert("Nicht eingeloggt.");
+      return;
+    }
+
+    const adminEmail =
+      sessionData.session.user.email || "";
+
+    const { data, error } = await db.rpc(
+      "admin_block_pingcar_user",
+      {
+        p_user_id: userId,
+        p_admin_id: adminEmail
+      }
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    if (data !== true) {
+      throw new Error("Benutzer konnte nicht blockiert werden.");
+    }
+
+    alert("✅ Benutzer wurde blockiert.");
+
+    await showReports();
+
+  } catch (error) {
+
+    console.error("Admin Block Report Fehler:", error);
+
+    alert("Fehler: " + error.message);
+  }
+}
+
+
+async function showDevices() {
+
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="statbox">
+
+      <div class="stat">
+        Geräte gesamt
+        <h3 id="deviceTotal">...</h3>
+      </div>
+
+      <div class="stat">
+        Push aktiv
+        <h3 id="deviceActive">...</h3>
+      </div>
+
+      <div class="stat">
+        Push inaktiv
+        <h3 id="deviceInactive">...</h3>
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>📱 Geräte / Push Tokens</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Benutzer</th>
+            <th>E-Mail</th>
+            <th>Gerät</th>
+            <th>Push Status</th>
+            <th>Registriert</th>
+            <th>Push Token</th>
+          </tr>
+        </thead>
+
+        <tbody id="deviceRows">
+          <tr>
+            <td colspan="6">Daten werden geladen...</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  `;
+
+  try {
+
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
+    }
+
+    /* Benutzer laden */
+    const response = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + sessionData.session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Fehler beim Laden der Benutzer"
+      );
+    }
+
+    const users = result.users || [];
+
+    const userMap = new Map();
+
+    users.forEach(user => {
+      userMap.set(user.id, user);
+    });
+
+    /* Geräte / Push Tokens laden */
+    const { data: devices, error: deviceError } =
+      await db
+        .from("device_tokens")
+        .select("id,user_id,fcm_token,created_at")
+        .order("created_at", { ascending: false });
+
+    if (deviceError) {
+      throw deviceError;
+    }
+
+    const deviceList = devices || [];
+
+    document.getElementById("deviceTotal").textContent =
+      deviceList.length;
+
+    document.getElementById("deviceActive").textContent =
+      deviceList.filter(device => device.fcm_token).length;
+
+    document.getElementById("deviceInactive").textContent =
+      deviceList.filter(device => !device.fcm_token).length;
+
+    const tbody = document.getElementById("deviceRows");
+
+    if (deviceList.length === 0) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;">
+            Keine Geräte / Push Tokens vorhanden.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    tbody.innerHTML = deviceList.map(device => {
+
+      const user = userMap.get(device.user_id);
+
+      const name =
+        user?.user_metadata?.full_name ||
+        user?.user_metadata?.name ||
+        "Unbekannt";
+
+      const email =
+        user?.email ||
+        "Unbekannt";
+
+      const token = device.fcm_token || "";
+
+      const maskedToken = token
+        ? token.substring(0, 12) + "••••••••"
+        : "-";
+
+      const registered = device.created_at
+        ? new Date(device.created_at).toLocaleString("de-CH")
+        : "-";
+
+      return `
+        <tr>
+
+          <td>${name}</td>
+
+          <td>${email}</td>
+
+          <td>📱 Push-Gerät</td>
+
+          <td>
+            <span style="
+              background:#d4edda;
+              color:#155724;
+              padding:4px 8px;
+              border-radius:5px;
+              font-weight:bold;
+            ">
+              Aktiv
+            </span>
+          </td>
+
+          <td>${registered}</td>
+
+          <td title="${token}">
+            ${maskedToken}
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error("Geräte Fehler:", error);
+
+    document.getElementById("deviceRows").innerHTML = `
+      <tr>
+        <td colspan="6">
+          Fehler: ${error.message}
+        </td>
+      </tr>
+    `;
+
+  }
+}
+async function showOnline() {
+
+  if (!(await requireAdmin())) return;
+
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🟢 Live Online</h2>
+
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:15px;
+        margin-top:20px;
+      ">
+
+        <div style="background:#f8f9fa;padding:20px;border-radius:10px;text-align:center;">
+          <small>🌐 Website</small>
+          <h2 id="onlineWebsite">0</h2>
+        </div>
+
+        <div style="background:#f8f9fa;padding:20px;border-radius:10px;text-align:center;">
+          <small>🤖 Android</small>
+          <h2 id="onlineAndroid">0</h2>
+        </div>
+
+        <div style="background:#f8f9fa;padding:20px;border-radius:10px;text-align:center;">
+          <small>🍎 iPhone</small>
+          <h2 id="onlineIphone">0</h2>
+        </div>
+
+        <div style="background:#e8f5e9;padding:20px;border-radius:10px;text-align:center;">
+          <small>🟢 Gesamt Online</small>
+          <h2 id="onlineTotal">0</h2>
+        </div>
+
+      </div>
+
+      <div style="margin-top:25px;">
+        <h3>Aktive Verbindungen</h3>
+
+        <table style="width:100%;">
+          <thead>
+            <tr>
+              <th>Plattform</th>
+              <th>Benutzer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="onlineRows">
+            <tr>
+              <td colspan="3" style="text-align:center;">
+                Warte auf Live-Verbindungen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  `;
+
+  let onlineChannel = window.pingcarOnlineChannel;
+
+  if (onlineChannel) {
+    try {
+      await db.removeChannel(onlineChannel);
+    } catch (e) {}
+  }
+
+  const session = await db.auth.getSession();
+
+  const adminKey =
+    "admin-" +
+    (session?.data?.session?.user?.id || "admin");
+
+  onlineChannel = db.channel("pingcar-online", {
+    config: {
+      presence: {
+        key: adminKey
+      }
+    }
+  });
+
+  window.pingcarOnlineChannel = onlineChannel;
+
+  onlineChannel.on("presence", { event: "sync" }, () => {
+    updateOnlinePresence();
+  });
+
+  onlineChannel.on("presence", { event: "join" }, () => {
+    updateOnlinePresence();
+  });
+
+  onlineChannel.on("presence", { event: "leave" }, () => {
+    updateOnlinePresence();
+  });
+
+  onlineChannel.subscribe(async status => {
+
+    if (status === "SUBSCRIBED") {
+
+      await onlineChannel.track({
+        platform: "admin",
+        user_id: session?.data?.session?.user?.id || null
+      });
+
+      updateOnlinePresence();
+    }
+
+  });
+
+  async function updateOnlinePresence() {
+
+    const state = onlineChannel.presenceState();
+
+    const connections = [];
+
+    Object.entries(state).forEach(([key, presences]) => {
+
+      presences.forEach(presence => {
+
+        if (presence.platform === "admin") return;
+
+        connections.push({
+          key,
+          ...presence
+        });
+
+      });
+
+    });
+
+    const website = connections.filter(
+      x => x.platform === "website"
+    ).length;
+
+    const android = connections.filter(
+      x => x.platform === "android"
+    ).length;
+
+    const iphone = connections.filter(
+      x => x.platform === "iphone"
+    ).length;
+
+    document.getElementById("onlineWebsite").textContent =
+      website;
+
+    document.getElementById("onlineAndroid").textContent =
+      android;
+
+    document.getElementById("onlineIphone").textContent =
+      iphone;
+
+    document.getElementById("onlineTotal").textContent =
+      connections.length;
+
+    const rows = document.getElementById("onlineRows");
+
+    if (connections.length === 0) {
+
+      rows.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align:center;">
+            Aktuell niemand online.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    rows.innerHTML = connections.map(connection => {
+
+      let platform = "🌐 Website";
+
+      if (connection.platform === "android") {
+        platform = "🤖 Android";
+      }
+
+      if (connection.platform === "iphone") {
+        platform = "🍎 iPhone";
+      }
+
+      return `
+        <tr>
+          <td>${platform}</td>
+          <td>${connection.email || "Gast / Besucher"}</td>
+          <td>
+            <span style="
+              background:#d4edda;
+              color:#155724;
+              padding:4px 8px;
+              border-radius:5px;
+              font-weight:bold;
+            ">
+              🟢 Online
+            </span>
+          </td>
+        </tr>
+      `;
+
+    }).join("");
+  }
+}
+async function showSystemStatus() {
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🔐 Sicherheit / Systemstatus</h2>
+
+      <div id="system-status-list">
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🌐 Website
+          <span id="status-website" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🗄️ Supabase Datenbank
+          <span id="status-database" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🔄 Realtime
+          <span id="status-realtime" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;border-bottom:1px solid #ddd;">
+          🔔 Push-System
+          <span id="status-push" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+        <div style="padding:15px;">
+          🛠️ Error Logs
+          <span id="status-errors" style="float:right;">⏳ Prüfen...</span>
+        </div>
+
+      </div>
+
+      <button onclick="showSystemStatus()" style="margin-top:20px;">
+        🔄 System prüfen
+      </button>
+
+      <p style="margin-top:15px;color:#777;">
+        Letzte Prüfung: <span id="status-time">-</span>
+      </p>
+    </div>
+  `;
+
+  const setStatus = (id, ok, text) => {
+    const el = document.getElementById(id);
+
+    el.innerHTML = ok
+      ? `<span style="color:#198754;font-weight:bold;">🟢 ${text}</span>`
+      : `<span style="color:#dc3545;font-weight:bold;">🔴 ${text}</span>`;
+  };
+
+  // Website / Admin erreichbar
+  setStatus("status-website", true, "Online");
+
+  // Supabase Datenbank
+  try {
+    const { error } = await db
+      .from("device_tokens")
+      .select("id", { count: "exact", head: true });
+
+    setStatus("status-database", !error, error ? "Fehler" : "Online");
+  } catch (error) {
+    setStatus("status-database", false, "Fehler");
+  }
+
+  // Realtime
+  try {
+    const testChannel = db.channel("pingcar-system-status-" + Date.now());
+
+    testChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        setStatus("status-realtime", true, "Online");
+        await db.removeChannel(testChannel);
+      }
+    });
+
+    setTimeout(async () => {
+      if (document.getElementById("status-realtime")) {
+        const current = document.getElementById("status-realtime").textContent;
+
+        if (current.includes("Prüfen")) {
+          setStatus("status-realtime", false, "Nicht erreichbar");
+          await db.removeChannel(testChannel);
+        }
+      }
+    }, 5000);
+
+  } catch (error) {
+    setStatus("status-realtime", false, "Fehler");
+  }
+
+  // Push-System / Device Tokens
+  try {
+    const { count, error } = await db
+      .from("device_tokens")
+      .select("id", { count: "exact", head: true });
+
+    setStatus(
+      "status-push",
+      !error,
+      error ? "Fehler" : `${count || 0} Geräte registriert`
+    );
+  } catch (error) {
+    setStatus("status-push", false, "Fehler");
+  }
+
+  // Error Logs
+  try {
+    const { count, error } = await db
+      .from("error_logs")
+      .select("id", { count: "exact", head: true });
+
+    setStatus(
+      "status-errors",
+      !error,
+      error ? "Fehler" : `${count || 0} Einträge`
+    );
+  } catch (error) {
+    setStatus("status-errors", false, "Fehler");
+  }
+
+  document.getElementById("status-time").textContent =
+    new Date().toLocaleString("de-CH");
+}
+async function showActivityLog() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>📋 Aktivitätsprotokoll</h2>
+
+      <div style="display:flex;gap:15px;flex-wrap:wrap;margin-bottom:20px;">
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>💬 Meldungen</div>
+          <h3 id="activityMessages">...</h3>
+        </div>
+
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>📱 Geräte</div>
+          <h3 id="activityDevices">...</h3>
+        </div>
+
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>💳 Abonnements</div>
+          <h3 id="activitySubscriptions">...</h3>
+        </div>
+
+        <div class="stat" style="flex:1;min-width:180px;">
+          <div>🛠️ Fehler</div>
+          <h3 id="activityErrors">...</h3>
+        </div>
+      </div>
+
+      <h3>Letzte Aktivitäten</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Zeit</th>
+            <th>Aktivität</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+
+        <tbody id="activityRows">
+          <tr>
+            <td colspan="3" style="text-align:center;">
+              Daten werden geladen...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button onclick="showActivityLog()" style="margin-top:20px;">
+        🔄 Aktualisieren
+      </button>
+    </div>
+  `;
+
+  try {
+    const [messagesResult, devicesResult, subscriptionsResult, errorsResult] =
+      await Promise.all([
+        db.from("messages")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+
+        db.from("device_tokens")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+
+        db.from("subscriptions")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(100),
+
+        db.from("error_logs")
+          .select("created_at, severity, source, message")
+          .order("created_at", { ascending: false })
+          .limit(100)
+      ]);
+
+    const activities = [];
+
+    const messages = messagesResult.data || [];
+    const devices = devicesResult.data || [];
+    const subscriptions = subscriptionsResult.data || [];
+    const errors = errorsResult.data || [];
+
+    messages.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "💬 Meldung / Support",
+        details: "Neue Meldung"
+      });
+    });
+
+    devices.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "📱 Gerät",
+        details: "Push-Gerät registriert"
+      });
+    });
+
+    subscriptions.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "💳 Abonnement",
+        details: "Abonnement erstellt"
+      });
+    });
+
+    errors.forEach(item => {
+      activities.push({
+        time: item.created_at,
+        type: "🛠️ Fehler",
+        details: `${item.severity || "Error"} – ${item.source || "System"}`
+      });
+    });
+
+    document.getElementById("activityMessages").textContent =
+      messages.length;
+
+    document.getElementById("activityDevices").textContent =
+      devices.length;
+
+    document.getElementById("activitySubscriptions").textContent =
+      subscriptions.length;
+
+    document.getElementById("activityErrors").textContent =
+      errors.length;
+
+    activities.sort(
+      (a, b) => new Date(b.time) - new Date(a.time)
+    );
+
+    const rows = activities.slice(0, 50);
+
+    const tbody = document.getElementById("activityRows");
+
+    if (!rows.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align:center;">
+            Keine Aktivitäten vorhanden.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = rows.map(activity => `
+      <tr>
+        <td>
+          ${new Date(activity.time).toLocaleString("de-CH")}
+        </td>
+        <td>${activity.type}</td>
+        <td>${activity.details}</td>
+      </tr>
+    `).join("");
+
+  } catch (error) {
+    console.error("Aktivitätsprotokoll Fehler:", error);
+
+    document.getElementById("activityRows").innerHTML = `
+      <tr>
+        <td colspan="3" style="text-align:center;color:#dc3545;">
+          Fehler beim Laden der Aktivitäten.
+        </td>
+      </tr>
+    `;
+  }
+}
+async function showGlobalSearch() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🔎 Globale Suche</h2>
+
+      <input
+        id="globalSearchInput"
+        placeholder="Name, E-Mail, QR-Code oder Suchbegriff..."
+        onkeydown="if(event.key==='Enter') runGlobalSearch()"
+      >
+
+      <button onclick="runGlobalSearch()">
+        🔎 Suchen
+      </button>
+
+      <div id="globalSearchResults" style="margin-top:25px;">
+        <p style="color:#777;">
+          Suchbegriff eingeben und auf „Suchen“ klicken.
+        </p>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("globalSearchInput").focus();
+}
+
+async function runGlobalSearch() {
+
+  const input = document.getElementById("globalSearchInput");
+  const results = document.getElementById("globalSearchResults");
+
+  const searchTerm =
+    (input.value || "").trim().toLowerCase();
+
+  if (!searchTerm) {
+    results.innerHTML = `
+      <p style="color:#dc3545;">
+        Bitte einen Suchbegriff eingeben.
+      </p>
+    `;
+    return;
+  }
+
+  results.innerHTML = `
+    <p>🔄 Suche läuft...</p>
+  `;
+
+  try {
+
+    /* Admin-Sitzung prüfen */
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Nicht eingeloggt");
+    }
+
+    const accessToken =
+      sessionData.session.access_token;
+
+    const matches = [];
+
+    /* =====================================================
+       👤 BENUTZER
+       ===================================================== */
+
+    const userResponse = await fetch(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co/functions/v1/admin-users",
+      {
+        method: "POST",
+        headers: {
+          "Authorization":
+            "Bearer " + accessToken,
+          "Content-Type":
+            "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const userResult =
+      await userResponse.json();
+
+    if (!userResponse.ok) {
+      throw new Error(
+        userResult.error ||
+        "Benutzer konnten nicht geladen werden."
+      );
+    }
+
+    const users =
+      userResult.users || [];
+
+    users.forEach(user => {
+
+      const name =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        "";
+
+      const email =
+        user.email || "";
+
+      const phone =
+        user.phone || "";
+
+      const id =
+        user.id || "";
+
+      /*
+        WICHTIG:
+        Email, Name, Telefon und UID
+        werden einzeln durchsucht.
+      */
+
+      const searchable = [
+        name,
+        email,
+        phone,
+        id
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      if (searchable.includes(searchTerm)) {
+
+        matches.push({
+          type: "👤 Benutzer",
+          title:
+            name ||
+            email ||
+            "Benutzer",
+          detail: `
+            <strong>E-Mail:</strong>
+            ${escapeGlobalSearchHtml(email)}
+            <br>
+            <strong>Telefon:</strong>
+            ${escapeGlobalSearchHtml(phone || "-")}
+            <br>
+            <strong>UID:</strong>
+            ${escapeGlobalSearchHtml(id)}
+          `
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       🚗 FAHRZEUGE / QR
+       ===================================================== */
+
+    const {
+      data: vehicles,
+      error: vehicleError
+    } = await db
+      .from("user_qr")
+      .select("*")
+      .limit(1000);
+
+    if (vehicleError) {
+      console.error(
+        "Globale Suche Fahrzeuge:",
+        vehicleError
+      );
+    }
+
+    (vehicles || []).forEach(vehicle => {
+
+      const searchable =
+        JSON.stringify(vehicle)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "🚗 Fahrzeug / QR",
+
+          title:
+            vehicle.qr_code ||
+            vehicle.id ||
+            "Fahrzeug",
+
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(vehicle)
+            )
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       💬 MELDUNGEN / SUPPORT
+       ===================================================== */
+
+    const {
+      data: messages,
+      error: messagesError
+    } = await db
+      .from("messages")
+      .select("*")
+      .limit(1000);
+
+    if (messagesError) {
+      console.error(
+        "Globale Suche Meldungen:",
+        messagesError
+      );
+    }
+
+    (messages || []).forEach(message => {
+
+      const searchable =
+        JSON.stringify(message)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "💬 Meldung / Support",
+          title:
+            "Support / Nachricht",
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(message)
+            )
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       💳 ABONNEMENTS
+       ===================================================== */
+
+    const {
+      data: subscriptions,
+      error: subscriptionsError
+    } = await db
+      .from("subscriptions")
+      .select("*")
+      .limit(1000);
+
+    if (subscriptionsError) {
+      console.error(
+        "Globale Suche Abonnements:",
+        subscriptionsError
+      );
+    }
+
+    (subscriptions || []).forEach(subscription => {
+
+      const searchable =
+        JSON.stringify(subscription)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "💳 Abonnement",
+
+          title:
+            subscription.email ||
+            subscription.plan_name ||
+            "Abonnement",
+
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(subscription)
+            )
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       📱 GERÄTE / PUSH
+       ===================================================== */
+
+    const {
+      data: devices,
+      error: devicesError
+    } = await db
+      .from("device_tokens")
+      .select("id,user_id,fcm_token,created_at")
+      .limit(1000);
+
+    if (devicesError) {
+      console.error(
+        "Globale Suche Geräte:",
+        devicesError
+      );
+    }
+
+    (devices || []).forEach(device => {
+
+      const searchable =
+        JSON.stringify(device)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "📱 Gerät",
+          title: "Push-Gerät",
+
+          detail: `
+            <strong>User ID:</strong>
+            ${escapeGlobalSearchHtml(
+              device.user_id || "-"
+            )}
+            <br>
+            <strong>Registriert:</strong>
+            ${
+              device.created_at
+                ? new Date(
+                    device.created_at
+                  ).toLocaleString("de-CH")
+                : "-"
+            }
+          `
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       🏢 FIRMENKUNDEN
+       ===================================================== */
+
+    const {
+      data: companies,
+      error: companiesError
+    } = await db
+      .from("companies")
+      .select("*")
+      .limit(1000);
+
+    if (companiesError) {
+      console.error(
+        "Globale Suche Firmen:",
+        companiesError
+      );
+    }
+
+    (companies || []).forEach(company => {
+
+      const searchable =
+        JSON.stringify(company)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "🏢 Firmenkunde",
+
+          title:
+            company.company_name ||
+            "Firma",
+
+          detail:
+            escapeGlobalSearchHtml(
+              JSON.stringify(company)
+            )
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       👥 FIRMEN-MITGLIEDER
+       ===================================================== */
+
+    const {
+      data: companyMembers,
+      error: membersError
+    } = await db
+      .from("company_members")
+      .select("*")
+      .limit(1000);
+
+    if (membersError) {
+      console.error(
+        "Globale Suche Firmen-Mitglieder:",
+        membersError
+      );
+    }
+
+    (companyMembers || []).forEach(member => {
+
+      const searchable =
+        JSON.stringify(member)
+          .toLowerCase();
+
+      if (
+        searchable.includes(searchTerm)
+      ) {
+
+        matches.push({
+          type: "👥 Firmenbenutzer",
+
+          title:
+            member.full_name ||
+            member.email ||
+            "Firmenbenutzer",
+
+          detail: `
+            <strong>E-Mail:</strong>
+            ${escapeGlobalSearchHtml(
+              member.email || "-"
+            )}
+            <br>
+            <strong>Telefon:</strong>
+            ${escapeGlobalSearchHtml(
+              member.phone || "-"
+            )}
+            <br>
+            <strong>Status:</strong>
+            ${escapeGlobalSearchHtml(
+              member.status || "-"
+            )}
+          `
+        });
+
+      }
+
+    });
+
+
+    /* =====================================================
+       🔍 KEINE ERGEBNISSE
+       ===================================================== */
+
+    if (!matches.length) {
+
+      results.innerHTML = `
+        <div style="
+          padding:20px;
+          background:#f8f9fa;
+          border-radius:8px;
+          text-align:center;
+        ">
+
+          🔍 Keine Ergebnisse für
+          <strong>
+            ${escapeGlobalSearchHtml(searchTerm)}
+          </strong>
+
+          <br><br>
+
+          <span style="color:#777;">
+            Es wurden Benutzer, Fahrzeuge,
+            Meldungen, Abonnements, Geräte
+            und Firmen durchsucht.
+          </span>
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    /* =====================================================
+       📋 ERGEBNISSE ANZEIGEN
+       ===================================================== */
+
+    results.innerHTML = `
+
+      <h3>
+        ${matches.length}
+        Ergebnis${matches.length === 1 ? "" : "se"}
+      </h3>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Bereich</th>
+            <th>Eintrag</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${matches
+            .slice(0, 100)
+            .map(item => `
+
+              <tr>
+
+                <td>
+                  ${item.type}
+                </td>
+
+                <td>
+                  <strong>
+                    ${escapeGlobalSearchHtml(
+                      item.title
+                    )}
+                  </strong>
+                </td>
+
+                <td style="
+                  word-break:break-word;
+                ">
+                  ${item.detail}
+                </td>
+
+              </tr>
+
+            `)
+            .join("")}
+
+        </tbody>
+
+      </table>
+
+    `;
+
+  } catch (error) {
+
+    console.error(
+      "Globale Suche Fehler:",
+      error
+    );
+
+    results.innerHTML = `
+
+      <div style="
+        padding:20px;
+        background:#fff3f3;
+        border-radius:8px;
+        color:#dc3545;
+      ">
+
+        ❌ Fehler bei der Suche:
+
+        <br><br>
+
+        ${escapeGlobalSearchHtml(
+          error.message
+        )}
+
+      </div>
+
+    `;
+
+  }
+}
+
+
+/* =====================================================
+   🔒 HTML SICHER MACHEN
+   ===================================================== */
+
+function escapeGlobalSearchHtml(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+async function showSubscriptions() {
+  const content = document.getElementById("content");
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>💳 Abonnemente verwalten</h2>
+
+      <div style="display:flex; gap:15px; margin-top:15px; flex-wrap:wrap;">
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; flex:1; min-width:180px; text-align:center;">
+          <small>Aktive Abos</small>
+          <h3 id="active-subs-count" style="margin:5px 0; color:#28a745;">0</h3>
+        </div>
+
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; flex:1; min-width:180px; text-align:center;">
+          <small>MRR (Umsatz)</small>
+          <h3 id="mrr-amount" style="margin:5px 0; color:#007bff;">CHF 0.00</h3>
+        </div>
+      </div>
+
+      <!-- MANUELLES ABO ERSTELLEN -->
+      <div style="margin-top:25px; padding:20px; background:#f8f9fa; border-radius:10px;">
+        <h3 style="margin-top:0;">➕ Abonnement manuell erstellen</h3>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;">
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">E-Mail</label>
+            <input
+              id="new-sub-email"
+              type="email"
+              placeholder="kunde@example.com"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Plan</label>
+            <select
+              id="new-sub-plan"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+              <option value="Kostenloses Jahr">Kostenloses Jahr</option>
+              <option value="Jahresabo">Jahresabo</option>
+              <option value="Monatsabo">Monatsabo</option>
+              <option value="Pro">Pro</option>
+              <option value="Manuell">Manuell</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Betrag (CHF)</label>
+            <input
+              id="new-sub-amount"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Laufzeit</label>
+            <select
+              id="new-sub-duration"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+              <option value="1year">1 Jahr</option>
+              <option value="1month">1 Monat</option>
+              <option value="custom">Benutzerdefiniert</option>
+              <option value="unlimited">Unbefristet</option>
+            </select>
+          </div>
+
+          <div id="custom-expiry-wrapper" style="display:none;">
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Ablaufdatum</label>
+            <input
+              id="new-sub-expiry"
+              type="date"
+              style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+            >
+          </div>
+
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="display:block; margin-bottom:5px; font-weight:bold;">Notiz</label>
+          <input
+            id="new-sub-note"
+            type="text"
+            placeholder="z.B. Erste 50 Nutzer – 1 Jahr kostenlos"
+            style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+          >
+        </div>
+
+        <button
+          id="create-sub-btn"
+          style="margin-top:15px; background:#28a745; color:white; border:none; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:bold;"
+        >
+          ➕ Abonnement aktivieren
+        </button>
+
+        <div id="sub-create-message" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- SUCHE -->
+      <div style="margin-top:25px;">
+        <h3>🔎 Abonnements</h3>
+
+        <input
+          id="subs-search"
+          type="text"
+          placeholder="Nach E-Mail oder Plan suchen..."
+          style="width:100%; max-width:500px; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"
+        >
+      </div>
+
+      <!-- TABELLE -->
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; margin-top:15px; min-width:850px;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid #ddd;">
+              <th style="padding:10px;">Benutzer</th>
+              <th style="padding:10px;">Plan</th>
+              <th style="padding:10px;">Betrag</th>
+              <th style="padding:10px;">Status</th>
+              <th style="padding:10px;">Ablaufdatum</th>
+              <th style="padding:10px;">Erstellt</th>
+              <th style="padding:10px;">Aktionen</th>
+            </tr>
+          </thead>
+
+          <tbody id="subs-table-body">
+            <tr>
+              <td colspan="7" style="padding:15px; text-align:center; color:#666;">
+                Daten werden geladen...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  const client = db;
+  let allSubscriptions = [];
+
+  // Laufzeit-Auswahl
+  const durationSelect = document.getElementById("new-sub-duration");
+  const customExpiryWrapper = document.getElementById("custom-expiry-wrapper");
+
+  durationSelect.addEventListener("change", () => {
+    customExpiryWrapper.style.display =
+      durationSelect.value === "custom" ? "block" : "none";
+  });
+
+  // Plan automatisch mit Betrag vorbelegen
+  const planSelect = document.getElementById("new-sub-plan");
+  const amountInput = document.getElementById("new-sub-amount");
+  const noteInput = document.getElementById("new-sub-note");
+
+  planSelect.addEventListener("change", () => {
+    const plan = planSelect.value;
+
+    if (plan === "Kostenloses Jahr") {
+      amountInput.value = "0";
+      durationSelect.value = "1year";
+      noteInput.value = "Erste 50 Nutzer – 1 Jahr kostenlos";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Jahresabo") {
+      amountInput.value = "49.90";
+      durationSelect.value = "1year";
+      noteInput.value = "";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Monatsabo") {
+      amountInput.value = "4.90";
+      durationSelect.value = "1month";
+      noteInput.value = "";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Pro") {
+      amountInput.value = "4.90";
+      durationSelect.value = "1month";
+      noteInput.value = "";
+      customExpiryWrapper.style.display = "none";
+    }
+
+    if (plan === "Manuell") {
+      amountInput.value = "0";
+      noteInput.value = "";
+    }
+  });
+
+  // Neues Abo erstellen
+  document.getElementById("create-sub-btn").addEventListener("click", async () => {
+    const email = document.getElementById("new-sub-email").value.trim().toLowerCase();
+    const plan = document.getElementById("new-sub-plan").value;
+    const amount = Number(document.getElementById("new-sub-amount").value || 0);
+    const duration = document.getElementById("new-sub-duration").value;
+    const customExpiry = document.getElementById("new-sub-expiry").value;
+    const note = document.getElementById("new-sub-note").value.trim();
+    const message = document.getElementById("sub-create-message");
+    const button = document.getElementById("create-sub-btn");
+
+    message.innerHTML = "";
+
+    if (!email) {
+      message.innerHTML = `<span style="color:#dc3545;">Bitte E-Mail-Adresse eingeben.</span>`;
+      return;
+    }
+
+    if (!email.includes("@")) {
+      message.innerHTML = `<span style="color:#dc3545;">Bitte eine gültige E-Mail-Adresse eingeben.</span>`;
+      return;
+    }
+
+    if (duration === "custom" && !customExpiry) {
+      message.innerHTML = `<span style="color:#dc3545;">Bitte ein Ablaufdatum auswählen.</span>`;
+      return;
+    }
+
+    let expiresAt = null;
+
+    if (duration === "1year") {
+      const date = new Date();
+      date.setFullYear(date.getFullYear() + 1);
+      expiresAt = date.toISOString();
+    }
+
+    if (duration === "1month") {
+      const date = new Date();
+      date.setMonth(date.getMonth() + 1);
+      expiresAt = date.toISOString();
+    }
+
+    if (duration === "custom") {
+      const date = new Date(customExpiry + "T23:59:59");
+      expiresAt = date.toISOString();
+    }
+
+    if (duration === "unlimited") {
+      expiresAt = null;
+    }
+
+    button.disabled = true;
+    button.textContent = "⏳ Wird aktiviert...";
+
+    try {
+      const { error } = await client
+        .from("subscriptions")
+        .insert({
+          email: email,
+          status: "active",
+          plan_name: plan,
+          amount: amount,
+          expires_at: expiresAt
+        });
+
+      if (error) {
+        console.error("Create subscription error:", error);
+        message.innerHTML = `<span style="color:#dc3545;">Fehler: ${error.message}</span>`;
+     } else {
+
+  // 📧 E-Mail automatisch senden
+  try {
+    const expiryText = expiresAt
+      ? new Date(expiresAt).toLocaleDateString("de-CH")
+      : "Unbefristet";
+
+    const emailMessage = `
+Hallo,
+
+dein PingCar Abonnement wurde erfolgreich aktiviert.
+
+Plan: ${plan}
+Preis: CHF ${amount.toFixed(2)}
+Gültig bis: ${expiryText}
+
+Du kannst PingCar jetzt vollständig nutzen.
+
+Vielen Dank, dass du PingCar nutzt!
+
+Dein PingCar Team
+    `.trim();
+
+    const { data: emailData, error: emailError } = await db.functions.invoke(
+      "send-email",
+      {
+        body: {
+          to: email,
+          subject: "🎉 Dein PingCar Abonnement wurde aktiviert",
+          message: emailMessage
+        }
+      }
+    );
+
+    if (emailError) {
+      console.error("E-Mail Fehler:", emailError);
+      message.innerHTML = `
+        <span style="color:#28a745; font-weight:bold;">
+          ✅ Abonnement aktiviert, aber E-Mail konnte nicht gesendet werden.
+        </span>
+      `;
+    } else if (emailData?.error) {
+      console.error("E-Mail Fehler:", emailData.error);
+      message.innerHTML = `
+        <span style="color:#28a745; font-weight:bold;">
+          ✅ Abonnement aktiviert, aber E-Mail konnte nicht gesendet werden.
+        </span>
+      `;
+    } else {
+      message.innerHTML = `
+        <span style="color:#28a745; font-weight:bold;">
+          ✅ Abonnement aktiviert & 📧 E-Mail gesendet.
+        </span>
+      `;
+    }
+  } catch (emailErr) {
+    console.error("E-Mail Fehler:", emailErr);
+
+    message.innerHTML = `
+      <span style="color:#28a745; font-weight:bold;">
+        ✅ Abonnement aktiviert, aber E-Mail konnte nicht gesendet werden.
+      </span>
+    `;
+  }
+
+  document.getElementById("new-sub-email").value = "";
+  document.getElementById("new-sub-amount").value = "0";
+  document.getElementById("new-sub-plan").value = "Kostenloses Jahr";
+  document.getElementById("new-sub-duration").value = "1year";
+  document.getElementById("new-sub-expiry").value = "";
+  document.getElementById("new-sub-note").value = "";
+  customExpiryWrapper.style.display = "none";
+
+  await loadSubscriptions();
+}
+    } catch (err) {
+      console.error(err);
+      message.innerHTML = `<span style="color:#dc3545;">Unerwarteter Fehler.</span>`;
+    }
+
+    button.disabled = false;
+    button.textContent = "➕ Abonnement aktivieren";
+  });
+
+  async function loadSubscriptions() {
+    const tbody = document.getElementById("subs-table-body");
+
+    const { data: subs, error } = await client
+      .from("subscriptions")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase Error:", error);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="padding:15px; text-align:center; color:#dc3545;">
+            Fehler beim Laden: ${error.message}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    allSubscriptions = subs || [];
+    renderSubscriptions();
+  }
+
+  function renderSubscriptions() {
+    const tbody = document.getElementById("subs-table-body");
+    const search = (document.getElementById("subs-search").value || "").toLowerCase();
+
+    const filtered = allSubscriptions.filter(sub => {
+      const email = String(sub.email || "").toLowerCase();
+      const plan = String(sub.plan_name || "").toLowerCase();
+      return email.includes(search) || plan.includes(search);
+    });
+
+    if (!filtered.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="padding:15px; text-align:center; color:#666;">
+            Keine Abonnements vorhanden
+          </td>
+        </tr>
+      `;
+    } else {
+      tbody.innerHTML = filtered.map(sub => {
+        const isActive = sub.status === "active";
+
+        const expiryDate = sub.expires_at
+          ? new Date(sub.expires_at).toLocaleDateString("de-CH")
+          : "Unbefristet";
+
+        const createdDate = sub.created_at
+          ? new Date(sub.created_at).toLocaleDateString("de-CH")
+          : "-";
+
+        const statusText = isActive ? "Aktiv" : "Inaktiv";
+
+        return `
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:10px;">
+              ${escapeGlobalSearchHtml(sub.email || "Unbekannt")}
+            </td>
+
+            <td style="padding:10px;">
+              ${escapeGlobalSearchHtml(sub.plan_name || "-")}
+            </td>
+
+            <td style="padding:10px;">
+              CHF ${Number(sub.amount || 0).toFixed(2)}
+            </td>
+
+            <td style="padding:10px;">
+              <span style="
+                background:${isActive ? "#d4edda" : "#f8d7da"};
+                color:${isActive ? "#155724" : "#721c24"};
+                padding:4px 8px;
+                border-radius:4px;
+                font-size:12px;
+                font-weight:bold;
+              ">
+                ${statusText}
+              </span>
+            </td>
+
+            <td style="padding:10px;">
+              ${expiryDate}
+            </td>
+
+            <td style="padding:10px;">
+              ${createdDate}
+            </td>
+
+            <td style="padding:10px; white-space:nowrap;">
+              ${
+                isActive
+                  ? `
+                    <button
+                      onclick="window.deactivateSubscription(${sub.id})"
+                      style="background:#ffc107; color:#212529; border:none; padding:7px 10px; border-radius:5px; cursor:pointer; margin-right:5px;"
+                    >
+                      ⏸ Deaktivieren
+                    </button>
+                  `
+                  : `
+                    <button
+                      onclick="window.activateSubscription(${sub.id})"
+                      style="background:#28a745; color:white; border:none; padding:7px 10px; border-radius:5px; cursor:pointer; margin-right:5px;"
+                    >
+                      ▶ Aktivieren
+                    </button>
+                  `
+              }
+
+              <button
+                onclick="window.deleteSubscription(${sub.id})"
+                style="background:#dc3545; color:white; border:none; padding:7px 10px; border-radius:5px; cursor:pointer;"
+              >
+                🗑 Löschen
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    const active = allSubscriptions.filter(sub => sub.status === "active");
+
+    document.getElementById("active-subs-count").textContent = active.length;
+
+    const mrr = active.reduce((total, sub) => {
+      return total + Number(sub.amount || 0);
+    }, 0);
+
+    document.getElementById("mrr-amount").textContent =
+      `CHF ${mrr.toFixed(2)}`;
+  }
+
+  document.getElementById("subs-search").addEventListener("input", renderSubscriptions);
+
+// DEAKTIVIEREN
+window.deactivateSubscription = async function(id) {
+  if (!confirm("Dieses Abonnement wirklich deaktivieren?")) {
+    return;
+  }
+
+  // Abonnement zuerst laden
+  const { data: subscription, error: fetchError } = await client
+    .from("subscriptions")
+    .select("email, plan_name, amount, expires_at")
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !subscription) {
+    alert("Abonnement konnte nicht geladen werden.");
+    console.error(fetchError);
+    return;
+  }
+
+  // Abonnement deaktivieren
+  const { error } = await client
+    .from("subscriptions")
+    .update({ status: "inactive" })
+    .eq("id", id);
+
+  if (error) {
+    alert("Fehler: " + error.message);
+    return;
+  }
+
+  // 📧 E-Mail an den Benutzer senden
+  try {
+    const expiryText = subscription.expires_at
+      ? new Date(subscription.expires_at).toLocaleDateString("de-CH")
+      : "Unbefristet";
+
+    const emailMessage = `
+Hallo,
+
+dein PingCar Abonnement wurde deaktiviert.
+
+Plan: ${subscription.plan_name || "-"}
+Preis: CHF ${Number(subscription.amount || 0).toFixed(2)}
+Status: Inaktiv
+Gültig bis: ${expiryText}
+
+Wenn du PingCar wieder nutzen möchtest, kann dein Abonnement erneut aktiviert werden.
+
+Vielen Dank, dass du PingCar nutzt!
+
+Dein PingCar Team
+    `.trim();
+
+    const { data: emailData, error: emailError } =
+      await db.functions.invoke("send-email", {
+        body: {
+          to: subscription.email,
+          subject: "⚠️ Dein PingCar Abonnement wurde deaktiviert",
+          message: emailMessage
+        }
+      });
+
+    if (emailError || emailData?.error) {
+      console.error("E-Mail Fehler:", emailError || emailData?.error);
+      alert("Abonnement deaktiviert, aber die E-Mail konnte nicht gesendet werden.");
+    } else {
+      alert("✅ Abonnement deaktiviert & 📧 E-Mail gesendet.");
+    }
+
+  } catch (emailErr) {
+    console.error("E-Mail Fehler:", emailErr);
+    alert("Abonnement deaktiviert, aber die E-Mail konnte nicht gesendet werden.");
+  }
+
+  await loadSubscriptions();
+};
+
+  // AKTIVIEREN
+  window.activateSubscription = async function(id) {
+    if (!confirm("Dieses Abonnement wieder aktivieren?")) {
+      return;
+    }
+
+    const { error } = await client
+      .from("subscriptions")
+      .update({ status: "active" })
+      .eq("id", id);
+
+    if (error) {
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await loadSubscriptions();
+  };
+
+  // LÖSCHEN
+  window.deleteSubscription = async function(id) {
+    if (!confirm("ACHTUNG: Dieses Abonnement wirklich endgültig löschen?")) {
+      return;
+    }
+
+    const { error } = await client
+      .from("subscriptions")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert("Fehler: " + error.message);
+      return;
+    }
+
+    await loadSubscriptions();
+  };
+
+  await loadSubscriptions();
+}
+
+
+requireAdmin().then(isAdmin => {
+  if (isAdmin) showDashboard();
+});
 </script>
-
+<script src="firmen.js"></script>
 </body>
 
 </html>
