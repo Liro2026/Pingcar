@@ -3618,19 +3618,82 @@ async function showSubscriptions() {
       if (error) {
         console.error("Create subscription error:", error);
         message.innerHTML = `<span style="color:#dc3545;">Fehler: ${error.message}</span>`;
-      } else {
-        message.innerHTML = `<span style="color:#28a745; font-weight:bold;">✅ Abonnement erfolgreich aktiviert.</span>`;
+     } else {
 
-        document.getElementById("new-sub-email").value = "";
-        document.getElementById("new-sub-amount").value = "0";
-        document.getElementById("new-sub-plan").value = "Kostenloses Jahr";
-        document.getElementById("new-sub-duration").value = "1year";
-        document.getElementById("new-sub-expiry").value = "";
-        document.getElementById("new-sub-note").value = "";
-        customExpiryWrapper.style.display = "none";
+  // 📧 E-Mail automatisch senden
+  try {
+    const expiryText = expiresAt
+      ? new Date(expiresAt).toLocaleDateString("de-CH")
+      : "Unbefristet";
 
-        await loadSubscriptions();
+    const emailMessage = `
+Hallo,
+
+dein PingCar Abonnement wurde erfolgreich aktiviert.
+
+Plan: ${plan}
+Preis: CHF ${amount.toFixed(2)}
+Gültig bis: ${expiryText}
+
+Du kannst PingCar jetzt vollständig nutzen.
+
+Vielen Dank, dass du PingCar nutzt!
+
+Dein PingCar Team
+    `.trim();
+
+    const { data: emailData, error: emailError } = await db.functions.invoke(
+      "send-email",
+      {
+        body: {
+          to: email,
+          subject: "🎉 Dein PingCar Abonnement wurde aktiviert",
+          message: emailMessage
+        }
       }
+    );
+
+    if (emailError) {
+      console.error("E-Mail Fehler:", emailError);
+      message.innerHTML = `
+        <span style="color:#28a745; font-weight:bold;">
+          ✅ Abonnement aktiviert, aber E-Mail konnte nicht gesendet werden.
+        </span>
+      `;
+    } else if (emailData?.error) {
+      console.error("E-Mail Fehler:", emailData.error);
+      message.innerHTML = `
+        <span style="color:#28a745; font-weight:bold;">
+          ✅ Abonnement aktiviert, aber E-Mail konnte nicht gesendet werden.
+        </span>
+      `;
+    } else {
+      message.innerHTML = `
+        <span style="color:#28a745; font-weight:bold;">
+          ✅ Abonnement aktiviert & 📧 E-Mail gesendet.
+        </span>
+      `;
+    }
+  } catch (emailErr) {
+    console.error("E-Mail Fehler:", emailErr);
+
+    message.innerHTML = `
+      <span style="color:#28a745; font-weight:bold;">
+        ✅ Abonnement aktiviert, aber E-Mail konnte nicht gesendet werden.
+      </span>
+    `;
+  }
+
+  document.getElementById("new-sub-email").value = "";
+  document.getElementById("new-sub-amount").value = "0";
+  document.getElementById("new-sub-plan").value = "Kostenloses Jahr";
+  document.getElementById("new-sub-duration").value = "1year";
+  document.getElementById("new-sub-expiry").value = "";
+  document.getElementById("new-sub-note").value = "";
+  customExpiryWrapper.style.display = "none";
+
+  await loadSubscriptions();
+}
     } catch (err) {
       console.error(err);
       message.innerHTML = `<span style="color:#dc3545;">Unerwarteter Fehler.</span>`;
