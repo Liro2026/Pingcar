@@ -100,6 +100,20 @@ export default {
   per_month: "per maand",
   per_year: "per jaar",
   select_monthly: "Kies maandabonnement",
-  select_yearly: "Kies jaarabonnement"
+  select_yearly: "Kies jaarabonnement",
+  phonePrivate: "Uw telefoonnummer blijft privé.",
+personalDataPrivate: "Naam en contactgegevens worden niet weergegeven.",
+ownerNotified: "De voertuigeigenaar wordt onmiddellijk geïnformeerd.",
+privacyFocus: "Ontwikkeld met focus op gegevensbescherming.",
+  heroTitle: "🚗 Heb je een auto? Dan heb je PingCar nodig.",
+  heroSubtitle: "Blijf bereikbaar zonder je telefoonnummer openbaar te delen.",
+  heroQr: "✅ QR-code op het voertuig",
+  heroContact: "✅ Rechtstreeks gecontacteerd worden",
+  heroPrivacy: "✅ Je telefoonnummer blijft privé",
+  heroTrial: "🎁 7 dagen gratis uitproberen",
+  heroRegister: "🚗 Registreer nu mijn voertuig →",
+  first_year_offer: "29,90 CHF in het eerste jaar",
+  promo_code_text: "Met de code",
+  after_first_year: "Daarna 49,90 CHF per jaar"
 
 };
