@@ -56,6 +56,20 @@ export default {
   per_month: "havonta",
   per_year: "évente",
   select_monthly: "Havi csomag kiválasztása",
-  select_yearly: "Éves csomag kiválasztása"
+  select_yearly: "Éves csomag kiválasztása",
+  phonePrivate: "A telefonszáma privát marad.",
+personalDataPrivate: "A név és az elérhetőségek nem jelennek meg.",
+ownerNotified: "A jármű tulajdonosa azonnal értesítést kap.",
+privacyFocus: "Az adatvédelemre összpontosítva fejlesztve.",
+  heroTitle: "🚗 Van autója? Akkor szüksége van a PingCarra.",
+  heroSubtitle: "Legyen elérhető kapcsolatfelvételre anélkül, hogy nyilvánosan megosztaná telefonszámát.",
+  heroQr: "✅ QR-kód a járművön",
+  heroContact: "✅ Közvetlenül felvehetik Önnel a kapcsolatot",
+  heroPrivacy: "✅ Telefonszáma privát marad",
+  heroTrial: "🎁 7 napos ingyenes próba",
+  heroRegister: "🚗 Regisztrálja járművét most →",
+  first_year_offer: "29,90 CHF az első évben",
+  promo_code_text: "A kóddal",
+  after_first_year: "Utána 49,90 CHF évente"
 
 };
