@@ -44,6 +44,21 @@ export default {
   welcome: "Dobro došli u PingCar",
   contactTitle: "Kontakt",
   footerText: "PingCar – siguran način kontaktiranja vlasnika vozila.",
-  rights: "Sva prava pridržana."
+  rights: "Sva prava pridržana.",
+  phonePrivate: "Vaš telefonski broj ostaje privatan.",
+personalDataPrivate: "Ime i kontaktni podaci nisu prikazani.",
+ownerNotified: "Vlasnik vozila je odmah obaviješten.",
+privacyFocus: "Razvijeno s fokusom na zaštitu podataka.",
+  heroTitle: "🚗 Imate li automobil? Onda vam treba PingCar.",
+  heroSubtitle: "Budite dostupni za kontakt bez javnog dijeljenja svog telefonskog broja.",
+  heroQr: "✅ QR kod na vozilu",
+  heroContact: "✅ Budite izravno kontaktirani",
+  heroPrivacy: "✅ Vaš telefonski broj ostaje privatan",
+  heroTrial: "🎁 7 dana besplatnog probnog razdoblja",
+  heroRegister: "🚗 Registrirajte svoje vozilo sada →",
+  first_year_offer: "29,90 CHF prve godine",
+  promo_code_text: "S kodom",
+  after_first_year: "Nakon toga 49,90 CHF godišnje"
 
 };
+
