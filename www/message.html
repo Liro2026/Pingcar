@@ -993,43 +993,48 @@ async function sendMessage(){
      CONTENT FILTER
   ========================= */
 
+   // Normalize text to catch simple attempts to bypass the filter.
+  const normalizedMessage = message
+    .normalize("NFKC")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
   const blockedPatterns = [
-    /\bkill\s+(you|him|her|them)\b/i,
-    /\bgo\s+die\b/i,
-    /\bi\s+will\s+kill\b/i,
-    /\bthreaten\b/i,
-    /\bnazi\b/i,
-    /\bporn\b/i,
-    /\bporno\b/i,
-    /\bvergewalt/i,
-    /\bhurensohn\b/i,
-    /\bscheiße\b/i,
-    /\bfick\b/i,
-    /\bputana\b/i,
-    /\bmerda\b/i,
-    /\bconnard\b/i,
-    /\bpute\b/i,
-    /\bkurva\b/i,
-    /\bjebem\b/i,
-    /\bpička\b/i,
-    /\bkurac\b/i,
-    /\bkurwa\b/i,
-    /\bszex\b/i
+    // Threats and violence
+    /\b(kill you|kill him|kill her|kill them|go die|i will kill|i'll kill|shoot you|stab you|rape you)\b/i,
+    /\b(ich bring dich um|ich werde dich toten|ich werde dich verletzen|vergewaltig)\b/i,
+    /\b(je vais te tuer|je vais te frapper|je vais te violer)\b/i,
+    /\b(ti ammazzo|ti uccido|ti stupro|stupro)\b/i,
+    /\b(do te vras|kam me te vra|ta vras)\b/i,
+    /\b(ubicu te|ubicu cu te|ubit cu te|zaklacu te)\b/i,
+
+    // Sexual exploitation and abuse
+    /\b(child porn|child pornography|revenge porn|bestiality|pedophile|paedophile)\b/i,
+    /\b(kinderporn|kinderporno|kinder missbrauch|pedophil)\b/i,
+    /\b(pornografia minorile|abuso sessuale|pedofilo)\b/i,
+
+    // Severe insults and hateful content
+    /\b(nazi|white supremacist|kill all jews|kill all muslims|kill all christians)\b/i,
+    /\b(hurensohn|wichser|schlampe|fick dich|arschloch)\b/i,
+    /\b(connard|connasse|salope|nique ta mere)\b/i,
+    /\b(stronzo|puttana|bastardo|vaffanculo)\b/i,
+    /\b(kurva|jebem|picka|kurac|govno|jebi se)\b/i,
+    /\b(orospu|serefsiz)\b/i
   ];
 
-  const containsBlockedContent =
-    blockedPatterns.some(
-      pattern => pattern.test(message)
-    );
+  const containsBlockedContent = blockedPatterns.some(
+    pattern => pattern.test(normalizedMessage)
+  );
 
-  if(containsBlockedContent){
-
+  if (containsBlockedContent) {
     statusBox.textContent =
-      "Diese Nachricht enthält unzulässige Inhalte.";
-
-    statusBox.className =
-      "status error";
-
+      "Diese Nachricht enthält unzulässige oder beleidigende Inhalte.";
+    statusBox.className = "status error";
     return;
   }
 
