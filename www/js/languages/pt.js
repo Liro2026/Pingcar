@@ -1,108 +1,116 @@
 export default {
 
-  home: "Strona główna",
-
+  home: "Início",
   qr: "QR",
-
-  contact: "Kontakt",
-
-  dashboard: "Panel",
-
-  messages: "Wiadomości",
+  contact: "Contacto",
+  dashboard: "Painel",
+  messages: "Mensagens",
 
   title: "PingCar",
 
-  description: "Bezpieczny sposób kontaktowania się z właścicielami pojazdów bez numerów telefonów i danych osobowych.",
+  description: "Uma forma segura de contactar proprietários de veículos sem número de telefone ou dados pessoais.",
 
-  available: "Darmowa rejestracja",
+  available: "Registo gratuito",
 
-  how: "Jak działa PingCar",
+  how: "Como funciona o PingCar",
 
-  afterScan: "Po zeskanowaniu",
+  afterScan: "Após a leitura",
 
-  register: "Rejestracja",
+  register: "Registar",
 
-  registerText: "Utwórz bezpłatne konto w PingCar.",
+  registerText: "Crie gratuitamente a sua conta PingCar.",
 
-  getQr: "Otrzymaj kod QR",
+  getQr: "Obter código QR",
 
-  getQrText: "Otrzymasz osobisty kod QR dla swojego pojazdu.",
+  getQrText: "Receberá um código QR pessoal para o seu veículo.",
 
-  placeQr: "Umieść kod QR",
+  placeQr: "Colocar código QR",
 
-  placeQrText: "Umieść kod QR w widocznym miejscu na swoim pojeździe.",
+  placeQrText: "Coloque o código QR num local visível do seu veículo.",
 
-  scanQr: "Zeskanuj kod QR",
+  scanQr: "Ler código QR",
 
-  scanQrText: "Inna osoba skanuje kod QR za pomocą swojego smartfona.",
+  scanQrText: "Outra pessoa lê o código QR com o seu smartphone.",
 
-  notification: "Wiadomość",
+  notification: "Notificação",
 
-  notificationText: "Natychmiast otrzymasz powiadomienie przez PingCar.",
+  notificationText: "Receberá imediatamente uma mensagem através do PingCar.",
 
-  blocked: "Mój pojazd blokuje przejazd",
+  blocked: "O meu veículo está a bloquear a passagem",
 
-  lights: "Światła są włączone",
+  lights: "As luzes estão acesas",
 
-  damaged: "Mój pojazd jest uszkodzony",
+  damaged: "O veículo está danificado",
 
-  forgot: "Ktoś coś zostawił",
+  forgot: "Algo foi esquecido",
 
-  otherMessage: "Inna wiadomość",
+  otherMessage: "Outra mensagem",
 
-  noPhone: "Bez numeru telefonu",
+  noPhone: "Sem número de telefone",
 
-  noPersonalData: "Bez danych osobowych",
+  noPersonalData: "Sem dados pessoais",
 
-  fastNotification: "Szybkie powiadomienie",
+  fastNotification: "Notificação rápida",
 
-  privacy: "Prywatność",
+  privacy: "Privacidade",
 
-  discover: "Odkryj PingCar",
+  discover: "Descubra o PingCar",
 
-  monthly: "Subskrypcja miesięczna",
+  monthly: "Subscrição mensal",
 
-  yearly: "Subskrypcja roczna",
+  yearly: "Subscrição anual",
 
-  premiumText: "Wypróbuj wszystkie funkcje Premium za darmo.",
+  premiumText: "Experimente todas as funcionalidades Premium gratuitamente.",
 
-  perMonth: "miesięcznie",
+  perMonth: "por mês",
 
-  perYear: "rocznie",
+  perYear: "por ano",
 
-  name: "Twoje imię",
+  name: "O seu nome",
 
-  email: "Twój adres e-mail",
+  email: "O seu endereço de e-mail",
 
-  password: "Hasło",
+  password: "Palavra-passe",
 
-  login: "Zaloguj się",
+  login: "Iniciar sessão",
 
-  forgotPassword: "Nie pamiętasz hasła?",
+  forgotPassword: "Esqueceu-se da palavra-passe?",
 
-  sendLink: "Wyślij link",
+  sendLink: "Enviar ligação",
 
-  logout: "Wyloguj się",
+  logout: "Terminar sessão",
 
-  contactTitle: "Kontakt",
+  contactTitle: "Contacto",
 
-  footerText: "PingCar – bezpieczne rozwiązanie dla właścicieli pojazdów.",
+  footerText: "PingCar – uma solução segura para proprietários de veículos.",
 
-  rights: "Wszelkie prawa zastrzeżone.",
-  phonePrivate: "Twój numer telefonu pozostaje prywatny.",
-personalDataPrivate: "Imię i dane kontaktowe nie są wyświetlane.",
-ownerNotified: "Właściciel pojazdu jest natychmiast informowany.",
-privacyFocus: "Opracowano z naciskiem na ochronę danych.",
-  heroTitle: "🚗 Masz samochód? W takim razie potrzebujesz PingCar.",
-  heroSubtitle: "Pozostań dostępny bez publicznego udostępniania swojego numeru telefonu.",
-  heroQr: "✅ Kod QR na pojeździe",
-  heroContact: "✅ Odbieraj bezpośredni kontakt",
-  heroPrivacy: "✅ Twój numer telefonu pozostaje prywatny",
-  heroTrial: "🎁 7 dni bezpłatnego okresu próbnego",
-  heroRegister: "🚗 Zarejestruj mój pojazd teraz →",
-  first_year_offer: "29,90 CHF w pierwszym roku",
-  promo_code_text: "Z kodem",
-  after_first_year: "Następnie 49,90 CHF rocznie"
-
+  rights: "Todos os direitos reservados.",
+  trial_heading: "🚀 Experimente grátis por 7 dias.",
+  trial_subheading: "Teste todas as funcionalidades Premium gratuitamente.",
+  now_new: "⭐ Novo:",
+  trial_bullet_1: "7 dias de teste grátis.",
+  trial_bullet_2: "Sem pagamento hoje.",
+  trial_bullet_3: "Cancele a qualquer momento.",
+  monthly_plan: "📅 Subscrição Mensal",
+  yearly_plan: "⭐ Subscrição Anual",
+  per_month: "por mês",
+  per_year: "por ano",
+  select_monthly: "Escolher plano mensal",
+  select_yearly: "Escolher plano anual",
+  phonePrivate: "O seu número de telefone permanece privado.",
+personalDataPrivate: "O nome e os dados de contacto não são apresentados.",
+ownerNotified: "O proprietário do veículo é informado imediatamente.",
+privacyFocus: "Desenvolvido com foco na proteção de dados.",
+  heroTitle: "🚗 Tem um carro? Então precisa do PingCar.",
+  heroSubtitle: "Fique disponível para contacto sem partilhar publicamente o seu número de telefone.",
+  heroQr: "✅ Código QR no veículo",
+  heroContact: "✅ Seja contactado diretamente",
+  heroPrivacy: "✅ O seu número de telefone permanece privado",
+  heroTrial: "🎁 7 dias de teste grátis",
+  heroRegister: "🚗 Registar o meu veículo agora →",
+  first_year_offer: "29,90 CHF no primeiro ano",
+  promo_code_text: "Com o código",
+  after_first_year: "Depois, 49,90 CHF por ano"
 
 };
+
