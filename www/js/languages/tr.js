@@ -56,5 +56,19 @@ export default {
   per_month: "aylık",
   per_year: "yıllık",
   select_monthly: "Aylık planı seç",
-  select_yearly: "Yıllık planı seç"
+  select_yearly: "Yıllık planı seç",
+  phonePrivate: "Telefon numaranız gizli kalır.",
+personalDataPrivate: "İsim ve iletişim bilgileri görüntülenmez.",
+ownerNotified: "Araç sahibi hemen bilgilendirilir.",
+privacyFocus: "Veri korumasına odaklanılarak geliştirilmiştir.",
+  heroTitle: "🚗 Arabanız var mı? O zaman PingCar'a ihtiyacınız var.",
+  heroSubtitle: "Telefon numaranızı herkese açık şekilde paylaşmadan ulaşılabilir olun.",
+  heroQr: "✅ Araç üzerindeki QR kod",
+  heroContact: "✅ Doğrudan sizinle iletişime geçilebilir",
+  heroPrivacy: "✅ Telefon numaranız gizli kalır",
+  heroTrial: "🎁 7 gün ücretsiz deneme",
+  heroRegister: "🚗 Aracımı şimdi kaydet →",
+  first_year_offer: "İlk yıl 29,90 CHF",
+  promo_code_text: "Kod ile",
+  after_first_year: "Sonrasında yıllık 49,90 CHF"
 };
