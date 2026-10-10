@@ -15,6 +15,7 @@ export default {
   afterScan: "Nach dem Scannen",
 
   notification: "Benachrichtigung",
+  notificationText: "Sie erhalten sofort eine Nachricht in der PingCar-App.",
 
   blocked: "Fahrzeug ist blockiert",
   lights: "Lichter sind eingeschaltet",
@@ -23,9 +24,14 @@ export default {
   otherMessage: "Andere Nachricht",
 
   noPhone: "Ohne Telefonnummer",
+  phonePrivate: "Ihre Telefonnummer bleibt privat.",
   noPersonalData: "Ohne persönliche Daten",
+  fastNotification: "Schnelle Benachrichtigung",
+  ownerNotified: "Der Fahrzeughalter wird sofort informiert.",
+  personalDataPrivate: "Name und Kontaktdaten werden nicht angezeigt.",
 
   privacy: "Datenschutz",
+  privacyFocus: "Entwickelt mit Fokus auf Datenschutz.",
   discover: "PingCar entdecken",
 
   monthly: "Monatliches Abonnement",
@@ -87,5 +93,16 @@ export default {
   per_month: "pro Monat",
   per_year: "pro Jahr",
   select_monthly: "Monatsabo wählen",
-  select_yearly: "Jahresabo wählen"
+  select_yearly: "Jahresabo wählen",
+  heroTitle: "🚗 Hast du ein Fahrzeug? Dann brauchst du PingCar.",
+  heroSubtitle: "Erreichbar sein, ohne deine Telefonnummer öffentlich zu teilen.",
+  heroQr: "✅ QR-Code am Fahrzeug",
+  heroContact: "✅ Direkt kontaktiert werden",
+  heroPrivacy: "✅ Telefonnummer bleibt privat",
+  heroTrial: "🎁 7 Tage kostenlos testen",
+  heroRegister: "🚗 Jetzt mein Fahrzeug registrieren →",
+  first_year_offer: "29,90 CHF im 1. Jahr",
+  promo_code_text: "Mit dem Code",
+  after_first_year: "Danach 49,90 CHF pro Jahr"
 };
+
