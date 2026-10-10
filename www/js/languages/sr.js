@@ -56,5 +56,20 @@ export default {
   per_month: "mesečno",
   per_year: "godišnje",
   select_monthly: "Izaberi mesečnu pretplatu",
-  select_yearly: "Izaberi godišnju pretplatu"
+  select_yearly: "Izaberi godišnju pretplatu",
+  phonePrivate: "Vaš broj telefona ostaje privatan.",
+personalDataPrivate: "Ime i kontakt podaci nisu prikazani.",
+ownerNotified: "Vlasnik vozila je odmah obavešten.",
+privacyFocus: "Razvijeno sa fokusom na zaštitu podataka.",
+  heroTitle: "🚗 Imate automobil? Onda vam je potreban PingCar.",
+  heroSubtitle: "Budite dostupni za kontakt bez javnog deljenja svog broja telefona.",
+  heroQr: "✅ QR kod na vozilu",
+  heroContact: "✅ Budite direktno kontaktirani",
+  heroPrivacy: "✅ Vaš broj telefona ostaje privatan",
+  heroTrial: "🎁 7 dana besplatnog probnog perioda",
+  heroRegister: "🚗 Registrujte moje vozilo sada →",
+  first_year_offer: "29,90 CHF prve godine",
+  promo_code_text: "Sa kodom",
+  after_first_year: "Nakon toga 49,90 CHF godišnje"
 };
+
