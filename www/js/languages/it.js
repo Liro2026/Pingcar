@@ -57,5 +57,19 @@ export default {
   per_month: "al mese",
   per_year: "all'anno",
   select_monthly: "Scegli l'abbonamento mensile",
-  select_yearly: "Scegli l'abbonamento annuale"
+  select_yearly: "Scegli l'abbonamento annuale",
+  phonePrivate: "Il tuo numero di telefono rimane privato.",
+personalDataPrivate: "Il nome e i dati di contatto non vengono visualizzati.",
+ownerNotified: "Il proprietario del veicolo viene informato immediatamente.",
+privacyFocus: "Sviluppato con particolare attenzione alla protezione dei dati.",
+  heroTitle: "🚗 Hai un'auto? Allora hai bisogno di PingCar.",
+  heroSubtitle: "Rimani raggiungibile senza condividere pubblicamente il tuo numero di telefono.",
+  heroQr: "✅ Codice QR sul veicolo",
+  heroContact: "✅ Puoi essere contattato direttamente",
+  heroPrivacy: "✅ Il tuo numero di telefono rimane privato",
+  heroTrial: "🎁 7 giorni di prova gratuita",
+  heroRegister: "🚗 Registra ora il mio veicolo →",
+  first_year_offer: "29,90 CHF il primo anno",
+  promo_code_text: "Con il codice",
+  after_first_year: "Dopodiché 49,90 CHF all'anno"
 };
