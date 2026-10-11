@@ -204,8 +204,6 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('pt'); return false;"><span class="flag">🇵🇹</span> Português (PT)</a>
     <a href="#" onclick="PingCarLanguage.set('mk'); return false;"><span class="flag">🇲🇰</span> Македонски (MK)</a>
     <a href="#" onclick="PingCarLanguage.set('nl'); return false;"><span class="flag">🇳🇱</span> Nederlands (NL)</a>
-    <a href="#" onclick="PingCarLanguage.set('sv'); return false;"><span class="flag">🇸🇪</span> Svenska (SE)</a>
-    <a href="#" onclick="PingCarLanguage.set('ro'); return false;"><span class="flag">🇷🇴</span> Română (RO)</a>
   </div>
 </div>
 
@@ -322,19 +320,15 @@ margin-top:50px;
 </div>
 
 <div style="text-align:center; margin:30px 0;">
-  <h1 style="color:red;">
-🚀 7 Tage kostenlos testen.
+ <h1 style="color:red;" data-i18n="trial_heading">
+  🚀 7 Tage kostenlos testen.
 </h1>
-  <p>
-Teste alle Premium-Funktionen kostenlos.<br><br>
-
-<strong>⭐ Jetzt neu:</strong><br>
-
-7 Tage kostenlos testen.<br>
-
-Keine Zahlung heute.<br>
-
-Jederzeit kündbar.
+<p>
+  <span data-i18n="trial_subheading">Teste alle Premium-Funktionen kostenlos.</span><br><br>
+  <strong data-i18n="now_new">⭐ Jetzt neu:</strong><br>
+  <span data-i18n="trial_bullet_1">7 Tage kostenlos testen.</span><br>
+  <span data-i18n="trial_bullet_2">Keine Zahlung heute.</span><br>
+  <span data-i18n="trial_bullet_3">Jederzeit kündbar.</span>
 </p>
 
 <script async src="https://js.stripe.com/v3/buy-button.js"></script>
@@ -342,26 +336,26 @@ Jederzeit kündbar.
 <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:25px;">
 
   <div style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;width:280px;text-align:center;">
-    <h3>📅 Monatsabo</h3>
+    <h3 data-i18n="monthly_plan">📅 Monatsabo</h3>
     <h2>CHF 4.90</h2>
-    <p>pro Monat</p>
+    <p data-i18n="per_month">pro Monat</p>
 
     <a href="https://buy.stripe.com/7sYcMXdIk1094RAdMB6J200?locale=de&__embed_source=buy_btn_1U06zM1bPlhWc3Hfq7LBoWxD"
        target="_blank"
        style="display:inline-block;background:#0066ff;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
-      Monatsabo wählen
+      <span data-i18n="select_monthly">Monatsabo wählen</span>
     </a>
   </div>
 
   <div style="background:#fff;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:280px;text-align:center;">
-    <h3>⭐ Jahresabo</h3>
+    <h3 data-i18n="yearly_plan">⭐ Jahresabo</h3>
     <h2>CHF 49.90</h2>
-    <p>pro Jahr</p>
+    <p data-i18n="per_year">pro Jahr</p>
 
     <a href="https://buy.stripe.com/7sYbITdIkaAJ6ZI23T6J201"
        target="_blank"
        style="display:inline-block;background:#f59e0b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
-      Jahresabo wählen
+      <span data-i18n="select_yearly">Jahresabo wählen</span>
     </a>
   </div>
 
@@ -414,7 +408,7 @@ Entwickelt mit Fokus auf Datenschutz.
 
 </div>
 <div class="card">
-  <h2>Registrieren</h2>
+<h2 data-i18n="register">Registrieren</h2>
 
  <form id="registerForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 
@@ -450,7 +444,7 @@ Entwickelt mit Fokus auf Datenschutz.
 
 <hr style="margin:40px 0;">
 
-<h2>Anmelden</h2>
+<h2 data-i18n="login">Anmelden</h2>
 
 <form id="loginForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
 <input
@@ -1902,191 +1896,98 @@ nl: {
 
   rights: "Alle rechten voorbehouden."
 
-},
-sv: {
+},nl: {
 
-  home: "Hem",
-
-  qr: "QR",
-
-  contact: "Kontakt",
-
-  dashboard: "Instrumentpanel",
-
-  messages: "Meddelanden",
-
-  title: "PingCar",
-
-  description: "Ett säkert sätt att kontakta fordonsägare utan telefonnummer eller personuppgifter.",
-
-  available: "Gratis registrering",
-
-  how: "Så fungerar PingCar",
-
-  afterScan: "Efter skanning",
-
-  register: "Registrering",
-
-  registerText: "Skapa ditt PingCar-konto gratis.",
-
-  getQr: "Få en QR-kod",
-
-  getQrText: "Du får en personlig QR-kod för ditt fordon.",
-
-  placeQr: "Placera QR-koden",
-
-  placeQrText: "Placera QR-koden på en väl synlig plats på ditt fordon.",
-
-  scanQr: "Skanna en QR-kod",
-
-  scanQrText: "En annan person skannar QR-koden med sin smartphone.",
-
-  notification: "Meddelande",
-
-  notificationText: "Du får omedelbart ett meddelande via PingCar.",
-
-  blocked: "Mitt fordon blockerar vägen",
-
-  lights: "Lamporna är på",
-
-  damaged: "Fordonet är skadat",
-
-  forgot: "Något har lämnats kvar",
-
-  otherMessage: "Annat meddelande",
-
-  noPhone: "Utan telefonnummer",
-
-  noPersonalData: "Utan personuppgifter",
-
-  fastNotification: "Snabb avisering",
-
-  privacy: "Integritet",
-
-  discover: "Upptäck PingCar",
-
-  monthly: "Månadsabonnemang",
-
-  yearly: "Årsabonnemang",
-
-  premiumText: "Prova alla Premium-funktioner gratis.",
-
-  perMonth: "per månad",
-
-  perYear: "per år",
-
-  name: "Ditt namn",
-
-  email: "Din e-postadress",
-
-  password: "Lösenord",
-
-  login: "Logga in",
-
-  forgotPassword: "Glömt lösenord?",
-
-  sendLink: "Skicka länk",
-
-  logout: "Logga ut",
-
-  contactTitle: "Kontakt",
-
-  footerText: "PingCar – en säker lösning för fordonsägare.",
-
-  rights: "Alla rättigheter förbehållna."
-
-},
-ro: {
-
-  home: "Acasă",
+  home: "Home",
 
   qr: "QR",
 
   contact: "Contact",
 
-  dashboard: "Panou de control",
+  dashboard: "Dashboard",
 
-  messages: "Mesaje",
+  messages: "Berichten",
 
   title: "PingCar",
 
-  description: "O modalitate sigură de a contacta proprietarii de vehicule fără numere de telefon sau date personale.",
+  description: "Een veilige manier om contact op te nemen met voertuigeigenaren zonder telefoonnummer of persoonlijke gegevens.",
 
-  available: "Înregistrare gratuită",
+  available: "Gratis registratie",
 
-  how: "Cum funcționează PingCar",
+  how: "Hoe werkt PingCar",
 
-  afterScan: "După scanare",
+  afterScan: "Na het scannen",
 
-  register: "Înregistrare",
+  register: "Registratie",
 
-  registerText: "Creează-ți gratuit contul PingCar.",
+  registerText: "Maak gratis uw PingCar-account aan.",
 
-  getQr: "Obține un cod QR",
+  getQr: "Ontvang een QR-code",
 
-  getQrText: "Primești un cod QR personal pentru vehiculul tău.",
+  getQrText: "U ontvangt een persoonlijke QR-code voor uw voertuig.",
 
-  placeQr: "Plasează codul QR",
+  placeQr: "Plaats de QR-code",
 
-  placeQrText: "Plasează codul QR într-un loc vizibil pe vehiculul tău.",
+  placeQrText: "Plaats de QR-code op een goed zichtbare plaats op uw voertuig.",
 
-  scanQr: "Scanează un cod QR",
+  scanQr: "Scan een QR-code",
 
-  scanQrText: "O altă persoană scanează codul QR cu smartphone-ul său.",
+  scanQrText: "Een andere persoon scant de QR-code met zijn of haar smartphone.",
 
-  notification: "Mesaj",
+  notification: "Melding",
 
-  notificationText: "Primești imediat o notificare prin PingCar.",
+  notificationText: "U ontvangt onmiddellijk een bericht via PingCar.",
 
-  blocked: "Vehiculul meu blochează drumul",
+  blocked: "Mijn voertuig blokkeert de doorgang",
 
-  lights: "Luminile sunt aprinse",
+  lights: "De lichten staan aan",
 
-  damaged: "Vehiculul este deteriorat",
+  damaged: "Het voertuig is beschadigd",
 
-  forgot: "A fost uitat ceva",
+  forgot: "Er is iets achtergelaten",
 
-  otherMessage: "Alt mesaj",
+  otherMessage: "Ander bericht",
 
-  noPhone: "Fără număr de telefon",
+  noPhone: "Zonder telefoonnummer",
 
-  noPersonalData: "Fără date personale",
+  noPersonalData: "Zonder persoonlijke gegevens",
 
-  fastNotification: "Notificare rapidă",
+  fastNotification: "Snelle melding",
 
-  privacy: "Confidențialitate",
+  privacy: "Privacy",
 
-  discover: "Descoperă PingCar",
+  discover: "Ontdek PingCar",
 
-  monthly: "Abonament lunar",
+  monthly: "Maandabonnement",
 
-  yearly: "Abonament anual",
+  yearly: "Jaarabonnement",
 
-  premiumText: "Încearcă gratuit toate funcțiile Premium.",
+  premiumText: "Probeer alle Premium-functies gratis uit.",
 
-  perMonth: "pe lună",
+  perMonth: "per maand",
 
-  perYear: "pe an",
+  perYear: "per jaar",
 
-  name: "Numele tău",
+  name: "Uw naam",
 
-  email: "Adresa ta de e-mail",
+  email: "Uw e-mailadres",
 
-  password: "Parolă",
+  password: "Wachtwoord",
 
-  login: "Autentificare",
+  login: "Inloggen",
 
-  forgotPassword: "Ai uitat parola?",
+  forgotPassword: "Wachtwoord vergeten?",
 
-  sendLink: "Trimite linkul",
+  sendLink: "Link verzenden",
 
-  logout: "Deconectare",
+  logout: "Uitloggen",
 
   contactTitle: "Contact",
 
-  footerText: "PingCar – o soluție sigură pentru proprietarii de vehicule.",
+  footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
 
-  rights: "Toate drepturile rezervate."
+  rights: "Alle rechten voorbehouden."
+
 },
 };
 
@@ -2114,10 +2015,7 @@ const languageFlags = {
   hu: "HU",
   pt: "PT",
   mk: "MK",
-  nl: "NL",
-  sv: "SV",
-  ro: "RO"
-
+  nl: "NL"
   
 };
 
@@ -2144,9 +2042,7 @@ const languageNames = {
   hu: "HU",
   pt: "PT",
   mk: "MK",
-  nl: "NL",
-  sv: "SV",
-  ro: "RO"
+  nl: "NL"
 
   
   
@@ -2202,9 +2098,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Hogyan működik a PingCar") ||
       text.includes("Como funciona o PingCar")||
       text.includes("Како функционира PingCar")||
-      text.includes("Hoe werkt PingCar")||
-      text.includes("Hur fungerar PingCar") ||
-      text.includes("Cum funcționează PingCar")
+      text.includes("Hoe werkt PingCar")
     ) {
       el.textContent = t.how;
     }
@@ -2223,9 +2117,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Hogyan működik a PingCar") ||
       text.includes("Após a leitura")||
       text.includes("По скенирањето")||
-      text.includes("Na het scannen")||
-      text.includes("Efter skanning") ||
-      text.includes("Cum funcționează PingCar")
+      text.includes("Na het scannen")
     ) {
       el.textContent = t.afterScan;
     }
@@ -2240,9 +2132,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text === "İletişim" ||
       text === "Kapcsolat"||
       text === "Contacto"||
-      text === "Контакт"||
-      text === "Kontakt"||
-      text === "Kontakt"
+      text === "Контакт"
     ) {
       el.textContent = t.contactTitle;
     }
@@ -2261,9 +2151,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Regisztráció"||
   text === "Registar"||
   text === "Регистрација"||
-  text === "Registratie"||
-  text === "Registrering"||
-  text === "Înregistrare"
+  text === "Registratie"
     ) {
       el.textContent = t.register;
     }
@@ -2282,9 +2170,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
   text === "Bejelentkezés"||
   text === "Iniciar sessão"||
   text === "Најава"||
-  text === "Inloggen"||
-  text === "Inloggning"||
-  text === "Autentificare"
+  text === "Inloggen"
   
     ) {
       el.textContent = t.login;
@@ -2376,9 +2262,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("A járművem akadályozza a forgalmat")||
       text.includes("O meu veículo está a bloquear a passagem")||
       text.includes("Моето возило го блокира преминот")||
-      text.includes("Mijn voertuig blokkeert de doorgang")||
-      text.includes("Mitt fordon blockerar vägen")||
-      text.includes("Autovehiculul meu blochează trecerea")
+      text.includes("Mijn voertuig blokkeert de doorgang")
     ) {
       el.textContent = t.blocked;
     }
@@ -2397,9 +2281,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("A lámpák égve maradtak")||
       text.includes("As luzes estão acesas")||
       text.includes("Светлата се вклучени")||
-      text.includes("De lichten staan aan")||
-      text.includes("De lichten staan aan")||
-      text.includes("Ljussen är på")
+      text.includes("De lichten staan aan")
     ) {
       el.textContent = t.lights;
     }
@@ -2418,9 +2300,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("A jármű megsérült")||
       text.includes("O veículo está danificado")||
       text.includes("Возилото е оштетено")||
-      text.includes("Het voertuig is beschadigd")||
-      text.includes("Det fordon är skadat")||
-      text.includes("Autovehiculul meu este deteriorat")
+      text.includes("Het voertuig is beschadigd")
     ) {
       el.textContent = t.damaged;
     }
@@ -2439,9 +2319,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Valami ott maradt")||
       text.includes("Algo foi esquecido")||
       text.includes("Нешто е заборавено")||
-      text.includes("Er is iets vergeten")||
-      text.includes("Det är något som glömts")||
-      text.includes("A fost uitat ceva")
+      text.includes("Er is iets vergeten")
     ) {
       el.textContent = t.forgot;
     }
@@ -2460,9 +2338,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Egyéb üzenet")||
       text.includes("Outra mensagem")||
       text.includes("Друга порака")||
-      text.includes("Ander bericht")||
-      text.includes("Annat meddelande")||
-      text.includes("Altro messaggio")
+      text.includes("Ander bericht")
     ) {
       el.textContent = t.otherMessage;
     }
@@ -2481,9 +2357,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Telefonszám nélkül")||
       text.includes("Sem número de telefone")||
       text.includes("Без телефонски број")||
-      text.includes("Zonder telefoonnummer")||
-      text.includes("Inget telefonnummer")||
-      text.includes("Fără număr de telefon")
+      text.includes("Zonder telefoonnummer")
     ) {
       el.textContent = t.noPhone;
     }
@@ -2502,9 +2376,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Személyes adatok nélkül")||
       text.includes("Sem dados pessoais")||
       text.includes("Без лични податоци")||
-      text.includes("Zonder persoonlijke gegevens")||
-      text.includes("Inget personligt data")||
-       text.includes("Fără date personale")
+      text.includes("Zonder persoonlijke gegevens")
     ) {
       el.textContent = t.noPersonalData;
     }
@@ -2523,9 +2395,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text.includes("Gyors értesítés") ||
         text.includes("Notificação rápida")||
         text.includes("Брзо известување")||
-        text.includes("Snelle melding")||
-        text.includes("Snabb avisering")||
-        text.includes("Notificare rapidă")
+        text.includes("Snelle melding")
     ) {
       el.textContent = t.fastNotification;
     }
@@ -2544,9 +2414,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
       text.includes("Adatvédelem")||
       text.includes("Privacidade")||
       text.includes("Приватност")||
-      text.includes("Privacy")||
-      text.includes("Integritet")||
-      text.includes("Confidențialitate")
+      text.includes("Privacy")
     ) {
       el.textContent = t.privacy;
     }
@@ -2577,10 +2445,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
         text === "Próbálja ki az összes Premium funkciót ingyen."||
         text === "Experimente todas as funcionalidades Premium gratuitamente."||
         text === "Испробајте ги сите Premium функции бесплатно."||
-        text === "Probeer alle Premium-functies gratis uit." ||
-        text === "Prova alla Premium-funktioner gratis."||
-        text === "Încearcă gratuit toate funcțiile Premium."
-
+        text === "Probeer alle Premium-functies gratis uit." 
         ) {
       el.textContent = t.premiumText;
     }
@@ -2644,7 +2509,7 @@ if (currentLangText) currentLangText.textContent = languageNames[lang] || "DE";
 };
 function setLanguage(lang) {
     localStorage.setItem("pingcar_language", lang);
-    
+    location.reload();
 }
 // Load saved language
 document.addEventListener("DOMContentLoaded", function() {
@@ -2658,7 +2523,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
 </script>
 
-<script type="module" src="/js/language.js"></script>
+<script type="module" src="./js/language.js"></script>
 <style>
  .lang-dropdown {
     position: relative;

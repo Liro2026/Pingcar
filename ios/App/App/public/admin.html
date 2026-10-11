@@ -174,77 +174,17 @@ PingCar Administrator
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
+    const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const ADMIN_EMAIL = "lirim.salihu2017@gmail.com";
-const content = document.getElementById("content");
+console.log("Supabase u lidh me sukses!");
+const content=document.getElementById("content");
 
-async function requireAdmin() {
-  const { data, error } = await db.auth.getSession();
-  const session = data?.session;
-
-  if (error || !session) {
-    content.innerHTML = `
-      <div class="card">
-        <h2>Zugriff verweigert</h2>
-        <p>Bitte zuerst als Administrator anmelden.</p>
-      </div>
-    `;
-    return false;
-  }
-
-  const email = (session.user?.email || "").toLowerCase();
-
-  if (email !== ADMIN_EMAIL.toLowerCase()) {
-    await db.auth.signOut();
-    content.innerHTML = `
-      <div class="card">
-        <h2>Zugriff verweigert</h2>
-        <p>Dieser Bereich ist nur für den Administrator verfügbar.</p>
-      </div>
-    `;
-    return false;
-  }
-
-  return true;
-}
-
-/*
-  Liest page_visits in Seiten von 1000 Datensätzen.
-  Damit wird nicht mehr nur das erste 1000er-Paket verwendet.
-*/
-async function loadAllVisits() {
-  const PAGE_SIZE = 1000;
-  const allVisits = [];
-  let from = 0;
-
-  while (true) {
-    const { data, error } = await db
-      .from("page_visits")
-      .select("visitor_id, visited_at, country")
-      .range(from, from + PAGE_SIZE - 1);
-
-    if (error) throw error;
-
-    const rows = data || [];
-    allVisits.push(...rows);
-
-    if (rows.length < PAGE_SIZE) break;
-    from += PAGE_SIZE;
-  }
-
-  return allVisits;
-}
-
-async function showDashboard() {
-
-  if (!(await requireAdmin())) return;
+async function showDashboard(){
 
   content.innerHTML = `
     <div class="statbox">
@@ -261,12 +201,12 @@ async function showDashboard() {
 
       <div class="stat">
         E-Mails
-        <h3 id="emailCount">0</h3>
+        <h3 id="emailCount">...</h3>
       </div>
 
       <div class="stat">
         Push
-        <h3 id="pushCount">0</h3>
+        <h3 id="pushCount">...</h3>
       </div>
 
       <div class="stat">
@@ -294,7 +234,6 @@ async function showDashboard() {
 
   try {
 
-    /* Benutzer */
     const { data: sessionData, error: sessionError } =
       await db.auth.getSession();
 
@@ -323,59 +262,79 @@ async function showDashboard() {
     document.getElementById("userCount").textContent =
       (result.users || []).length;
 
-    /* Fahrzeuge */
     const { count: vehicleCount, error: vehicleError } =
       await db
         .from("user_qr")
         .select("*", { count: "exact", head: true })
-        .eq("active", true);
+      .eq("active", true);
 
     if (vehicleError) {
       console.error("Fahrzeuge Fehler:", vehicleError);
       document.getElementById("vehicleCount").textContent = "0";
     } else {
       document.getElementById("vehicleCount").textContent =
-        vehicleCount ?? 0;
+        vehicleCount || 0;
     }
 
-    /* Alle Seitenbesuche */
-    const allVisits = await loadAllVisits();
+    document.getElementById("emailCount").textContent = "0";
+    document.getElementById("pushCount").textContent = "0";
 
-    document.getElementById("visitCount").textContent =
-      allVisits.length;
 
-    /* Besuche heute */
-    const now = new Date();
+    const { data: visits, error: visitsError } =
+      await db
+        .from("page_visits")
+        .select("visitor_id, visited_at");
 
-    const todayStart = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    );
+    if (visitsError) {
 
-    const todayEnd = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1
-    );
+      console.error("Besuche Fehler:", visitsError);
 
-    const todayVisits = allVisits.filter(visit => {
-      const visitDate = new Date(visit.visited_at);
-      return visitDate >= todayStart && visitDate < todayEnd;
-    });
+      document.getElementById("visitCount").textContent = "0";
+      document.getElementById("todayVisitCount").textContent = "0";
+      document.getElementById("uniqueVisitCount").textContent = "0";
 
-    document.getElementById("todayVisitCount").textContent =
-      todayVisits.length;
+    } else {
 
-    /* Einzigartige Besucher */
-    const uniqueVisitors = new Set(
-      allVisits
-        .map(visit => visit.visitor_id)
-        .filter(Boolean)
-    );
+      const allVisits = visits || [];
 
-    document.getElementById("uniqueVisitCount").textContent =
-      uniqueVisitors.size;
+      document.getElementById("visitCount").textContent =
+        allVisits.length;
+
+      const today = new Date();
+
+      const todayStart = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+
+      const todayEnd = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() + 1
+      );
+
+      const todayVisits = allVisits.filter(visit => {
+
+        const visitDate = new Date(visit.visited_at);
+
+        return visitDate >= todayStart && visitDate < todayEnd;
+
+      });
+
+      document.getElementById("todayVisitCount").textContent =
+        todayVisits.length;
+
+      const uniqueVisitors = new Set(
+        allVisits
+          .map(visit => visit.visitor_id)
+          .filter(Boolean)
+      );
+
+      document.getElementById("uniqueVisitCount").textContent =
+        uniqueVisitors.size;
+    }
+
 
   } catch (error) {
 
@@ -385,15 +344,13 @@ async function showDashboard() {
     document.getElementById("vehicleCount").textContent = "!";
     document.getElementById("emailCount").textContent = "0";
     document.getElementById("pushCount").textContent = "0";
-    document.getElementById("visitCount").textContent = "!";
-    document.getElementById("todayVisitCount").textContent = "!";
-    document.getElementById("uniqueVisitCount").textContent = "!";
+    document.getElementById("visitCount").textContent = "0";
+    document.getElementById("todayVisitCount").textContent = "0";
+    document.getElementById("uniqueVisitCount").textContent = "0";
   }
 }
 
-async function showUsers() {
-
-  if (!(await requireAdmin())) return;
+async function showUsers(){
 
   content.innerHTML = `
     <div class="card">
@@ -436,6 +393,7 @@ async function showUsers() {
     }
 
     const users = result.users || [];
+
     let rows = "";
 
     users.forEach(user => {
@@ -495,38 +453,35 @@ async function showUsers() {
         <p>${error.message}</p>
       </div>
     `;
+
   }
 }
 
-async function showEmail() {
-
-  if (!(await requireAdmin())) return;
+function showEmail(){
 
   content.innerHTML = `
     <div class="card">
       <h2>E-Mail senden</h2>
 
-      <input id="emailTo" placeholder="Empfänger">
+<input id="emailTo" placeholder="Empfänger">
 
-      <label style="display:block;margin:10px 0;">
-        <input type="checkbox" id="sendToAll">
-        An alle bestätigten Benutzer senden
-      </label>
+<label style="display:block;margin:10px 0;">
+  <input type="checkbox" id="sendToAll">
+  An alle bestätigten Benutzer senden
+</label>
 
-      <input id="emailSubject" placeholder="Betreff">
+<input id="emailSubject" placeholder="Betreff">
 
-      <textarea id="emailMessage" placeholder="Nachricht"></textarea>
+<textarea id="emailMessage" placeholder="Nachricht"></textarea>
 
-      <button onclick="sendAdminEmail()">Senden</button>
+<button onclick="sendAdminEmail()">Senden</button>
 
-      <div id="emailResult" style="margin-top:15px;"></div>
+<div id="emailResult" style="margin-top:15px;"></div>
     </div>
   `;
 }
 
-async function sendAdminEmail() {
-
-  if (!(await requireAdmin())) return;
+async function sendAdminEmail(){
 
   const to = document.getElementById("emailTo").value.trim();
   const subject = document.getElementById("emailSubject").value.trim();
@@ -555,6 +510,7 @@ async function sendAdminEmail() {
       return;
     }
 
+    // Nur ein Empfänger
     if (!sendToAll) {
 
       const { data, error } = await db.functions.invoke(
@@ -583,6 +539,7 @@ async function sendAdminEmail() {
       return;
     }
 
+    // Alle Benutzer holen
     const {
       data: usersData,
       error: usersError
@@ -608,6 +565,7 @@ async function sendAdminEmail() {
     let sent = 0;
     let failed = 0;
 
+    // E-Mails nacheinander senden
     for (const email of emails) {
 
       try {
@@ -654,56 +612,54 @@ async function sendAdminEmail() {
   }
 }
 
-async function showPush() {
+function showPush(){
 
-  if (!(await requireAdmin())) return;
+    content.innerHTML = `
 
-  content.innerHTML = `
     <div class="card">
 
-      <h2>Push-Benachrichtigung</h2>
+        <h2>Push-Benachrichtigung</h2>
 
-      <textarea id="pushMessage" placeholder="Nachricht"></textarea>
+        <textarea id="pushMessage" placeholder="Nachricht"></textarea>
 
-      <button onclick="sendPush()">Push senden</button>
+        <button onclick="sendPush()">Push senden</button>
 
     </div>
-  `;
+
+    `;
+
 }
 
-async function sendPush() {
+async function sendPush(){
 
-  if (!(await requireAdmin())) return;
+    const message = document.getElementById("pushMessage").value.trim();
 
-  const message = document.getElementById("pushMessage").value.trim();
+    if(!message){
+        alert("Bitte Nachricht eingeben.");
+        return;
+    }
 
-  if (!message) {
-    alert("Bitte Nachricht eingeben.");
-    return;
-  }
+    const { data, error } = await db
+        .from("notifications")
+        .insert([
+            {
+                message: message
+            }
+        ]);
 
-  const { data, error } = await db
-    .from("notifications")
-    .insert([
-      {
-        message: message
-      }
-    ]);
+    if(error){
+        console.error(error);
+        alert("Fehler: " + error.message);
+        return;
+    }
 
-  if (error) {
-    console.error(error);
-    alert("Fehler: " + error.message);
-    return;
-  }
+    alert("Push gespeichert!");
 
-  alert("Push gespeichert!");
+    document.getElementById("pushMessage").value = "";
 
-  document.getElementById("pushMessage").value = "";
 }
 
-async function showStats() {
-
-  if (!(await requireAdmin())) return;
+async function showStats(){
 
   content.innerHTML = `
     <div class="statbox">
@@ -729,41 +685,52 @@ async function showStats() {
       <h2>Statistik</h2>
       <p>Aktuelle PingCar Seitenbesuche</p>
     </div>
-        <div class="card">
-      <h2>🌍 Besucher nach Ländern</h2>
-      <div id="countryStats">Wird geladen...</div>
-    </div>
   `;
 
   try {
 
-    const allVisits = await loadAllVisits();
+    const { data: visits, error } =
+      await db
+        .from("page_visits")
+        .select("visitor_id, visited_at");
 
+    if (error) {
+      throw error;
+    }
+
+    const allVisits = visits || [];
+
+    // Alle Besuche
     document.getElementById("statsTotalVisits").textContent =
       allVisits.length;
 
-    const now = new Date();
+    // Besuche heute
+    const today = new Date();
 
     const todayStart = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
     );
 
     const todayEnd = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
     );
 
     const todayVisits = allVisits.filter(visit => {
+
       const visitDate = new Date(visit.visited_at);
+
       return visitDate >= todayStart && visitDate < todayEnd;
+
     });
 
     document.getElementById("statsTodayVisits").textContent =
       todayVisits.length;
 
+    // Einzigartige Besucher
     const uniqueVisitors = new Set(
       allVisits
         .map(visit => visit.visitor_id)
@@ -772,23 +739,7 @@ async function showStats() {
 
     document.getElementById("statsUniqueVisitors").textContent =
       uniqueVisitors.size;
-    const countryCounts = {};
 
-    allVisits.forEach(visit => {
-      if (visit.country) {
-        countryCounts[visit.country] =
-          (countryCounts[visit.country] || 0) + 1;
-      }
-    });
-
-    console.log("Besucher nach Ländern:", countryCounts);
-
-    const countryStats = document.getElementById("countryStats");
-
-    countryStats.innerHTML = Object.entries(countryCounts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([country, count]) => `<p>🌍 ${country}: <strong>${count}</strong></p>`)
-      .join("");
   } catch (error) {
 
     console.error("Statistik Fehler:", error);
@@ -796,15 +747,11 @@ async function showStats() {
     document.getElementById("statsTotalVisits").textContent = "!";
     document.getElementById("statsTodayVisits").textContent = "!";
     document.getElementById("statsUniqueVisitors").textContent = "!";
-    
-  
-    
   }
 }
 
-requireAdmin().then(isAdmin => {
-  if (isAdmin) showDashboard();
-});
+showDashboard();
+
 </script>
 
 </body>
