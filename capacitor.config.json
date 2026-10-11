@@ -1,7 +1,7 @@
-﻿{
+{
   "appId": "ch.pingcar.app",
   "appName": "PingCar",
-  "webDir": "www",
+  "webDir": "web-source",
   "packageClassList": [],
   "plugins": {
     "CapacitorHttp": {
@@ -10,6 +10,7 @@
   },
   "server": {
     "androidScheme": "https",
+    "iosScheme": "https",
     "allowNavigation": ["*"]
   }
 }
