@@ -59,5 +59,3 @@ export default {
   promo_code_text: "Med koden",
   after_first_year: "Derefter 49,90 CHF om året"
 };
-
-

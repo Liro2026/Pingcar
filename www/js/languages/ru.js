@@ -59,4 +59,3 @@ export default {
   promo_code_text: "С кодом",
   after_first_year: "Затем 49,90 CHF в год"
 };
-

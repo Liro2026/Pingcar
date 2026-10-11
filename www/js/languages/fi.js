@@ -59,4 +59,3 @@ export default {
   promo_code_text: "Koodilla",
   after_first_year: "Sen jälkeen 49,90 CHF vuodessa"
 };
-

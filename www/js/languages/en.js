@@ -73,4 +73,3 @@ privacyFocus: "Developed with a focus on data protection.",
   promo_code_text: "With the code",
   after_first_year: "Then 49.90 CHF per year"
 };
-

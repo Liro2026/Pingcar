@@ -109,5 +109,3 @@ export default {
   after_first_year: "2年目以降は年間49,90 CHF"
 
 };
-
-

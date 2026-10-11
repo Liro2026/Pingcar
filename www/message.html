@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <title>PingCar Chat</title>
 
@@ -119,35 +120,6 @@ button:disabled{
   font-size:14px;
   color:#666;
 }
-.terms-row{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-top:12px;
-  font-size:13px;
-  color:#555;
-}
-
-.terms-row input{
-  width:18px;
-  height:18px;
-  margin-top:2px;
-  flex:0 0 auto;
-}
-
-.terms-row label{
-  line-height:1.4;
-}
-
-.terms-row a{
-  color:#1877f2;
-  text-decoration:none;
-  font-weight:bold;
-}
-
-.terms-row a:hover{
-  text-decoration:underline;
-}
 
 .error{
   color:#c62828;
@@ -176,26 +148,14 @@ button:disabled{
 
   <div class="input-area">
 
-  <textarea
-  id="messageInput"
-  placeholder="Ihre Nachricht..."
-></textarea>
+    <textarea
+      id="messageInput"
+      placeholder="Ihre Nachricht..."
+    ></textarea>
 
-<div class="terms-row">
-  <input type="checkbox" id="termsCheckbox">
-
-  <label for="termsCheckbox" id="termsLabel">
-    Ich akzeptiere die
-    <a href="terms.html" target="_blank" rel="noopener">
-      Nutzungsbedingungen / EULA
-    </a>
-    und bestätige, dass ich keine beleidigenden oder unzulässigen Inhalte sende.
-  </label>
-</div>
-
-<button id="sendButton">
-  Nachricht senden
-</button>
+    <button id="sendButton">
+      Nachricht senden
+    </button>
 
     <div id="status" class="status"></div>
 
@@ -246,9 +206,7 @@ const translations = {
     limit:"Sie haben Ihr Limit von 5 Nachrichten innerhalb von 24 Stunden erreicht.",
     error:"Fehler",
     empty:"Noch keine Nachrichten.",
-    missing:"Chat-Parameter fehlen.",
-    terms:"Ich akzeptiere die Nutzungsbedingungen / EULA und bestätige, dass ich keine beleidigenden oder unzulässigen Inhalte sende.",
-termsRequired:"Bitte akzeptieren Sie die Nutzungsbedingungen / EULA."
+    missing:"Chat-Parameter fehlen."
   },
 
   fr:{
@@ -260,9 +218,7 @@ termsRequired:"Bitte akzeptieren Sie die Nutzungsbedingungen / EULA."
     limit:"Vous avez atteint votre limite de 5 messages en 24 heures.",
     error:"Erreur",
     empty:"Aucun message pour le moment.",
-    missing:"Paramètres du chat manquants.",
-    terms:"J'accepte les conditions d'utilisation / EULA et je confirme que je n'enverrai pas de contenu abusif ou inapproprié.",
-termsRequired:"Veuillez accepter les conditions d'utilisation / EULA avant d'envoyer le message."
+    missing:"Paramètres du chat manquants."
   },
 
   it:{
@@ -274,9 +230,7 @@ termsRequired:"Veuillez accepter les conditions d'utilisation / EULA avant d'env
     limit:"Hai raggiunto il limite di 5 messaggi in 24 ore.",
     error:"Errore",
     empty:"Nessun messaggio.",
-    missing:"Parametri della chat mancanti.",
-    terms:"Accetto i Termini di utilizzo / EULA e confermo che non invierò contenuti offensivi o inappropriati.",
-termsRequired:"Accetta i Termini di utilizzo / EULA prima di inviare il messaggio."
+    missing:"Parametri della chat mancanti."
   },
 
   en:{
@@ -288,9 +242,7 @@ termsRequired:"Accetta i Termini di utilizzo / EULA prima di inviare il messaggi
     limit:"You have reached your limit of 5 messages within 24 hours.",
     error:"Error",
     empty:"No messages yet.",
-    missing:"Chat parameters are missing.",
-    terms:"I agree to the Terms of Use / EULA and confirm that I will not send abusive or objectionable content.",
-termsRequired:"Please accept the Terms of Use / EULA before sending."
+    missing:"Chat parameters are missing."
   },
 
   sq:{
@@ -302,9 +254,7 @@ termsRequired:"Please accept the Terms of Use / EULA before sending."
     limit:"Keni arritur kufirin prej 5 mesazhesh brenda 24 orëve.",
     error:"Gabim",
     empty:"Ende nuk ka mesazhe.",
-    missing:"Mungojnë parametrat e chat-it.",
-    terms:"Pranoj Kushtet e Përdorimit / EULA dhe konfirmoj se nuk do të dërgoj përmbajtje abuzive ose të papërshtatshme.",
-termsRequired:"Ju lutemi pranoni Kushtet e Përdorimit / EULA para se ta dërgoni mesazhin."
+    missing:"Mungojnë parametrat e chat-it."
   },
   
 sr:{
@@ -316,9 +266,7 @@ sr:{
   limit:"Dostigli ste ograničenje od 5 poruka u roku od 24 sata.",
   error:"Greška",
   empty:"Još nema poruka.",
-  missing:"Nedostaju parametri za chat.",
-  terms:"Prihvatam Uslove korišćenja / EULA i potvrđujem da neću slati uvredljiv ili neprikladan sadržaj.",
-termsRequired:"Molimo vas da prihvatite Uslove korišćenja / EULA pre slanja poruke."
+  missing:"Nedostaju parametri za chat."
 },
   es:{
   title:"PingCar Chat",
@@ -329,9 +277,7 @@ termsRequired:"Molimo vas da prihvatite Uslove korišćenja / EULA pre slanja po
   limit:"Ha alcanzado el límite de 5 mensajes en 24 horas.",
   error:"Error",
   empty:"Todavía no hay mensajes.",
-  missing:"Faltan los parámetros del chat.",
-  terms:"Acepto los Términos de uso / EULA y confirmo que no enviaré contenido abusivo o inapropiado.",
-termsRequired:"Acepta los Términos de uso / EULA antes de enviar el mensaje."
+  missing:"Faltan los parámetros del chat."
 },
   tr:{
     title:"PingCar Chat",
@@ -342,9 +288,7 @@ termsRequired:"Acepta los Términos de uso / EULA antes de enviar el mensaje."
     limit:"24 saat içinde 5 mesajlık sınırınıza ulaştınız.",
     error:"Hata",
     empty:"Henüz mesaj yok.",
-    missing:"Sohbet parametreleri eksik.",
-    terms:"Kullanım Koşullarını / EULA'yı kabul ediyorum ve kötüye kullanım içeren veya uygunsuz içerik göndermeyeceğimi onaylıyorum.",
-termsRequired:"Mesaj göndermeden önce lütfen Kullanım Koşullarını / EULA'yı kabul edin."
+    missing:"Sohbet parametreleri eksik."
 },
 sk: {
   title: "PingCar Chat",
@@ -355,9 +299,7 @@ sk: {
   limit: "Dosiahli ste limit 5 správ za 24 hodín.",
   error: "Chyba",
   empty: "Zatiaľ žiadne správy.",
-  missing: "Chýbajú parametre chatu.",
-  terms: "Súhlasím s Podmienkami používania / EULA a potvrdzujem, že nebudem odosielať urážlivý alebo nevhodný obsah.",
-termsRequired: "Pred odoslaním správy prijmite Podmienky používania / EULA."
+  missing: "Chýbajú parametre chatu."
 },
 hr: {
 
@@ -377,9 +319,7 @@ hr: {
 
   empty: "Još nema poruka.",
 
-  missing: "Nedostaju parametri chata.",
-  terms: "Prihvaćam Uvjete korištenja / EULA i potvrđujem da neću slati uvredljiv ili neprikladan sadržaj.",
-termsRequired: "Molimo prihvatite Uvjete korištenja / EULA prije slanja poruke."
+  missing: "Nedostaju parametri chata."
 
 },
 hu: {
@@ -400,9 +340,7 @@ hu: {
 
   empty: "Még nincsenek üzenetek.",
 
-  missing: "Hiányoznak a chat paraméterei.",
-  terms: "Elfogadom a Felhasználási feltételeket / EULA-t, és megerősítem, hogy nem küldök sértő vagy nem megfelelő tartalmat.",
-termsRequired: "Kérjük, az üzenet elküldése előtt fogadja el a Felhasználási feltételeket / EULA-t."
+  missing: "Hiányoznak a chat paraméterei."
 
 },
 pt: {
@@ -423,9 +361,7 @@ pt: {
 
   empty: "Ainda não existem mensagens.",
 
-  missing: "Faltam parâmetros do chat.",
-  terms: "Aceito os Termos de Utilização / EULA e confirmo que não enviarei conteúdo abusivo ou inadequado.",
-termsRequired: "Aceite os Termos de Utilização / EULA antes de enviar a mensagem."
+  missing: "Faltam parâmetros do chat."
 
 },
 mk: {
@@ -446,9 +382,7 @@ mk: {
 
   empty: "Сè уште нема пораки.",
 
-  missing: "Недостасуваат параметри за разговорот.",
-  terms: "Ги прифаќам Условите за користење / EULA и потврдувам дека нема да испраќам навредлива или несоодветна содржина.",
-termsRequired: "Ве молиме прифатете ги Условите за користење / EULA пред да ја испратите пораката."
+  missing: "Недостасуваат параметри за разговорот."
 
 },
 nl: {
@@ -469,10 +403,262 @@ nl: {
 
   empty: "Er zijn nog geen berichten.",
 
-  missing: "Gespreksparameters ontbreken.",
-  terms: "Ik ga akkoord met de Gebruiksvoorwaarden / EULA en bevestig dat ik geen beledigende of ongepaste inhoud zal versturen.",
-termsRequired: "Accepteer de Gebruiksvoorwaarden / EULA voordat u het bericht verzendt."
+  missing: "Gespreksparameters ontbreken."
 
+},
+sv: {
+
+  title: "PingCar Chatt",
+
+  loading: "Meddelanden laddas...",
+
+  placeholder: "Ditt meddelande...",
+
+  send: "Skicka meddelande",
+
+  sent: "Meddelandet har skickats.",
+
+  limit: "Du har nått gränsen på 5 meddelanden per 24 timmar.",
+
+  error: "Fel",
+
+  empty: "Det finns inga meddelanden ännu.",
+
+  missing: "Samtalsparametrar saknas."
+
+},
+ro: {
+
+  title: "Chat PingCar",
+
+  loading: "Se încarcă mesajele...",
+
+  placeholder: "Mesajul tău...",
+
+  send: "Trimite mesajul",
+
+  sent: "Mesajul a fost trimis.",
+
+  limit: "Ai atins limita de 5 mesaje în 24 de ore.",
+
+  error: "Eroare",
+
+  empty: "Nu există încă mesaje.",
+
+  missing: "Lipsesc parametrii conversației."
+
+},
+el: {
+
+  title: "Συνομιλία PingCar",
+
+  loading: "Φόρτωση μηνυμάτων...",
+
+  placeholder: "Το μήνυμά σας...",
+
+  send: "Αποστολή μηνύματος",
+
+  sent: "Το μήνυμα στάλθηκε.",
+
+  limit: "Έχετε φτάσει το όριο των 5 μηνυμάτων σε 24 ώρες.",
+
+  error: "Σφάλμα",
+
+  empty: "Δεν υπάρχουν ακόμη μηνύματα.",
+
+  missing: "Λείπουν οι παράμετροι της συνομιλίας."
+
+},
+  pl: {
+
+  title: "Rozmowa PingCar",
+
+  loading: "Ładowanie wiadomości...",
+
+  placeholder: "Twoja wiadomość...",
+
+  send: "Wyślij wiadomość",
+
+  sent: "Wiadomość została wysłana.",
+
+  limit: "Osiągnięto limit 5 wiadomości w ciągu 24 godzin.",
+
+  error: "Błąd",
+
+  empty: "Brak wiadomości.",
+
+  missing: "Brakuje parametrów rozmowy."
+
+},
+  cs: {
+
+  title: "Konverzace PingCar",
+
+  loading: "Načítání zpráv...",
+
+  placeholder: "Vaše zpráva...",
+
+  send: "Odeslat zprávu",
+
+  sent: "Zpráva byla odeslána.",
+
+  limit: "Byl dosažen limit 5 zpráv během 24 hodin.",
+
+  error: "Chyba",
+
+  empty: "Žádné zprávy.",
+
+  missing: "Chybí parametry konverzace."
+
+},
+  sw: {
+
+  title: "Mazungumzo ya PingCar",
+
+  loading: "Inapakia ujumbe...",
+
+  placeholder: "Ujumbe wako...",
+
+  send: "Tuma ujumbe",
+
+  sent: "Ujumbe umetumwa.",
+
+  limit: "Kikomo cha ujumbe 5 ndani ya saa 24 kimefikiwa.",
+
+  error: "Hitilafu",
+
+  empty: "Hakuna ujumbe.",
+
+  missing: "Vigezo vya mazungumzo havipo."
+
+},
+  ar: {
+
+  title: "محادثات PingCar",
+
+  loading: "جارٍ تحميل الرسائل...",
+
+  placeholder: "رسالتك...",
+
+  send: "إرسال الرسالة",
+
+  sent: "تم إرسال الرسالة.",
+
+  limit: "تم الوصول إلى حد 5 رسائل خلال 24 ساعة.",
+
+  error: "خطأ",
+
+  empty: "لا توجد رسائل.",
+
+  missing: "معايير المحادثة مفقودة."
+
+},
+  zh: {
+
+  title: "PingCar 对话",
+
+  loading: "正在加载消息...",
+
+  placeholder: "您的消息...",
+
+  send: "发送消息",
+
+  sent: "消息已发送。",
+
+  limit: "已达到 24 小时内 5 条消息的上限。",
+
+  error: "错误",
+
+  empty: "没有消息。",
+
+  missing: "缺少对话参数。"
+
+},
+  ja: {
+
+  title: "PingCarの会話",
+
+  loading: "メッセージを読み込んでいます...",
+
+  placeholder: "メッセージを入力...",
+
+  send: "メッセージを送信",
+
+  sent: "メッセージが送信されました。",
+
+  limit: "24時間以内に送信できるメッセージの上限5件に達しました。",
+
+  error: "エラー",
+
+  empty: "メッセージはありません。",
+
+  missing: "会話パラメータがありません。"
+
+},
+  bg: {
+
+  title: "PingCar разговор",
+
+  loading: "Зареждане на съобщения...",
+
+  placeholder: "Вашето съобщение...",
+
+  send: "Изпрати съобщение",
+
+  sent: "Съобщението е изпратено.",
+
+  limit: "Достигнахте лимита от 5 съобщения в рамките на 24 часа.",
+
+  error: "Грешка",
+
+  empty: "Няма съобщения.",
+
+  missing: "Липсват параметри на разговора."
+
+},
+  ru: {
+  title: "Чат PingCar",
+  loading: "Загрузка сообщений...",
+  placeholder: "Ваше сообщение...",
+  send: "Отправить сообщение",
+  sent: "Сообщение отправлено.",
+  limit: "Вы достигли лимита в 5 сообщений за 24 часа.",
+  error: "Ошибка",
+  empty: "Нет сообщений.",
+  missing: "Отсутствуют параметры разговора."
+},
+  hi: {
+  title: "PingCar चैट",
+  loading: "संदेश लोड हो रहे हैं...",
+  placeholder: "आपका संदेश...",
+  send: "संदेश भेजें",
+  sent: "संदेश भेज दिया गया।",
+  limit: "आपने 24 घंटे में 5 संदेशों की सीमा पूरी कर ली है।",
+  error: "त्रुटि",
+  empty: "कोई संदेश नहीं है।",
+  missing: "बातचीत के पैरामीटर मौजूद नहीं हैं।"
+},
+  da: {
+  title: "PingCar-chat",
+  loading: "Indlæser beskeder...",
+  placeholder: "Din besked...",
+  send: "Send besked",
+  sent: "Beskeden er sendt.",
+  limit: "Du har nået grænsen på 5 beskeder inden for 24 timer.",
+  error: "Fejl",
+  empty: "Ingen beskeder.",
+  missing: "Samtalens parametre mangler."
+},
+  fi: {
+  title: "PingCar-chat",
+  loading: "Ladataan viestejä...",
+  placeholder: "Viestisi...",
+  send: "Lähetä viesti",
+  sent: "Viesti lähetettiin.",
+  limit: "Olet saavuttanut 5 viestin rajan 24 tunnin aikana.",
+  error: "Virhe",
+  empty: "Ei viestejä.",
+  missing: "Keskustelun parametrit puuttuvat."
 },
 };
 
@@ -509,13 +695,7 @@ document.title = t.title;
 document.getElementById(
   "chatTitle"
 ).textContent = t.title;
-document.getElementById(
-  "termsLabel"
-).innerHTML =
-  t.terms.replace(
-    "Nutzungsbedingungen / EULA",
-    '<a href="terms.html" target="_blank" rel="noopener">Nutzungsbedingungen / EULA</a>'
-  );
+
 document.getElementById(
   "messageInput"
 ).placeholder = t.placeholder;
@@ -654,17 +834,7 @@ async function loadMessages(){
   box.innerHTML = "";
 
   data.forEach(msg => {
-  const blockedUsers =
-  JSON.parse(
-    localStorage.getItem("pingcar_blocked_users") || "[]"
-  );
 
-if(
-  msg.sender_id &&
-  blockedUsers.includes(msg.sender_id)
-){
-  return;
-}
     const div =
       document.createElement("div");
 
@@ -701,262 +871,6 @@ if(
     div.appendChild(text);
     div.appendChild(time);
 
-    /* Apple Guideline 1.2:
-       allow the author to immediately remove their own message from the feed. */
-    if(isMine && msg.id){
-      const removeButton =
-        document.createElement("button");
-
-      const removeLabels = {
-        de:"Entfernen",
-        en:"Remove",
-        fr:"Supprimer",
-        it:"Rimuovi",
-        sq:"Hiq",
-        sr:"Ukloni",
-        es:"Eliminar",
-        tr:"Kaldır",
-        sk:"Odstrániť",
-        hr:"Ukloni",
-        hu:"Eltávolítás",
-        pt:"Remover",
-        mk:"Отстрани",
-        nl:"Verwijderen"
-      };
-
-      removeButton.textContent =
-        "🗑 " + (removeLabels[lang] || "Remove");
-
-      removeButton.type = "button";
-      removeButton.style.width = "auto";
-      removeButton.style.marginTop = "6px";
-      removeButton.style.padding = "6px 10px";
-      removeButton.style.fontSize = "12px";
-      removeButton.style.background = "#666";
-
-      removeButton.addEventListener("click", async function(){
-        const messageId = String(msg.id);
-
-        removeButton.disabled = true;
-
-        try{
-          const { data, error } =
-            await supabase.rpc(
-              "remove_pingcar_message",
-              {
-                p_message_id: messageId,
-                p_user_id: activeSenderId
-              }
-            );
-
-          if(error){
-            console.error("Remove message error:", error);
-            alert("Die Nachricht konnte nicht entfernt werden.");
-            removeButton.disabled = false;
-            return;
-          }
-
-          if(data !== true){
-            alert("Die Nachricht konnte nicht entfernt werden.");
-            removeButton.disabled = false;
-            return;
-          }
-
-          /* Remove immediately from the visible feed.
-             The database soft-delete also prevents it from returning
-             after refresh or on the other participant's feed. */
-          div.remove();
-
-        } catch(error){
-          console.error("Remove message error:", error);
-          alert("Die Nachricht konnte nicht entfernt werden.");
-          removeButton.disabled = false;
-        }
-      });
-
-      div.appendChild(removeButton);
-    }
-
-    if(!isMine){
-
-  const reportButton =
-    document.createElement("button");
-
-  reportButton.textContent = "🚨 Report";
-
-  reportButton.type = "button";
-
-  reportButton.style.width = "auto";
-  reportButton.style.marginTop = "6px";
-  reportButton.style.padding = "6px 10px";
-  reportButton.style.fontSize = "12px";
-  reportButton.style.background = "#ef5350";
-
-  reportButton.addEventListener(
-  "click",
-  async function(){
-
-    const { error } =
-      await supabase.rpc(
-        "report_pingcar_message",
-        {
-          p_conversation_id: conversationId,
-          p_reporter_id: activeSenderId,
-          p_reported_user_id: msg.sender_id,
-          p_message_id: msg.id
-            ? String(msg.id)
-            : null,
-          p_message_text: msg.message || ""
-        }
-      );
-
-    if(error){
-
-      console.error(
-        "Report error:",
-        error
-      );
-
-      alert(
-        "Der Bericht konnte nicht gesendet werden."
-      );
-
-      return;
-    }
-
-    div.remove();
-
-    const subject =
-      encodeURIComponent(
-        "PingCar Report - Inappropriate Message"
-      );
-
-    const body =
-      encodeURIComponent(
-        "I would like to report an inappropriate message on PingCar.\n\n" +
-        "Conversation ID: " +
-        conversationId +
-        "\n" +
-        "Sender ID: " +
-        (msg.sender_id || "") +
-        "\n\n" +
-        "Message:\n" +
-        (msg.message || "")
-      );
-
-    window.location.href =
-      "mailto:info@pingcar.ch" +
-      "?subject=" +
-      subject +
-      "&body=" +
-      body;
-  }
-);
-
-  div.appendChild(reportButton);
-  const blockButton =
-  document.createElement("button");
-
-blockButton.textContent = "🚫 Block";
-
-blockButton.type = "button";
-
-blockButton.style.width = "auto";
-blockButton.style.marginTop = "6px";
-blockButton.style.marginLeft = "6px";
-blockButton.style.padding = "6px 10px";
-blockButton.style.fontSize = "12px";
-blockButton.style.background = "#555";
-
-blockButton.addEventListener(
-  "click",
-  async function(){
-
-    try{
-
-      const { data, error } =
-        await supabase.rpc(
-          "block_pingcar_user",
-          {
-            p_conversation_id:
-              conversationId,
-
-            p_blocker_id:
-              activeSenderId,
-
-            p_blocked_id:
-              msg.sender_id
-          }
-        );
-
-      if(error){
-
-        console.error(
-          "Block error:",
-          error
-        );
-
-        alert(
-          "Fehler beim Blockieren: " +
-          error.message
-        );
-
-        return;
-      }
-
-      if(data !== true){
-
-        alert(
-          "Der Benutzer konnte nicht blockiert werden."
-        );
-
-        return;
-      }
-
-      const blockedUsers =
-        JSON.parse(
-          localStorage.getItem(
-            "pingcar_blocked_users"
-          ) || "[]"
-        );
-
-      if(
-        msg.sender_id &&
-        !blockedUsers.includes(
-          msg.sender_id
-        )
-      ){
-
-        blockedUsers.push(
-          msg.sender_id
-        );
-
-        localStorage.setItem(
-          "pingcar_blocked_users",
-          JSON.stringify(
-            blockedUsers
-          )
-        );
-      }
-
-      div.remove();
-
-    } catch(error){
-
-      console.error(
-        "Block error:",
-        error
-      );
-
-      alert(
-        "Fehler beim Blockieren."
-      );
-    }
-  }
-);
-
-div.appendChild(blockButton);
-}
     box.appendChild(div);
 
   });
@@ -977,90 +891,17 @@ async function sendMessage(){
       "messageInput"
     );
 
+  const message =
+    input.value.trim();
+
   const statusBox =
     document.getElementById(
       "status"
     );
 
-  const message =
-    input.value.trim();
-
   if(!message){
     return;
   }
-
-  /* =========================
-     CONTENT FILTER
-  ========================= */
-
-   // Normalize text to catch simple attempts to bypass the filter.
-  const normalizedMessage = message
-    .normalize("NFKC")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[\u200B-\u200D\uFEFF]/g, "")
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const blockedPatterns = [
-    // Threats and violence
-    /\b(kill you|kill him|kill her|kill them|go die|i will kill|i'll kill|shoot you|stab you|rape you)\b/i,
-    /\b(ich bring dich um|ich werde dich toten|ich werde dich verletzen|vergewaltig)\b/i,
-    /\b(je vais te tuer|je vais te frapper|je vais te violer)\b/i,
-    /\b(ti ammazzo|ti uccido|ti stupro|stupro)\b/i,
-    /\b(do te vras|kam me te vra|ta vras)\b/i,
-    /\b(ubicu te|ubicu cu te|ubit cu te|zaklacu te)\b/i,
-
-    // Sexual exploitation and abuse
-    /\b(child porn|child pornography|revenge porn|bestiality|pedophile|paedophile)\b/i,
-    /\b(kinderporn|kinderporno|kinder missbrauch|pedophil)\b/i,
-    /\b(pornografia minorile|abuso sessuale|pedofilo)\b/i,
-
-    // Severe insults and hateful content
-    /\b(nazi|white supremacist|kill all jews|kill all muslims|kill all christians)\b/i,
-    /\b(hurensohn|wichser|schlampe|fick dich|arschloch)\b/i,
-    /\b(connard|connasse|salope|nique ta mere)\b/i,
-    /\b(stronzo|puttana|bastardo|vaffanculo)\b/i,
-    /\b(kurva|jebem|picka|kurac|govno|jebi se)\b/i,
-    /\b(orospu|serefsiz)\b/i
-  ];
-
-  const containsBlockedContent = blockedPatterns.some(
-    pattern => pattern.test(normalizedMessage)
-  );
-
-  if (containsBlockedContent) {
-    statusBox.textContent =
-      "Diese Nachricht enthält unzulässige oder beleidigende Inhalte.";
-    statusBox.className = "status error";
-    return;
-  }
-
-  /* =========================
-     TERMS / EULA
-  ========================= */
-
-  const termsCheckbox =
-    document.getElementById(
-      "termsCheckbox"
-    );
-
-  if(!termsCheckbox.checked){
-
-    statusBox.textContent =
-      t.termsRequired;
-
-    statusBox.className =
-      "status error";
-
-    return;
-  }
-
-  /* =========================
-     CHECK PARAMETERS
-  ========================= */
 
   if(
     !conversationId ||
@@ -1077,10 +918,6 @@ async function sendMessage(){
 
     return;
   }
-
-  /* =========================
-     SEND
-  ========================= */
 
   const button =
     document.getElementById(
@@ -1154,7 +991,8 @@ async function sendMessage(){
 
     await loadMessages();
 
-  } catch(error){
+  }
+  catch(error){
 
     console.error(error);
 
@@ -1164,7 +1002,8 @@ async function sendMessage(){
     statusBox.className =
       "status error";
 
-  } finally {
+  }
+  finally{
 
     button.disabled = false;
 

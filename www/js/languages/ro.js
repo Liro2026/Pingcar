@@ -105,4 +105,3 @@ privacyFocus: "Dezvoltat cu accent pe protecția datelor.",
   after_first_year: "Apoi 49,90 CHF pe an"
 
 };
-

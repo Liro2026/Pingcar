@@ -72,4 +72,3 @@ privacyFocus: "Razvijeno sa fokusom na zaštitu podataka.",
   promo_code_text: "Sa kodom",
   after_first_year: "Nakon toga 49,90 CHF godišnje"
 };
-

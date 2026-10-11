@@ -105,4 +105,3 @@ export default {
   promo_code_text: "Mit dem Code",
   after_first_year: "Danach 49,90 CHF pro Jahr"
 };
-

@@ -109,4 +109,3 @@ export default {
   after_first_year: "之后每年 49,90 CHF"
 
 };
-

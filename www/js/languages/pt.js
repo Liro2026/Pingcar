@@ -113,4 +113,3 @@ privacyFocus: "Desenvolvido com foco na proteção de dados.",
   after_first_year: "Depois, 49,90 CHF por ano"
 
 };
-

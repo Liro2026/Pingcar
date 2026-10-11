@@ -61,4 +61,3 @@ privacyFocus: "Razvijeno s fokusom na zaštitu podataka.",
   after_first_year: "Nakon toga 49,90 CHF godišnje"
 
 };
-
