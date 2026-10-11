@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PingCar Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fa;color:#172033}.top{background:linear-gradient(135deg,#1677ff,#00b8ff);color:#fff;padding:22px 18px}.wrap{max-width:900px;margin:auto;padding:20px}.top .wrap{padding:0}.card{background:#fff;border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 8px 24px rgba(0,0,0,.08)}h1{margin:0 0 6px;font-size:30px}h2{margin-top:0}.muted{color:#667085}.btn{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}.primary{background:#1677ff;color:#fff}.danger{background:#e5484d;color:#fff}.status{padding:12px;border-radius:10px;background:#eef5ff;margin-top:12px;white-space:pre-wrap}.notice{padding:12px;border-bottom:1px solid #e6e9ef}.notice:last-child{border-bottom:0}.hidden{display:none}.qr{max-width:220px;display:block;margin:15px auto}.error{background:#fff0f0;color:#a61b1b}.success{background:#effaf3;color:#176b37}
 /* ===== PingCar Modern Dashboard ===== */
@@ -72,7 +73,7 @@ body {
 <header class="top"><div class="wrap"><h1>PingCar</h1><div id="userEmail">Dashboard</div></div></header>
 <main class="wrap">
 <section class="card">
-<h2>Mein Konto</h2>
+<h2 id="accountTitle">Mein Konto</h2>
 <p id="userInfo" class="muted">Login wird geprüft...</p>
 <button id="enablePush" class="btn primary" type="button">🔔 Benachrichtigungen aktivieren</button>
 <button id="logout" class="btn danger" type="button">🚪 Logout</button>
@@ -80,7 +81,7 @@ body {
 
 </section>
 <section class="card">
-<h2>Mein PingCar</h2>
+<h2 id="pingcarTitle">Mein PingCar</h2>
 <div id="pingInfo" class="muted">Wird geladen...</div>
 <img id="qrimage" class="qr hidden" alt="PingCar QR-Code">
   <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
@@ -108,8 +109,12 @@ style="padding:12px 16px;border:none;border-radius:8px;background:#8e24aa;color:
 </div>
 </section>
 <section class="card">
-<h2>Benachrichtigungen</h2>
+<h2 id="notificationsTitle">Benachrichtigungen</h2>
 <div id="notifications" class="muted">Wird geladen...</div>
+</section>
+<section class="card">
+  <h2 id="subscriptionTitle">💳 Mein Abonnement</h2>
+  <div id="subscriptionInfo" class="muted">Wird geladen...</div>
 </section>
 </main>
 <script>
@@ -175,6 +180,7 @@ const dashTranslations = {
     "QR-Code teilen": "Share QR-Code",
     "QR-Code herunterladen": "Download QR-Code",
     "Benachrichtigungen": "Notifications",
+  },
     
  sr: {
       "PingCar Dashboard": "PingCar Kontrolna tabla",
@@ -398,6 +404,186 @@ ro: {
   "Benachrichtigungen": "Notificări",
   "wird geladen...": "Se încarcă..."
 },
+  el: {
+  "PingCar Dashboard": "Πίνακας PingCar",
+  "Mein Konto": "Ο λογαριασμός μου",
+  "Angemeldet als:": "Συνδεδεμένος ως:",
+  "Benachrichtigungen aktivieren": "Ενεργοποίηση ειδοποιήσεων",
+  "Logout": "Αποσύνδεση",
+  "Bereit.": "Έτοιμο.",
+  "Mein PingCar": "Το PingCar μου",
+  "Als PDF speichern": "Αποθήκευση ως PDF",
+  "QR-Code drucken": "Εκτύπωση κωδικού QR",
+  "QR-Code teilen": "Κοινοποίηση κωδικού QR",
+  "QR-Code herunterladen": "Λήψη κωδικού QR",
+  "Benachrichtigungen": "Ειδοποιήσεις",
+  "wird geladen...": "Φόρτωση..."
+},
+  pl: {
+  "PingCar Dashboard": "Panel PingCar",
+  "Mein Konto": "Moje konto",
+  "Angemeldet als:": "Zalogowano jako:",
+  "Benachrichtigungen aktivieren": "Włącz powiadomienia",
+  "Logout": "Wyloguj się",
+  "Bereit.": "Gotowe.",
+  "Mein PingCar": "Mój PingCar",
+  "Als PDF speichern": "Zapisz jako PDF",
+  "QR-Code drucken": "Drukuj kod QR",
+  "QR-Code teilen": "Udostępnij kod QR",
+  "QR-Code herunterladen": "Pobierz kod QR",
+  "Benachrichtigungen": "Powiadomienia",
+  "wird geladen...": "Ładowanie..."
+},
+  cs: {
+  "PingCar Dashboard": "Panel PingCar",
+  "Mein Konto": "Můj účet",
+  "Angemeldet als:": "Přihlášen jako:",
+  "Benachrichtigungen aktivieren": "Povolit upozornění",
+  "Logout": "Odhlásit se",
+  "Bereit.": "Připraveno.",
+  "Mein PingCar": "Moje PingCar",
+  "Als PDF speichern": "Uložit jako PDF",
+  "QR-Code drucken": "Vytisknout QR kód",
+  "QR-Code teilen": "Sdílet QR kód",
+  "QR-Code herunterladen": "Stáhnout QR kód",
+  "Benachrichtigungen": "Upozornění",
+  "wird geladen...": "Načítání..."
+},
+  sw: {
+  "PingCar Dashboard": "Dashibodi ya PingCar",
+  "Mein Konto": "Akaunti yangu",
+  "Angemeldet als:": "Umeingia kama:",
+  "Benachrichtigungen aktivieren": "Washa arifa",
+  "Logout": "Toka",
+  "Bereit.": "Tayari.",
+  "Mein PingCar": "PingCar yangu",
+  "Als PDF speichern": "Hifadhi kama PDF",
+  "QR-Code drucken": "Chapisha msimbo wa QR",
+  "QR-Code teilen": "Shiriki msimbo wa QR",
+  "QR-Code herunterladen": "Pakua msimbo wa QR",
+  "Benachrichtigungen": "Arifa",
+  "wird geladen...": "Inapakia..."
+},
+  ar: {
+  "PingCar Dashboard": "لوحة تحكم PingCar",
+  "Mein Konto": "حسابي",
+  "Angemeldet als:": "تم تسجيل الدخول باسم:",
+  "Benachrichtigungen aktivieren": "تفعيل الإشعارات",
+  "Logout": "تسجيل الخروج",
+  "Bereit.": "جاهز.",
+  "Mein PingCar": "PingCar الخاص بي",
+  "Als PDF speichern": "حفظ كملف PDF",
+  "QR-Code drucken": "طباعة رمز QR",
+  "QR-Code teilen": "مشاركة رمز QR",
+  "QR-Code herunterladen": "تنزيل رمز QR",
+  "Benachrichtigungen": "الإشعارات",
+  "wird geladen...": "جارٍ التحميل..."
+},
+  zh: {
+  "PingCar Dashboard": "PingCar 控制面板",
+  "Mein Konto": "我的账户",
+  "Angemeldet als:": "登录身份：",
+  "Benachrichtigungen aktivieren": "启用通知",
+  "Logout": "退出登录",
+  "Bereit.": "准备就绪。",
+  "Mein PingCar": "我的 PingCar",
+  "Als PDF speichern": "保存为 PDF",
+  "QR-Code drucken": "打印二维码",
+  "QR-Code teilen": "分享二维码",
+  "QR-Code herunterladen": "下载二维码",
+  "Benachrichtigungen": "通知",
+  "wird geladen...": "正在加载..."
+},
+  ja: {
+  "PingCar Dashboard": "PingCar ダッシュボード",
+  "Mein Konto": "マイアカウント",
+  "Angemeldet als:": "ログイン中：",
+  "Benachrichtigungen aktivieren": "通知を有効にする",
+  "Logout": "ログアウト",
+  "Bereit.": "準備完了。",
+  "Mein PingCar": "マイPingCar",
+  "Als PDF speichern": "PDFとして保存",
+  "QR-Code drucken": "QRコードを印刷",
+  "QR-Code teilen": "QRコードを共有",
+  "QR-Code herunterladen": "QRコードをダウンロード",
+  "Benachrichtigungen": "通知",
+  "wird geladen...": "読み込み中..."
+},
+  bg: {
+  "PingCar Dashboard": "PingCar Табло",
+  "Mein Konto": "Моят акаунт",
+  "Angemeldet als:": "Влезли сте като:",
+  "Benachrichtigungen aktivieren": "Активиране на известията",
+  "Logout": "Изход",
+  "Bereit.": "Готово.",
+  "Mein PingCar": "Моят PingCar",
+  "Als PDF speichern": "Запазване като PDF",
+  "QR-Code drucken": "Печат на QR кода",
+  "QR-Code teilen": "Споделяне на QR кода",
+  "QR-Code herunterladen": "Изтегляне на QR кода",
+  "Benachrichtigungen": "Известия",
+  "wird geladen...": "Зареждане..."
+},
+  ru: {
+  "PingCar Dashboard": "Панель PingCar",
+  "Mein Konto": "Мой аккаунт",
+  "Angemeldet als:": "Вы вошли как:",
+  "Benachrichtigungen aktivieren": "Включить уведомления",
+  "Logout": "Выйти",
+  "Bereit.": "Готово.",
+  "Mein PingCar": "Мой PingCar",
+  "Als PDF speichern": "Сохранить как PDF",
+  "QR-Code drucken": "Распечатать QR-код",
+  "QR-Code teilen": "Поделиться QR-кодом",
+  "QR-Code herunterladen": "Скачать QR-код",
+  "Benachrichtigungen": "Уведомления",
+  "wird geladen...": "Загрузка..."
+
+},
+  hi: {
+  "PingCar Dashboard": "PingCar डैशबोर्ड",
+  "Mein Konto": "मेरा खाता",
+  "Angemeldet als:": "आप लॉग इन हैं:",
+  "Benachrichtigungen aktivieren": "सूचनाएँ सक्रिय करें",
+  "Logout": "लॉग आउट करें",
+  "Bereit.": "तैयार।",
+  "Mein PingCar": "मेरा PingCar",
+  "Als PDF speichern": "PDF के रूप में सहेजें",
+  "QR-Code drucken": "QR कोड प्रिंट करें",
+  "QR-Code teilen": "QR कोड साझा करें",
+  "QR-Code herunterladen": "QR कोड डाउनलोड करें",
+  "Benachrichtigungen": "सूचनाएँ",
+  "wird geladen...": "लोड हो रहा है..."
+},
+  da: {
+  "PingCar Dashboard": "PingCar Dashboard",
+  "Mein Konto": "Min konto",
+  "Angemeldet als:": "Logget ind som:",
+  "Benachrichtigungen aktivieren": "Aktivér notifikationer",
+  "Logout": "Log ud",
+  "Bereit.": "Klar.",
+  "Mein PingCar": "Min PingCar",
+  "Als PDF speichern": "Gem som PDF",
+  "QR-Code drucken": "Udskriv QR-kode",
+  "QR-Code teilen": "Del QR-kode",
+  "QR-Code herunterladen": "Download QR-kode",
+  "Benachrichtigungen": "Notifikationer",
+  "wird geladen...": "Indlæser..."
+},
+  fi: {
+  "PingCar Dashboard": "PingCar-hallintapaneeli",
+  "Mein Konto": "Oma tili",
+  "Angemeldet als:": "Kirjautuneena:",
+  "Benachrichtigungen aktivieren": "Ota ilmoitukset käyttöön",
+  "Logout": "Kirjaudu ulos",
+  "Bereit.": "Valmis.",
+  "Mein PingCar": "Oma PingCar",
+  "Als PDF speichern": "Tallenna PDF-muodossa",
+  "QR-Code drucken": "Tulosta QR-koodi",
+  "QR-Code teilen": "Jaa QR-koodi",
+  "QR-Code herunterladen": "Lataa QR-koodi",
+  "Benachrichtigungen": "Ilmoitukset",
+  "wird geladen...": "Ladataan..."
 }
 
 };
@@ -422,7 +608,8 @@ function translateDashboard() {
       );
     }
   }
-}
+
+  }
 
 document.addEventListener("DOMContentLoaded", translateDashboard);
 </script>
@@ -435,7 +622,7 @@ const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAxvXRoZRsjUWWLp40qovq2iNLt9g0ISw7Y",
+  apiKey: "AIzaSyD4E_8-_ZSbYPeiU1dxn7yYXL8enbUdOAU",
   authDomain: "pingcar.firebaseapp.com",
   projectId: "pingcar",
   storageBucket: "pingcar.firebasestorage.app",
@@ -475,7 +662,81 @@ async function loadPingCar(user) {
   $("qrimage").classList.remove("hidden");
 }
 }
+async function loadSubscription(user) {
+  const box = $("subscriptionInfo");
 
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("plan_name, amount, status, expires_at, created_at")
+    .eq("email", user.email)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Abonnement Fehler:", error);
+    box.innerHTML = `
+      <div style="color:#dc3545;">
+        Abonnement konnte nicht geladen werden.
+      </div>
+    `;
+    return;
+  }
+
+  if (!data) {
+    box.innerHTML = `
+      <div style="
+        padding:15px;
+        background:#f8f9fa;
+        border-radius:8px;
+      ">
+        <strong>Kein Abonnement vorhanden</strong>
+      </div>
+    `;
+    return;
+  }
+
+  const isActive = data.status === "active";
+
+  const expiryDate = data.expires_at
+    ? new Date(data.expires_at).toLocaleDateString("de-CH")
+    : "Unbefristet";
+
+  box.innerHTML = `
+    <div style="
+      padding:18px;
+      background:#f8f9fa;
+      border-radius:10px;
+      border-left:5px solid ${isActive ? "#28a745" : "#dc3545"};
+    ">
+
+      <div style="
+        font-size:18px;
+        font-weight:bold;
+        color:${isActive ? "#28a745" : "#dc3545"};
+        margin-bottom:12px;
+      ">
+        ${isActive ? "🟢 Aktiv" : "🔴 Inaktiv"}
+      </div>
+
+      <div style="margin-bottom:7px;">
+        <strong>Plan:</strong>
+        ${escapeHtml(data.plan_name || "-")}
+      </div>
+
+      <div style="margin-bottom:7px;">
+        <strong>Preis:</strong>
+        CHF ${Number(data.amount || 0).toFixed(2)}
+      </div>
+
+      <div>
+        <strong>Gültig bis:</strong>
+        ${expiryDate}
+      </div>
+
+    </div>
+  `;
+}
 async function loadNotifications(user) {
   const box = $("notifications");
 
@@ -602,13 +863,26 @@ async function enablePush() {
     if (!("serviceWorker" in navigator) || !("Notification" in window)) { status("Dieser Browser unterstützt Push-Benachrichtigungen hier nicht.", "error"); return; }
 
     status("Firebase wird geladen...");
-    const [{ initializeApp }, { getMessaging, getToken }] = await Promise.all([
+    const [{ initializeApp }, { getMessaging, getToken, onMessage }] = await Promise.all([
       import("https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"),
       import("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js")
     ]);
 
     const firebaseApp = initializeApp(FIREBASE_CONFIG);
     const messaging = getMessaging(firebaseApp);
+    onMessage(messaging, (payload) => {
+  console.log("📩 PingCar Push received:", payload);
+
+  const title = payload?.notification?.title || "PingCar";
+  const body = payload?.notification?.body || "Neue PingCar Nachricht";
+
+  if (Notification.permission === "granted") {
+    new Notification(title, {
+      body: body,
+      icon: "/favicon.ico"
+    });
+  }
+});
 
     status("Service Worker wird registriert...");
     const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js", {scope:"./"});
@@ -621,7 +895,19 @@ async function enablePush() {
     const token = await getToken(messaging, {vapidKey: VAPID_KEY, serviceWorkerRegistration: registration});
     if (!token) throw new Error("Firebase hat keinen FCM Token zurückgegeben.");
 
-    const { error } = await supabase.from("device_tokens").upsert({user_id: currentUser.id, fcm_token: token}, {onConflict:"user_id"});
+    const country = localStorage.getItem("pingcar_country") || null;
+
+console.log("Country for dashboard device token:", country);
+
+const { error } = await supabase
+  .from("device_tokens")
+  .upsert({
+    user_id: currentUser.id,
+    fcm_token: token,
+    country: country
+  }, {
+    onConflict: "user_id"
+  });
     if (error) throw new Error("Token konnte nicht in Supabase gespeichert werden: " + error.message);
 
     console.log("PINGCAR DEVICE TOKEN:", token);
@@ -646,7 +932,14 @@ document.getElementById("enablePush").addEventListener("click", enablePush);
 document.getElementById("logout").addEventListener("click", logout);
 
 const user = await loadUser();
-if (user) { await Promise.all([loadPingCar(user), loadNotifications(user)]); }
+
+if (user) {
+  await Promise.all([
+    loadPingCar(user),
+    loadNotifications(user),
+    loadSubscription(user)
+  ]);
+}
   // ===== PingCar QR Actions =====
 
 function saveQRAsPDF() {
@@ -830,7 +1123,7 @@ const dashboardTranslations = {
     notifications: "Benachrichtigungen aktivieren",
     logout: "Logout",
     ready: "Bereit.",
-    myPingcar: "PingCar im",
+    myPingcar: "Mein PingCar",
     pingId: "Ping-ID:",
     download: "QR-Code herunterladen",
     pdf: "Als PDF speichern",
@@ -1144,6 +1437,278 @@ ro: {
   loading: "Se încarcă..."
 
 },
+  el: {
+
+  logged: "Συνδεδεμένος ως:",
+
+  notifications: "Ενεργοποίηση ειδοποιήσεων",
+
+  logout: "Αποσύνδεση",
+
+  ready: "Έτοιμο.",
+
+  myPingcar: "Το PingCar μου",
+
+  pingId: "Ping-ID:",
+
+  download: "Λήψη κωδικού QR",
+
+  pdf: "Αποθήκευση ως PDF",
+
+  print: "Εκτύπωση κωδικού QR",
+
+  share: "Κοινοποίηση κωδικού QR",
+
+  notificationsTitle: "Ειδοποιήσεις",
+
+  loading: "Φόρτωση..."
+
+},
+  pl: {
+
+  logged: "Zalogowano jako:",
+
+  notifications: "Włącz powiadomienia",
+
+  logout: "Wyloguj się",
+
+  ready: "Gotowe.",
+
+  myPingcar: "Mój PingCar",
+
+  pingId: "Ping-ID:",
+
+  download: "Pobierz kod QR",
+
+  pdf: "Zapisz jako PDF",
+
+  print: "Drukuj kod QR",
+
+  share: "Udostępnij kod QR",
+
+  notificationsTitle: "Powiadomienia",
+
+  loading: "Ładowanie..."
+
+},
+  cs: {
+
+  logged: "Přihlášen jako:",
+
+  notifications: "Povolit upozornění",
+
+  logout: "Odhlásit se",
+
+  ready: "Připraveno.",
+
+  myPingcar: "Moje PingCar",
+
+  pingId: "Ping-ID:",
+
+  download: "Stáhnout QR kód",
+
+  pdf: "Uložit jako PDF",
+
+  print: "Vytisknout QR kód",
+
+  share: "Sdílet QR kód",
+
+  notificationsTitle: "Upozornění",
+
+  loading: "Načítání..."
+
+},
+  sw: {
+
+  logged: "Umeingia kama:",
+
+  notifications: "Washa arifa",
+
+  logout: "Toka",
+
+  ready: "Tayari.",
+
+  myPingcar: "PingCar yangu",
+
+  pingId: "Kitambulisho cha Ping:",
+
+  download: "Pakua msimbo wa QR",
+
+  pdf: "Hifadhi kama PDF",
+
+  print: "Chapisha msimbo wa QR",
+
+  share: "Shiriki msimbo wa QR",
+
+  notificationsTitle: "Arifa",
+
+  loading: "Inapakia..."
+
+},
+  ar: {
+
+  logged: "تم تسجيل الدخول باسم:",
+
+  notifications: "تفعيل الإشعارات",
+
+  logout: "تسجيل الخروج",
+
+  ready: "جاهز.",
+
+  myPingcar: "PingCar الخاص بي",
+
+  pingId: "معرّف Ping:",
+
+  download: "تنزيل رمز QR",
+
+  pdf: "حفظ كملف PDF",
+
+  print: "طباعة رمز QR",
+
+  share: "مشاركة رمز QR",
+
+  notificationsTitle: "الإشعارات",
+
+  loading: "جارٍ التحميل..."
+
+},
+  zh: {
+
+  logged: "登录身份：",
+
+  notifications: "启用通知",
+
+  logout: "退出登录",
+
+  ready: "准备就绪。",
+
+  myPingcar: "我的 PingCar",
+
+  pingId: "PingCar ID：",
+
+  download: "下载二维码",
+
+  pdf: "保存为 PDF",
+
+  print: "打印二维码",
+
+  share: "分享二维码",
+
+  notificationsTitle: "通知",
+
+  loading: "正在加载..."
+
+},
+  ja: {
+
+  logged: "ログイン中：",
+
+  notifications: "通知を有効にする",
+
+  logout: "ログアウト",
+
+  ready: "準備完了。",
+
+  myPingcar: "マイPingCar",
+
+  pingId: "PingCar ID：",
+
+  download: "QRコードをダウンロード",
+
+  pdf: "PDFとして保存",
+
+  print: "QRコードを印刷",
+
+  share: "QRコードを共有",
+
+  notificationsTitle: "通知",
+
+  loading: "読み込み中..."
+
+},
+  bg: {
+
+  logged: "Влезли сте като:",
+
+  notifications: "Активиране на известията",
+
+  logout: "Изход",
+
+  ready: "Готово.",
+
+  myPingcar: "Моят PingCar",
+
+  pingId: "PingCar ID:",
+
+  download: "Изтегляне на QR кода",
+
+  pdf: "Запазване като PDF",
+
+  print: "Печат на QR кода",
+
+  share: "Споделяне на QR кода",
+
+  notificationsTitle: "Известия",
+
+  loading: "Зареждане..."
+
+},
+  ru: {
+  logged: "Вы вошли как:",
+  notifications: "Включить уведомления",
+  logout: "Выйти",
+  ready: "Готово.",
+  myPingcar: "Мой PingCar",
+  pingId: "PingCar ID:",
+  download: "Скачать QR-код",
+  pdf: "Сохранить как PDF",
+  print: "Распечатать QR-код",
+  share: "Поделиться QR-кодом",
+  notificationsTitle: "Уведомления",
+  loading: "Загрузка..."
+},
+  hi: {
+  logged: "आप लॉग इन हैं:",
+  notifications: "सूचनाएँ सक्रिय करें",
+  logout: "लॉग आउट करें",
+  ready: "तैयार।",
+  myPingcar: "मेरा PingCar",
+  pingId: "PingCar ID:",
+  download: "QR कोड डाउनलोड करें",
+  pdf: "PDF के रूप में सहेजें",
+  print: "QR कोड प्रिंट करें",
+  share: "QR कोड साझा करें",
+  notificationsTitle: "सूचनाएँ",
+  loading: "लोड हो रहा है..."
+},
+  da: {
+  logged: "Du er logget ind:",
+  notifications: "Aktivér notifikationer",
+  logout: "Log ud",
+  ready: "Klar.",
+  myPingcar: "Min PingCar",
+  pingId: "PingCar ID:",
+  download: "Download QR-kode",
+  pdf: "Gem som PDF",
+  print: "Udskriv QR-kode",
+  share: "Del QR-kode",
+  notificationsTitle: "Notifikationer",
+  loading: "Indlæser..."
+},
+  fi: {
+  logged: "Olet kirjautunut sisään:",
+  notifications: "Ota ilmoitukset käyttöön",
+  logout: "Kirjaudu ulos",
+  ready: "Valmis.",
+  myPingcar: "Oma PingCar",
+  pingId: "PingCar ID:",
+  download: "Lataa QR-koodi",
+  pdf: "Tallenna PDF-muodossa",
+  print: "Tulosta QR-koodi",
+  share: "Jaa QR-koodi",
+  notificationsTitle: "Ilmoitukset",
+  loading: "Ladataan..."
+},
 
 
 };
@@ -1203,6 +1768,45 @@ function translateDashboard() {
 
   const shareBtn = document.querySelector('[onclick="shareQR()"]');
   if (shareBtn) shareBtn.textContent = "📤 " + t.share;
+  const accountTitles = {
+  de: "Mein Konto",
+  sq: "Llogaria ime",
+  fr: "Mon compte",
+  it: "Il mio account",
+  en: "My Account",
+  sr: "Moj nalog",
+  es: "Mi cuenta",
+  tr: "Hesabım",
+  sk: "Môj účet",
+  hr: "Moj račun",
+  hu: "Fiókom",
+  pt: "A minha conta",
+  mk: "Мојата сметка",
+  nl: "Mijn account",
+  sv: "Mitt konto",
+  ro: "Contul meu",
+  el: "Ο λογαριασμός μου",
+  pl: "Moje konto",
+  cs: "Můj účet",
+  sw: "Akaunti yangu",
+  ar: "حسابي",
+  zh: "我的账户",
+  ja: "マイアカウント",
+  bg: "Моят акаунт",
+  ru: "Мой аккаунт",
+  hi: "मेरा खाता",
+  da: "Min konto",
+  fi: "Oma tili"
+};
+
+document.getElementById("accountTitle").textContent =
+  accountTitles[lang] || accountTitles.de;
+
+document.getElementById("pingcarTitle").textContent =
+  t.myPingcar;
+
+document.getElementById("notificationsTitle").textContent =
+  t.notificationsTitle;
 }
 
 translateDashboard();
