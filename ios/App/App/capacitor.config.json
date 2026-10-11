@@ -1,15 +1,19 @@
 {
 	"appId": "ch.pingcar.app",
 	"appName": "PingCar",
-	"webDir": "www",
-	"packageClassList": [],
+	"webDir": "web-source",
+	"packageClassList": [
+		"FilesystemPlugin",
+		"SharePlugin"
+	],
 	"plugins": {
 		"CapacitorHttp": {
-			"enabled": true
+			"enabled": false
 		}
 	},
 	"server": {
 		"androidScheme": "https",
+		"iosScheme": "https",
 		"allowNavigation": [
 			"*"
 		]
