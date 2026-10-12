@@ -840,8 +840,19 @@ const firebaseConfig = {
   appId: "1:133178961912:web:f41ed6b0b381ec69d7b00d"
 };
 
+
 const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
+let messaging = null;
+
+try {
+  messaging = getMessaging(firebaseApp);
+} catch (messagingInitError) {
+  console.warn(
+    "Firebase Messaging is unavailable in this environment:",
+    messagingInitError
+  );
+}
+
 
 const vapidKey = "BHoqSOw3efNqpGHgyuhD_Nlf05uGPiQGcuTv6xjHAkHWAsaG0daK6XrmwE3sPNmgN6pC62sqcBFb6RasKhcD2bE";
 async function enablePushNotifications() {
