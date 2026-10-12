@@ -638,12 +638,18 @@ function status(message, type="") { $("status").textContent = message; $("status
 let currentUser = null;
 
 async function loadUser() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) {
+  // Use the locally persisted Supabase session first. getUser() makes an
+  // extra network request and can leave the dashboard looking stuck if it fails.
+  const { data, error } = await supabase.auth.getSession();
+  const sessionUser = data?.session?.user || null;
+
+  if (error || !sessionUser) {
+    $("userInfo").textContent = "Keine aktive Anmeldung. Bitte erneut anmelden.";
     location.replace("index.html");
     return null;
   }
-  currentUser = data.user;
+
+  currentUser = sessionUser;
   $("userEmail").textContent = currentUser.email || "PingCar User";
   $("userInfo").textContent = "Angemeldet als: " + (currentUser.email || currentUser.id);
   return currentUser;
@@ -855,7 +861,19 @@ function replyToPingCar(conversationId, senderId, qrCode) {
 }
 window.replyToPingCar = replyToPingCar;
   
-function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c])); }
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, function(c) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;"
+    }[c];
+  });
+}
+
 
 async function enablePush() {
   try {
@@ -931,15 +949,35 @@ async function logout() {
 document.getElementById("enablePush").addEventListener("click", enablePush);
 document.getElementById("logout").addEventListener("click", logout);
 
-const user = await loadUser();
+async function initializeDashboard() {
+  status("Anmeldung wird geprüft...");
+  try {
+    const user = await loadUser();
+    if (!user) return;
 
-if (user) {
-  await Promise.all([
-    loadPingCar(user),
-    loadNotifications(user),
-    loadSubscription(user)
-  ]);
+    // One failed data request should not prevent the rest of the dashboard
+    // from rendering or leave all loading labels untouched.
+    const results = await Promise.allSettled([
+      loadPingCar(user),
+      loadNotifications(user),
+      loadSubscription(user)
+    ]);
+
+    const failures = results.filter(result => result.status === "rejected");
+    if (failures.length) {
+      console.error("Dashboard load failures:", failures);
+      status("Dashboard ist teilweise geladen. Bitte prüfen Sie die Fehlermeldungen in der Konsole.", "error");
+    } else {
+      status("Dashboard geladen.", "success");
+    }
+  } catch (error) {
+    console.error("Dashboard-Startfehler:", error);
+    status("Dashboard konnte nicht vollständig geladen werden: " + (error?.message || String(error)), "error");
+    $("pingInfo").textContent = "Laden fehlgeschlagen. Bitte Seite neu laden oder erneut anmelden.";
+  }
 }
+
+initializeDashboard();
   // ===== PingCar QR Actions =====
 
 function saveQRAsPDF() {
@@ -1039,8 +1077,8 @@ function saveQRAsPDF() {
       };
     <\/script>
 
-  </body>
-  </html>
+  <\/body>
+  <\/html>
 `);
 
 printWindow.document.close();
