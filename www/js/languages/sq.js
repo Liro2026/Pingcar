@@ -45,5 +45,32 @@ export default {
   resetPassword: "Rivendos fjalëkalimin",
 
   noPersonalData: "Nuk kërkohen të dhëna personale",
-  noPhoneNumber: "Nuk kërkohet numër telefoni"
+  noPhoneNumber: "Nuk kërkohet numër telefoni",
+
+  trial_heading: "🚀 Provo 7 ditë falas.",
+  trial_subheading: "Provo të gjitha funksionet Premium pa pagesë.",
+  now_new: "⭐ Tani e re:",
+  trial_bullet_1: "7 ditë provë pa pagesë.",
+  trial_bullet_2: "Asnjë pagesë sot.",
+  trial_bullet_3: "Anulohet në çdo kohë.",
+  monthly_plan: "📅 Abonim Muajor",
+  yearly_plan: "⭐ Abonim Vjetor",
+  per_month: "në muaj",
+  per_year: "në vit",
+  select_monthly: "Zgjidh abonimin muajor",
+  select_yearly: "Zgjidh abonimin vjetor",
+  phonePrivate: "Numri juaj i telefonit mbetet privat.",
+personalDataPrivate: "Emri dhe të dhënat e kontaktit nuk shfaqen.",
+ownerNotified: "Pronari i automjetit njoftohet menjëherë.",
+privacyFocus: "Zhvilluar me fokus në mbrojtjen e të dhënave.",
+  heroTitle: "🚗 A ke një makinë? Atëherë të duhet PingCar.",
+  heroSubtitle: "Qëndro i kontaktueshëm pa e bërë publik numrin tënd të telefonit.",
+  heroQr: "✅ Kodi QR në makinë",
+  heroContact: "✅ Mund të kontaktohesh direkt",
+  heroPrivacy: "✅ Numri yt i telefonit mbetet privat",
+  heroTrial: "🎁 7 ditë provë falas",
+  heroRegister: "🚗 Regjistro makinën time tani →",
+  first_year_offer: "29,90 CHF vitin e parë",
+  promo_code_text: "Me kodin",
+  after_first_year: "Më pas 49,90 CHF në vit"
 };

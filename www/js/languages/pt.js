@@ -84,6 +84,32 @@ export default {
 
   footerText: "PingCar – uma solução segura para proprietários de veículos.",
 
-  rights: "Todos os direitos reservados."
+  rights: "Todos os direitos reservados.",
+  trial_heading: "🚀 Experimente grátis por 7 dias.",
+  trial_subheading: "Teste todas as funcionalidades Premium gratuitamente.",
+  now_new: "⭐ Novo:",
+  trial_bullet_1: "7 dias de teste grátis.",
+  trial_bullet_2: "Sem pagamento hoje.",
+  trial_bullet_3: "Cancele a qualquer momento.",
+  monthly_plan: "📅 Subscrição Mensal",
+  yearly_plan: "⭐ Subscrição Anual",
+  per_month: "por mês",
+  per_year: "por ano",
+  select_monthly: "Escolher plano mensal",
+  select_yearly: "Escolher plano anual",
+  phonePrivate: "O seu número de telefone permanece privado.",
+personalDataPrivate: "O nome e os dados de contacto não são apresentados.",
+ownerNotified: "O proprietário do veículo é informado imediatamente.",
+privacyFocus: "Desenvolvido com foco na proteção de dados.",
+  heroTitle: "🚗 Tem um carro? Então precisa do PingCar.",
+  heroSubtitle: "Fique disponível para contacto sem partilhar publicamente o seu número de telefone.",
+  heroQr: "✅ Código QR no veículo",
+  heroContact: "✅ Seja contactado diretamente",
+  heroPrivacy: "✅ O seu número de telefone permanece privado",
+  heroTrial: "🎁 7 dias de teste grátis",
+  heroRegister: "🚗 Registar o meu veículo agora →",
+  first_year_offer: "29,90 CHF no primeiro ano",
+  promo_code_text: "Com o código",
+  after_first_year: "Depois, 49,90 CHF por ano"
 
 };

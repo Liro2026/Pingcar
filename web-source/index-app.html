@@ -2,617 +2,195 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<script src="capacitor.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=contain">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://supabase.co https://jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: *; connect-src 'self' https://supabase.co https://stripe.com;">
 <title>PingCar</title>
-
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,Helvetica,sans-serif;
-  -webkit-tap-highlight-color: transparent;
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#f5f7fb;color:#222;line-height:1.6;margin-top:60px !important;}
+header{background:linear-gradient(135deg,#0066ff,#00bfff);color:white;text-align:center;padding:75px 15px 35px;}
+.logo{width:140px;display:block;margin:15px auto;border-radius:50%;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
+header h1{font-size:38px;margin-bottom:10px;}
+header p{max-width:600px;margin:auto;font-size:18px;}
+.container{max-width:700px;margin:auto;padding:25px 15px;}
+.card{background:white;border-radius:16px;padding:25px;margin-bottom:20px;box-shadow:0 5px 18px rgba(0,0,0,.08);}
+h2{color:#0066ff;margin-bottom:18px;}
+input{width:100%;padding:14px;margin-bottom:12px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#0066ff;color:white;font-size:17px;font-weight:bold;cursor:pointer;-webkit-appearance:none;}
+button:active{opacity:.8;}
+.secondary{background:#28a745;}
+.logout{background:#dc3545;}
+.status{margin-top:15px;padding:12px;border-radius:10px;background:#eef6ff;display:none;}
+a{color:#0066ff;}
+nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+nav a{color:white;text-decoration:none;background:rgba(255,255,255,.18);padding:8px 12px;border-radius:8px;font-size:14px;font-weight:bold;}
+nav a.back-btn{background:#dc3545;}
+footer{background:#111;color:white;text-align:center;padding:30px;margin-top:30px;}
+  header {
+  padding-top: calc(45px + env(safe-area-inset-top)) !important;
 }
-
-body{
-  background:#f5f7fb;
-  color:#222;
-  line-height:1.6;
-}
-
-header{
-  background:linear-gradient(135deg,#0066ff,#00bfff);
-  color:white;
-  text-align:center;
-  padding-top: max(20px, env(safe-area-inset-top));
-  padding-bottom: 25px;
-  padding-left: 15px;
-  padding-right: 15px;
-  position: relative;
-  z-index: 10;
-}
-
-.button{
-  display:inline-block;
-  margin-top:35px;
-  padding:18px 40px;
-  background:white;
-  color:#0066ff;
-  border-radius:40px;
-  text-decoration:none;
-  font-size:20px;
-  font-weight:bold;
-  cursor:pointer;
-  touch-action: manipulation;
-}
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:60px 20px;
-}
-
-.card{
-  background:white;
-  border-radius:18px;
-  padding:35px;
-  margin-bottom:30px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-h2{
-  color:#0066ff;
-  margin-bottom:20px;
-  font-size:34px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:20px;
-}
-
-.item{
-  background:#eef6ff;
-  padding:20px;
-  border-radius:14px;
-}
-
-.clickable-card {
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  touch-action: manipulation;
-}
-.clickable-card:active {
-  transform: scale(0.98);
-}
-
-footer{
-  background:#111;
-  color:white;
-  text-align:center;
-  padding:35px;
-  margin-top:50px;
-}
-
-.lang-dropdown {
-  position: relative;
-  display: inline-block;
-  z-index: 9999;
-}
-
-.lang-btn {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  padding: 8px 14px;
-  border: 1px solid rgba(255,255,255,0.4);
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  touch-action: manipulation;
-}
-
-.lang-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: white;
-  min-width: 190px;
-  max-height: 350px;
-  overflow-y: auto;
-  box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
-  border-radius: 10px;
-  z-index: 10000;
-  margin-top: 5px;
-  border: 1px solid #e5e7eb;
-}
-
-.lang-menu.show {
-  display: block !important;
-}
-
-.lang-option {
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
-    touch-action: manipulation;
-}
-
-.lang-option:last-child {
-  border-bottom: none;
-}
-
-.lang-option:active {
-  background-color: #eef6ff;
-}
-
-.lang-code {
-  font-weight: bold;
-  font-size: 11px;
-  color: #666;
-  width: 20px;
-  text-align: center;
-}
-
-.back-btn-global {
-  position: fixed;
-  bottom: calc(20px + env(safe-area-inset-bottom));
-  left: 20px;
-  z-index: 99999;
-  background: #0066ff;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 15px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-.back-btn-global:active {
-  transform: scale(0.96);
-  background: #0052cc;
-}
-
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: 999999;
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-  position: relative;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-.close-btn {
-  position: absolute;
-  top: 10px; right: 15px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #888;
+body {
+  padding-bottom: env(safe-area-inset-bottom) !important;
 }
 </style>
 </head>
-
 <body>
-
-<!-- BUTONI BACK PËR IOS MOBILE -->
-<button class="back-btn-global" id="globalBackBtn" type="button" onclick="handleGoBack()">
-  ⬅️ <span id="t-back-btn">Zurück</span>
-</button>
-
 <header>
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;max-width:1100px;margin:auto;">
-    <div style="font-size:24px;font-weight:bold;">
-      PingCar
-    </div>
-
-    <nav style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;">
-      <a href="index.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">🏠 Home</a>
-      <a href="qr.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">📷 QR</a>
-      <a href="contact.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">💬 Contact</a>
-      <a href="dashboard.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">👤 Dashboard</a>
-      <a href="message.html" style="color:white;text-decoration:none;background:rgba(255,255,255,0.15);padding:7px 10px;border-radius:8px;font-size:14px;">🔔 Messages</a>
-    </nav>
-
-    <div class="lang-dropdown">
-      <button class="lang-btn" id="current-lang-btn" type="button" onclick="toggleLangMenu(event)">
-        <span class="lang-code" id="current-code">CH</span> <span id="current-lang-text">Deutsch (DE)</span> <span class="arrow">▾</span>
-      </button>
-      <div class="lang-menu" id="lang-menu">
-        <button type="button" class="lang-option" onclick="setLanguage('de', event)"><span class="lang-code">CH</span> Deutsch (DE)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('fr', event)"><span class="lang-code">FR</span> Français (FR)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('it', event)"><span class="lang-code">IT</span> Italiano (IT)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('en', event)"><span class="lang-code">GB</span> English (EN)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('sq', event)"><span class="lang-code">AL</span> Shqip (SQ)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('sr', event)"><span class="lang-code">RS</span> Srpski (SR)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('es', event)"><span class="lang-code">ES</span> Español (ES)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('tr', event)"><span class="lang-code">TR</span> Türkçe (TR)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('sk', event)"><span class="lang-code">SK</span> Slovenčina (SK)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('hr', event)"><span class="lang-code">HR</span> Hrvatski (HR)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('hu', event)"><span class="lang-code">HU</span> Magyar (HU)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('pt', event)"><span class="lang-code">PT</span> Português (PT)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('mk', event)"><span class="lang-code">MK</span> Македонски (MK)</button>
-        <button type="button" class="lang-option" onclick="setLanguage('nl', event)"><span class="lang-code">NL</span> Nederlands (NL)</button>
-      </div>
-    </div>
-  </div>
-
-  <img src="86B24C84-C6A7-421A-AEC8-D1789A6C8285.png" alt="PingCar Logo" style="width:150px;display:block;margin:22px auto 15px;">
-
-  <p id="t-hero-desc" style="margin:0 auto 15px;max-width:600px;">
-    Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.
-  </p>
-
-  <a href="#registerForm" class="button" id="t-register-btn">🚗 Jetzt kostenlos registrieren</a>
+<nav>
+  <a href="#" onclick="window.history.back(); return false;" class="back-btn">⬅️ Zurück</a>
+  <a href="index-app.html">🏠 Home</a>
+  <a href="qr.html">📷 QR</a>
+  <a href="contact.html">💬 Contact</a>
+  <a href="dashboard.html">👤 Dashboard</a>
+  <a href="message.html">🔔 Messages</a>
+</nav>
+<img class="logo" src="https://pingcar.ch" alt="PingCar">
+<h1>PingCar</h1>
+<p>Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.</p>
 </header>
-
 <div class="container">
-<div class="card">
-<h2 id="t-how-it-works">So funktioniert PingCar</h2>
-<div class="grid">
-  <div class="item">
-    <h3 id="t-step1-title">1. Registrieren</h3>
-    <p id="t-step1-desc">Erstellen Sie kostenlos Ihr PingCar-Konto.</p>
-  </div>
-  <div class="item">
-    <h3 id="t-step2-title">2. QR-Code erhalten</h3>
-    <p id="t-step2-desc">Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.</p>
-  </div>
-  <div class="item">
-    <h3 id="t-step3-title">3. QR-Code anbringen</h3>
-    <p id="t-step3-desc">Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.</p>
-  </div>
-  <div class="item">
-    <h3 id="t-step4-title">4. QR-Code scannen</h3>
-    <p id="t-step4-desc">Eine andere Person scannt den QR-Code mit dem Smartphone.</p>
-  </div>
-  
-  <!-- KARTA E KLIKUESHME (ME ROLE BUTTON PËR IOS TOUCH) -->
-  <div class="item clickable-card" role="button" tabindex="0" onclick="openQrModal()">
-    <h3 id="t-discover-title">📱 Entdecke PingCar</h3>
-    <p id="t-discover-desc">Klicke hier oder scanne den QR-Code, um PingCar.ch zu öffnen.</p>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar QR-Code" style="width:180px;display:block;margin:15px auto;pointer-events:none;">
-    <p><strong>www.pingcar.ch</strong></p>
-  </div>
-  
-  <div class="item">
-    <h3 id="t-step5-title">5. Benachrichtigung</h3>
-    <p id="t-step5-desc">Sie erhalten sofort eine Nachricht in der PingCar-App.</p>
-  </div>
-</div>
-</div>
-
-<div class="card" id="pricing">
-  <h2 id="t-sub-title" style="text-align:center; margin-bottom: 10px;">Unsere Abonnements</h2>
-  <p id="t-sub-desc" style="text-align:center; color: #666; margin-bottom: 30px;">Wählen Sie den passenden Plan für Ihre Bedürfnisse.</p>
-  
-  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-    
-    <div class="item" style="background: #fff; border: 2px solid #eef6ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
-      <div>
-        <h3>Gratis</h3>
-        <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 0.- <span style="font-size: 14px; color: #888;">/ Monat</span></div>
-        <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
-          <li>✅ Basic QR-Code Aktivierung</li>
-          <li>✅ Benachrichtigungen erhalten</li>
-          <li>❌ Keine Prioritäts-Support</li>
-        </ul>
+  <!-- NACH DEM SCANNEN -->
+  <div class="card" style="background: none; box-shadow: none; padding: 0; margin-top: 10px;">
+    <h2 style="color: #0066ff; margin-bottom: 20px; text-align: left; font-size: 28px; font-weight: bold;">Nach dem Scannen</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px;">
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">🚗</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Mein Fahrzeug wird blockiert</strong>
       </div>
-      <a href="#registerForm" class="button" id="t-btn-free" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #eef6ff; color: #0066ff;">Kostenlos Starten</a>
-    </div>
-
-    <!-- BUTONAT E ABONIMIT ME TYPE="BUTTON" DHE ONCLICK TË REGJISTRUAR PLOTËSISHT -->
-    <div class="item" style="background: #fff; border: 2px solid #0066ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 10px 25px rgba(0,102,255,0.15);">
-      <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #0066ff; color: white; padding: 4px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">Beliebt</div>
-      <div>
-        <h3>Standard</h3>
-        <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 4.90 <span style="font-size: 14px; color: #888;">/ Monat</span></div>
-        <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
-          <li>✅ Alles aus Gratis</li>
-          <li>✅ 1x Physischer QR-Sticker inklusive</li>
-          <li>✅ Direkter In-App Chat</li>
-          <li>✅ Prioritäts-Benachrichtigung</li>
-        </ul>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">💡</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Das Licht ist eingeschaltet</strong>
       </div>
-      <button type="button" onclick="subscribe('standard')" class="button" id="t-btn-std" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #0066ff; color: white; border: none;">Abonnieren</button>
-    </div>
-
-    <div class="item" style="background: #fff; border: 2px solid #eef6ff; border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
-      <div>
-        <h3>Premium</h3>
-        <div style="font-size: 36px; font-weight: bold; color: #0066ff; margin: 15px 0;">CHF 9.90 <span style="font-size: 14px; color: #888;">/ Monat</span></div>
-        <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0; line-height: 2;">
-          <li>✅ Mehrere Fahrzeuge (bis zu 3)</li>
-          <li>✅ 3x Hochwertige QR-Sticker</li>
-          <li>✅ VIP 24/7 Support</li>
-          <li>✅ Anonyme Anrufe weiterleiten</li>
-        </ul>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">🚨</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Fahrzeug beschädigt</strong>
       </div>
-      <button type="button" onclick="subscribe('premium')" class="button" id="t-btn-prem" style="display: block; width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background: #111; color: white; border: none;">Abonnieren</button>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">🔑</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Etwas vergessen</strong>
+      </div>
+      <div style="background: #eef6ff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between;">
+        <span style="font-size: 18px;">✉️</span><strong style="font-size: 14px; color: #111; margin-top: 10px; font-weight: bold; line-height: 1.3;">Andere Mitteilung</strong>
+      </div>
     </div>
-
   </div>
-</div>
 
-<div class="card">
-<h2 id="t-reg-title">Registrieren</h2>
-<form id="registerForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
-  <input type="text" id="name" placeholder="Ihr Name" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <input type="email" id="email" placeholder="E-Mail eingeben" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <input type="password" id="password" placeholder="Passwort" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <button type="submit" id="t-reg-submit" style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;">Kostenlos registrieren</button>
-</form>
+  <!-- PREMIUM ABONNEMENT BOXEN -->
+  <div class="card" style="border-radius: 16px; padding: 25px; margin-top: 25px; box-shadow: 0 5px 18px rgba(0,0,0,.08); text-align: center;">
+    <h2 style="color: #dc3545; font-size: 28px; font-weight: bold; margin-bottom: 5px;">🚀 7 Tage kostenlos testen.</h2>
+    <p style="color: #555; font-size: 16px; margin-bottom: 20px;">Teste alle Premium-Funktionen kostenlos.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 15px;">
+      <div style="border: 1px solid #e1e5eb; border-radius: 16px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; background: #fafbfc;">
+        <div>
+          <h3 style="font-size: 18px; margin-bottom: 15px; color: #222;">📅 Monatsabo</h3>
+          <span style="font-size: 32px; font-weight: bold; color: #0066ff; display: block; margin-bottom: 5px;">CHF 4.90</span>
+          <span style="font-size: 14px; color: #666; display: block; margin-bottom: 20px;">pro Monat</span>
+        </div>
+        <a href="https://stripe.com" style="text-decoration: none;"><button type="button" style="background:#0066ff; padding:12px;">Monatsabo wählen</button></a>
+      </div>
+      <div style="border: 2px solid #ffc107; border-radius: 16px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; background: white; box-shadow: 0 4px 12px rgba(255,193,7,0.1);">
+        <div>
+          <h3 style="font-size: 18px; margin-bottom: 15px; color: #222;">⭐ Jahresabo</h3>
+          <span style="font-size: 32px; font-weight: bold; color: #0066ff; display: block; margin-bottom: 5px;">CHF 49.90</span>
+          <span style="font-size: 14px; color: #666; display: block; margin-bottom: 20px;">pro Jahr</span>
+        </div>
+        <a href="https://stripe.com" style="text-decoration: none;"><button type="button" style="background:#ff9800; padding:12px;">Jahresabo wählen</button></a>
+      </div>
+    </div>
+  </div>
 
-<hr style="margin:40px 0;">
+  <!-- REGISTRIEREN -->
+  <div class="card">
+    <h2>Registrieren</h2>
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Ihr Name" required>
+      <input type="email" id="email" placeholder="E-Mail eingeben" required>
+      <input type="password" id="password" placeholder="Passwort" required>
+      <button type="submit">Kostenlos registrieren</button>
+    </form>
+    <div id="registerStatus" class="status"></div>
+  </div>
 
-<h2 id="t-login-title">Anmelden</h2>
-<form id="loginForm" style="max-width:420px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
-  <input type="email" id="loginEmail" placeholder="E-Mail" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <input type="password" id="loginPassword" placeholder="Passwort" required style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;">
-  <button type="submit" id="t-login-submit" style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;color:white;font-size:17px;font-weight:bold;cursor:pointer;">Anmelden</button>
-</form>
+  <!-- LOGIN -->
+  <div class="card">
+    <h2>Anmelden</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="E-Mail" required>
+      <input type="password" id="loginPassword" placeholder="Passwort" required>
+      <button type="submit">Anmelden</button>
+    </form>
+    <button id="forgotPassword" type="button" class="secondary" style="margin-top:12px;">Passwort vergessen?</button>
+    <div id="resetBox" style="display:none;margin-top:15px;">
+      <input type="email" id="resetEmail" placeholder="E-Mail eingeben">
+      <button id="resetButton" type="button">Link senden</button>
+    </div>
+    <div id="loginStatus" class="status"></div>
+  </div>
 
-<div id="userPanel" style="display:none;margin-top:30px;text-align:center;">
-  <h3 id="welcomeUser"></h3>
-  <button type="button" id="logoutButton" style="padding:10px 20px;background:#dc3545;color:white;border:0;border-radius:8px;cursor:pointer;margin-top:10px;">Abmelden</button>
-</div>
-</div>
-</div>
-
-<div id="qrModal" class="modal-overlay" onclick="closeQrModal(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <span class="close-btn" onclick="closeQrModal()">&times;</span>
-    <h3 style="margin-bottom:15px; color:#0066ff;">PingCar.ch</h3>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fwww.pingcar.ch%2F" alt="PingCar Big QR" style="width:220px; height:220px; margin:auto; display:block;">
-    <p style="margin-top:15px; font-size:14px; color:#555;">Scanne diesen Code mit deiner Kamera, um auf die Website zu gelangen.</p>
+  <!-- USER PANEL -->
+  <div class="card" id="userPanel" style="display:none;">
+    <h2>Mein Konto</h2>
+    <p>Angemeldet als:</p><strong id="welcomeUser"></strong><br><br>
+    <button id="dashboardButton" type="button">👤 Dashboard öffnen</button><br><br>
+    <button id="logoutButton" type="button" class="logout">🚪 Logout</button>
+    <div id="userStatus" class="status"></div>
   </div>
 </div>
 
 <footer>
-<h2 style="color:white;margin-bottom:15px;">PingCar</h2>
-<p>QR-Code scannen • Fahrer benachrichtigen • Problem lösen</p>
-<br>
-<p>© 2026 PingCar. Alle Rechte vorbehalten.</p>
+  <h2>PingCar</h2>
+  <p>© 2026 PingCar. Alle Rechte vorbehalten.</p>
 </footer>
 
-<script>
-let supabaseClient = null;
-if (typeof window.supabase !== 'undefined') {
-  const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
-  const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
-  supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-}
-
-async function checkAuth() {
-  if (!supabaseClient) return;
-  const { data } = await supabaseClient.auth.getSession();
-  if (data && data.session) {
-    document.getElementById("userPanel").style.display = "block";
-    document.getElementById("welcomeUser").innerText = "Willkommen " + data.session.user.email;
-  }
-}
-checkAuth();
-
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!supabaseClient) {
-    alert("Dienst momentan nicht verfügbar.");
-    return;
-  }
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) {
-    alert(error.message);
-  } else {
-    window.location.href = "dashboard.html";
-  }
-});
-
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!supabaseClient) {
-    alert("Dienst momentan nicht verfügbar.");
-    return;
-  }
-  const email = document.getElementById("email").value;
+<script type="module">
+import { createClient } from "https://jsdelivr.net";
+const supabaseUrl = "https://supabase.co";
+const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
+const supabase = createClient(supabaseUrl, supabaseKey);
+const registerForm = document.getElementById("registerForm");
+const loginForm = document.getElementById("loginForm");
+const userPanel = document.getElementById("userPanel");
+const welcomeUser = document.getElementById("welcomeUser");
+const registerStatus = document.getElementById("registerStatus");
+const loginStatus = document.getElementById("loginStatus");
+function showStatus(element,message){ element.textContent = message; element.style.display = "block"; }
+registerForm.addEventListener("submit", async function(event){
+  event.preventDefault();
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-
-  const { error } = await supabaseClient.auth.signUp({ email, password });
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail.");
-  }
+  const name = document.getElementById("name").value.trim();
+  showStatus(registerStatus, "Registrierung läuft...");
+  try{
+    const { data, error } = await supabase.auth.signUp({ email:email, password:password, options:{ data:{ name:name } } });
+    if(error){ showStatus(registerStatus, "Fehler: " + error.message); return; }
+    showStatus(registerStatus, "Registrierung erfolgreich. Bitte E-Mail bestätigen.");
+    registerForm.reset();
+  }catch(error){ showStatus(registerStatus, "Fehler: " + error.message); }
 });
-
-document.getElementById("logoutButton").addEventListener("click", async () => {
-  if (supabaseClient) {
-    await supabaseClient.auth.signOut();
-  }
-  alert("Sie wurden abgemeldet.");
-  location.reload();
+loginForm.addEventListener("submit", async function(event){
+  event.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  showStatus(loginStatus, "Anmeldung läuft...");
+  try{
+    const { data, error } = await supabase.auth.signInWithPassword({ email:email, password:password });
+    if(error){ showStatus(loginStatus, "Fehler: " + error.message); return; }
+    showStatus(loginStatus, "Login erfolgreich.");
+    setTimeout(function(){ window.location.href = "dashboard.html"; }, 500);
+  }catch(error){ showStatus(loginStatus, "Fehler: " + error.message); }
 });
-
-function toggleLangMenu(e) {
-  if (e) e.stopPropagation();
-  const menu = document.getElementById("lang-menu");
-  menu.classList.toggle("show");
-}
-
-function handleGoBack() {
-  const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
-  
-  if (isHomePage) {
-    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-      window.Capacitor.Plugins.App.minimizeApp();
-    }
-  } else if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.location.href = "index.html";
-  }
-}
-
-function openQrModal() {
-  document.getElementById("qrModal").style.display = "flex";
-}
-
-function closeQrModal(e) {
-  document.getElementById("qrModal").style.display = "none";
-}
-
-function subscribe(plan) {
-  alert("Vielen Dank! Sie haben den Plan gewählt: " + plan.toUpperCase() + ". Weiterleitung zur Zahlung...");
-}
-
-const langDetails = {
-  de: { code: 'CH', name: 'Deutsch (DE)' },
-  fr: { code: 'FR', name: 'Français (FR)' },
-  it: { code: 'IT', name: 'Italiano (IT)' },
-  en: { code: 'GB', name: 'English (EN)' },
-  sq: { code: 'AL', name: 'Shqip (SQ)' },
-  sr: { code: 'RS', name: 'Srpski (SR)' },
-  es: { code: 'ES', name: 'Español (ES)' },
-  tr: { code: 'TR', name: 'Türkçe (TR)' },
-  sk: { code: 'SK', name: 'Slovenčina (SK)' },
-  hr: { code: 'HR', name: 'Hrvatski (HR)' },
-  hu: { code: 'HU', name: 'Magyar (HU)' },
-  pt: { code: 'PT', name: 'Português (PT)' },
-  mk: { code: 'MK', name: 'Македонски (MK)' },
-  nl: { code: 'NL', name: 'Nederlands (NL)' }
-};
-
-const translations = {
-  de: { 
-    backBtn: "Zurück", heroDesc: "Die sichere Lösung, um Fahrzeughalter zu kontaktieren – ohne Telefonnummer und ohne persönliche Daten.", registerBtn: "🚗 Jetzt kostenlos registrieren", howItWorks: "So funktioniert PingCar",
-    s1Title: "1. Registrieren", s1Desc: "Erstellen Sie kostenlos Ihr PingCar-Konto.",
-    s2Title: "2. QR-Code erhalten", s2Desc: "Sie erhalten einen persönlichen QR-Code für Ihr Fahrzeug.",
-    s3Title: "3. QR-Code anbringen", s3Desc: "Befestigen Sie den QR-Code gut sichtbar an Ihrem Fahrzeug.",
-    s4Title: "4. QR-Code scannen", s4Desc: "Eine andere Person scannt den QR-Code mit dem Smartphone.",
-    s5Title: "5. Benachrichtigung", s5Desc: "Sie erhalten sofort eine Nachricht in der PingCar-App.",
-    subTitle: "Unsere Abonnements", subDesc: "Wählen Sie den passenden Plan für Ihre Bedürfnisse.",
-    btnFree: "Kostenlos Starten", btnStd: "Abonnieren", btnPrem: "Abonnieren",
-    regTitle: "Registrieren", loginTitle: "Anmelden", regSubmit: "Kostenlos registrieren", loginSubmit: "Anmelden"
-  },
-  sq: { 
-    backBtn: "Prapa", heroDesc: "Zgjidhja e sigurt për të kontaktuar pronarin e mjetit – pa numër telefoni dhe pa të dhëna personale.", registerBtn: "🚗 Regjistrohu falas tani", howItWorks: "Si funksionon PingCar",
-    s1Title: "1. Regjistrohu", s1Desc: "Krijo llogarinë tënde PingCar falas.",
-    s2Title: "2. Merr QR-Kodin", s2Desc: "Do të marrësh një QR-Kod personal për mjetin tënd.",
-    s3Title: "3. Vendos QR-Kodin", s3Desc: "Vendose QR-Kodin mirë të dukshëm në mjetin tënd.",
-    s4Title: "4. Skano QR-Kodin", s4Desc: "Një person tjetër skanon QR-Kodin me celular.",
-    s5Title: "5. Njoftimi", s5Desc: "Do të marrësh menjëherë një mesazh në aplikacionin PingCar.",
-    subTitle: "Abonimet tona", subDesc: "Zgjidhni planin që ju përshtatet më së miri.",
-    btnFree: "Fillo Falas", btnStd: "Abonohu", btnPrem: "Abonohu",
-    regTitle: "Regjistrohu", loginTitle: "Hyni", regSubmit: "Regjistrohu falas", loginSubmit: "Hyni"
-  },
-  en: { 
-    backBtn: "Back", heroDesc: "The secure solution to contact vehicle owners – without phone numbers or personal data.", registerBtn: "🚗 Register now for free", howItWorks: "How PingCar works",
-    s1Title: "1. Register", s1Desc: "Create your free PingCar account.",
-    s2Title: "2. Get QR Code", s2Desc: "Get your personal QR code for your vehicle.",
-    s3Title: "3. Attach QR Code", s3Desc: "Attach the QR code visibly on your vehicle.",
-    s4Title: "4. Scan QR Code", s4Desc: "Someone scans the QR code with their smartphone.",
-    s5Title: "5. Notification", s5Desc: "Instantly receive a notification in the PingCar app.",
-    subTitle: "Our Subscriptions", subDesc: "Choose the plan that suits your needs.",
-    btnFree: "Start for Free", btnStd: "Subscribe", btnPrem: "Subscribe",
-    regTitle: "Register", loginTitle: "Login", regSubmit: "Register for free", loginSubmit: "Login"
-  }
-};
-
-function setLanguage(lang, e) {
-  if (e) e.stopPropagation();
-  
-  const detail = langDetails[lang] || langDetails['de'];
-  const codeEl = document.getElementById("current-code");
-  const textEl = document.getElementById("current-lang-text");
-  
-  if (codeEl) codeEl.innerText = detail.code;
-  if (textEl) textEl.innerText = detail.name;
-  
-  const menu = document.getElementById("lang-menu");
-  if (menu) menu.classList.remove("show");
-  
-  localStorage.setItem("pingcar_lang", lang);
-
-  const t = translations[lang] || translations['de'];
-  if(t) {
-    const updateText = (id, text) => {
-      const el = document.getElementById(id);
-      if(el && text) el.innerText = text;
-    };
-
-    updateText("t-back-btn", t.backBtn);
-    updateText("t-hero-desc", t.heroDesc);
-    updateText("t-register-btn", t.registerBtn);
-    updateText("t-how-it-works", t.howItWorks);
-    updateText("t-step1-title", t.s1Title);
-    updateText("t-step1-desc", t.s1Desc);
-    updateText("t-step2-title", t.s2Title);
-    updateText("t-step2-desc", t.s2Desc);
-    updateText("t-step3-title", t.s3Title);
-    updateText("t-step3-desc", t.s3Desc);
-    updateText("t-step4-title", t.s4Title);
-    updateText("t-step4-desc", t.s4Desc);
-    updateText("t-step5-title", t.s5Title);
-    updateText("t-step5-desc", t.s5Desc);
-    updateText("t-sub-title", t.subTitle);
-    updateText("t-sub-desc", t.subDesc);
-    updateText("t-btn-free", t.btnFree);
-    updateText("t-btn-std", t.btnStd);
-    updateText("t-btn-prem", t.btnPrem);
-    updateText("t-reg-title", t.regTitle);
-    updateText("t-login-title", t.loginTitle);
-    updateText("t-reg-submit", t.regSubmit);
-    updateText("t-login-submit", t.loginSubmit);
-  }
-}
-
-document.addEventListener('click', function(event) {
-  const dropdown = document.querySelector('.lang-dropdown');
-  if (dropdown && !dropdown.contains(event.target)) {
-    const menu = document.getElementById("lang-menu");
-    if (menu) menu.classList.remove("show");
-  }
+document.getElementById("forgotPassword").addEventListener("click", function(){
+  const box = document.getElementById("resetBox");
+  box.style.display = box.style.display === "none" ? "block" : "none";
 });
-
-document.addEventListener("DOMContentLoaded", function() {
-  const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
-  const backBtn = document.getElementById("globalBackBtn");
-  if (isHomePage && backBtn) {
-    backBtn.style.display = "none";
-  }
-  
-  const savedLang = localStorage.getItem("pingcar_lang") || "de";
-  setLanguage(savedLang);
-});
+const resetButton = document.getElementById("resetButton");
+if(resetButton) {
+  resetButton.addEventListener("click", async function(){
+    const email = document.getElementById("resetEmail").value.trim();
+    if(!email){ showStatus(loginStatus, "Bitte E-Mail eingeben."); return; }
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if(error) { showStatus(loginStatus, "Fehler: " + error.message); } 
+      else { showStatus(loginStatus, "Reset-Link gesendet."); }
+    } catch(e) { showStatus(loginStatus, "Fehler beim Senden."); }
+  });
+}
 </script>
-
 </body>
 </html>

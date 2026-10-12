@@ -88,6 +88,32 @@ export default {
 
   footerText: "PingCar – een veilige oplossing voor voertuigeigenaren.",
 
-  rights: "Alle rechten voorbehouden."
+  rights: "Alle rechten voorbehouden.",
+  trial_heading: "🚀 Probeer 7 dagen gratis.",
+  trial_subheading: "Test alle Premium-functies gratis.",
+  now_new: "⭐ Nu nieuw:",
+  trial_bullet_1: "7 dagen gratis proefperiode.",
+  trial_bullet_2: "Geen betaling vandaag.",
+  trial_bullet_3: "Elk moment opzegbaar.",
+  monthly_plan: "📅 Maandelijks abonnement",
+  yearly_plan: "⭐ Jaarlijks abonnement",
+  per_month: "per maand",
+  per_year: "per jaar",
+  select_monthly: "Kies maandabonnement",
+  select_yearly: "Kies jaarabonnement",
+  phonePrivate: "Uw telefoonnummer blijft privé.",
+personalDataPrivate: "Naam en contactgegevens worden niet weergegeven.",
+ownerNotified: "De voertuigeigenaar wordt onmiddellijk geïnformeerd.",
+privacyFocus: "Ontwikkeld met focus op gegevensbescherming.",
+  heroTitle: "🚗 Heb je een auto? Dan heb je PingCar nodig.",
+  heroSubtitle: "Blijf bereikbaar zonder je telefoonnummer openbaar te delen.",
+  heroQr: "✅ QR-code op het voertuig",
+  heroContact: "✅ Rechtstreeks gecontacteerd worden",
+  heroPrivacy: "✅ Je telefoonnummer blijft privé",
+  heroTrial: "🎁 7 dagen gratis uitproberen",
+  heroRegister: "🚗 Registreer nu mijn voertuig →",
+  first_year_offer: "29,90 CHF in het eerste jaar",
+  promo_code_text: "Met de code",
+  after_first_year: "Daarna 49,90 CHF per jaar"
 
 };
