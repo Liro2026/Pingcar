@@ -1,7 +1,7 @@
 {
   "appId": "ch.pingcar.app",
   "appName": "PingCar",
-  "webDir": "web-source",
+  "webDir": "www",
   "packageClassList": [],
   "plugins": {
     "CapacitorHttp": {
