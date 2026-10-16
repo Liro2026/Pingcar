@@ -671,13 +671,38 @@ async function loadPingCar(user) {
 async function loadSubscription(user) {
   const box = $("subscriptionInfo");
 
-  const { data, error } = await supabase
+  const { data: stripeData, error } = await supabase
     .from("subscriptions")
     .select("plan_name, amount, status, expires_at, created_at")
     .eq("email", user.email)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+
+  // Apple subscriptions are stored separately so the existing Stripe records
+  // and admin tooling keep their current schema and behavior.
+  let appleData = null;
+  const { data: appleRow, error: appleError } = await supabase
+    .from("apple_iap_subscriptions")
+    .select("product_id, amount, currency, status, expires_at, updated_at")
+    .eq("user_id", user.id)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (appleError) {
+    console.warn("Apple subscription could not be loaded:", appleError.message);
+  } else if (appleRow) {
+    appleData = {
+      ...appleRow,
+      plan_name: appleRow.product_id === "ch.pingcar.premium.yearly" ? "PingCar Jahresabo" : "PingCar Monatsabo",
+      created_at: appleRow.updated_at,
+      provider: "apple"
+    };
+  }
+
+  const data = appleData && (appleData.status === "active" || !stripeData)
+    ? appleData
+    : stripeData;
 
   if (error) {
     console.error("Abonnement Fehler:", error);
@@ -732,7 +757,11 @@ async function loadSubscription(user) {
 
       <div style="margin-bottom:7px;">
         <strong>Preis:</strong>
-        CHF ${Number(data.amount || 0).toFixed(2)}
+        ${data.provider === "apple"
+          ? (data.amount == null
+            ? "Apple App Store"
+            : `${escapeHtml(data.currency || "CHF")} ${Number(data.amount).toFixed(2)}`)
+          : `CHF ${Number(data.amount || 0).toFixed(2)}`}
       </div>
 
       <div>

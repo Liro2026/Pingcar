@@ -1,0 +1,2 @@
+[functions.apple-iap-verify]
+verify_jwt = true

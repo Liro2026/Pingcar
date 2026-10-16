@@ -435,7 +435,7 @@ margin-top:50px;
     </a>
 </div>
 
-<div style="text-align:center; margin:30px 0;">
+<div id="pingcarTrialOffer" style="text-align:center; margin:30px 0;">
   <h1 style="color:red;" data-i18n="trial_heading">
     🚀 7 Tage kostenlos testen.
   </h1>
@@ -473,10 +473,10 @@ margin-top:50px;
 
   <div style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;width:280px;text-align:center;">
     <h3 data-i18n="monthly_plan">📅 Monatsabo</h3>
-    <h2>CHF 4.90</h2>
+    <h2 id="pingcarMonthlyPrice">CHF 4.90</h2>
     <p data-i18n="per_month">pro Monat</p>
 
-    <a href="https://buy.stripe.com/7sYcMXdIk1094RAdMB6J200?locale=de&__embed_source=buy_btn_1U06zM1bPlhWc3Hfq7LBoWxD"
+    <a id="pingcarMonthlyPurchase" href="https://buy.stripe.com/7sYcMXdIk1094RAdMB6J200?locale=de&__embed_source=buy_btn_1U06zM1bPlhWc3Hfq7LBoWxD"
        target="_blank"
        style="display:inline-block;background:#0066ff;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
       <span data-i18n="select_monthly">Monatsabo wählen</span>
@@ -485,9 +485,9 @@ margin-top:50px;
 
   <div style="background:#fff;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:280px;text-align:center;">
     <h3 data-i18n="yearly_plan">⭐ Jahresabo</h3>
-    <h2>CHF 49.90</h2>
+    <h2 id="pingcarYearlyPrice">CHF 49.90</h2>
     <p data-i18n="per_year">pro Jahr</p>
-<div style="margin:14px 0 16px;padding:14px 12px;background:#fff7ed;border:2px solid #f59e0b;border-radius:10px;">
+<div id="pingcarYearlyPromo" style="margin:14px 0 16px;padding:14px 12px;background:#fff7ed;border:2px solid #f59e0b;border-radius:10px;">
   <div style="font-size:18px;font-weight:bold;color:#d97706;">
     🎁 <span data-i18n="first_year_offer">29,90 CHF im 1. Jahr</span>
   </div>
@@ -498,19 +498,35 @@ margin-top:50px;
     <span data-i18n="after_first_year">Danach 49,90 CHF pro Jahr</span>
   </div>
 </div>
-    <a href="https://buy.stripe.com/7sYbITdIkaAJ6ZI23T6J201"
+    <a id="pingcarYearlyPurchase" href="https://buy.stripe.com/7sYbITdIkaAJ6ZI23T6J201"
        target="_blank"
        style="display:inline-block;background:#f59e0b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
       <span data-i18n="select_yearly">Jahresabo wählen</span>
     </a>
     <p style="text-align:center;font-size:14px;line-height:2;margin-top:16px;">
-  <a href="https://pingcar.ch/privacy.html/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+  <a id="pingcarExistingPrivacyLink" href="https://pingcar.ch/privacy.html/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
   &nbsp;|&nbsp;
-  <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms of Use (EULA)</a>
+  <a id="pingcarExistingEulaLink" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms of Use (EULA)</a>
 </p>
   </div>
 
 </div>
+
+<section id="pingcarAppleIap" style="display:none;max-width:640px;margin:24px auto;padding:20px;background:#f8fafc;border:1px solid #dbe3ee;border-radius:14px;text-align:center;color:#1f2937;">
+  <h2 id="pingcarIapTitle" style="margin:0 0 12px;">PingCar Premium</h2>
+  <p id="pingcarIapBenefits" style="line-height:1.6;margin:0 0 16px;">QR-Code-Kontakt, Sofortmeldung an den Fahrzeughalter und private Kontaktaufnahme.</p>
+  <p id="pingcarIapPriceInfo" style="font-size:14px;color:#4b5563;margin:0 0 16px;">Monats- oder Jahresabo. Die Zahlung wird über deinen Apple Account bestätigt; das Abo verlängert sich automatisch bis zur Kündigung.</p>
+  <p style="margin:0 0 16px;font-size:14px;"><a href="#loginForm" id="pingcarIapSignIn">Bei PingCar anmelden</a></p>
+  <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+    <button type="button" id="pingcarIapRestore" style="padding:11px 18px;border:1px solid #64748b;border-radius:8px;background:#fff;color:#1f2937;font-weight:600;">Käufe wiederherstellen</button>
+  </div>
+  <p id="pingcarIapStatus" role="status" aria-live="polite" style="min-height:20px;font-size:14px;"></p>
+  <p style="font-size:14px;line-height:2;margin:8px 0 0;">
+    <a href="https://pingcar.ch/privacy.html" target="_self" rel="noopener noreferrer">Datenschutzerklärung</a>
+    &nbsp;|&nbsp;
+    <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_self" rel="noopener noreferrer">Nutzungsbedingungen (EULA)</a>
+  </p>
+</section>
 
 </div>
 <div class="grid">
@@ -693,6 +709,195 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// On iOS, all digital subscription purchases go through StoreKit. The Stripe
+// links below remain available to visitors using the normal website.
+const pingcarIapBridge = window.webkit?.messageHandlers?.pingcarIAP;
+if (pingcarIapBridge) {
+  const iapSection = document.getElementById("pingcarAppleIap");
+  const monthlyLink = document.getElementById("pingcarMonthlyPurchase");
+  const yearlyLink = document.getElementById("pingcarYearlyPurchase");
+  const statusNode = document.getElementById("pingcarIapStatus");
+  const iapLanguage = (localStorage.getItem("pingcar_language") || "de").split("-")[0];
+  const iapCopy = {
+    de: { restore: "Käufe wiederherstellen", signIn: "Bitte melde dich zuerst bei PingCar an.", loading: "Preise werden aus dem App Store geladen …", unavailable: "Die Abonnements sind derzeit nicht verfügbar. Bitte später erneut versuchen.", verifying: "Kauf wird sicher überprüft …", active: "Premium ist aktiv bis", restored: "Käufe wurden wiederhergestellt.", none: "Kein aktives PingCar-Abonnement gefunden.", error: "Kauf konnte nicht abgeschlossen werden.", terms: "Die Zahlung wird deinem Apple Account belastet. Das Abo verlängert sich automatisch, sofern du es nicht mindestens 24 Stunden vor Ablauf kündigst. Du kannst es in deinen Account-Einstellungen verwalten und kündigen." },
+    en: { restore: "Restore Purchases", signIn: "Please sign in to PingCar first.", loading: "Loading prices from the App Store …", unavailable: "Subscriptions are unavailable right now. Please try again later.", verifying: "Securely verifying your purchase …", active: "Premium is active until", restored: "Purchases restored.", none: "No active PingCar subscription was found.", error: "The purchase could not be completed.", terms: "Payment is charged to your Apple Account. The subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel it in your account settings." },
+    sq: { restore: "Rikthe blerjet", signIn: "Së pari kyçu në PingCar.", loading: "Po ngarkohen çmimet nga App Store …", unavailable: "Abonimet nuk janë të disponueshme tani. Provo përsëri më vonë.", verifying: "Blerja po verifikohet në mënyrë të sigurt …", active: "Premium është aktiv deri më", restored: "Blerjet u rikthyen.", none: "Nuk u gjet abonim aktiv PingCar.", error: "Blerja nuk u përfundua.", terms: "Pagesa bëhet përmes llogarisë Apple. Abonimi rinovohet automatikisht nëse nuk anulohet të paktën 24 orë para përfundimit. Menaxhoje ose anuloje te cilësimet e llogarisë." }
+  };
+  const copy = iapCopy[iapLanguage] || iapCopy.de;
+  const iapCallbacks = new Map();
+  let iapSequence = 0;
+  let iapProductsReady = false;
+  document.querySelectorAll('script[src*="js.stripe.com"]').forEach(script => script.remove());
+  document.getElementById("pingcarExistingPrivacyLink")?.setAttribute("target", "_self");
+  document.getElementById("pingcarExistingEulaLink")?.setAttribute("target", "_self");
+  function makeNativePurchaseButton(link) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.id = link.id;
+    button.style.cssText = `${link.style.cssText};cursor:pointer`;
+    while (link.firstChild) button.appendChild(link.firstChild);
+    link.replaceWith(button);
+    return button;
+  }
+  const monthlyButton = makeNativePurchaseButton(monthlyLink);
+  const yearlyButton = makeNativePurchaseButton(yearlyLink);
+  document.getElementById("pingcarTrialOffer")?.setAttribute("style", "display:none");
+  document.getElementById("pingcarYearlyPromo")?.setAttribute("style", "display:none");
+  iapSection.style.display = "block";
+  statusNode.textContent = copy.loading;
+  document.getElementById("pingcarIapRestore").textContent = copy.restore;
+  document.getElementById("pingcarIapPriceInfo").textContent = copy.terms;
+  document.getElementById("pingcarIapSignIn").textContent = iapLanguage === "sq"
+    ? "Kyçu në PingCar"
+    : iapLanguage === "en" ? "Sign in to PingCar" : "Bei PingCar anmelden";
+  supabase.auth.getUser().then(({ data }) => {
+    if (data.user) document.getElementById("pingcarIapSignIn").style.display = "none";
+  }).catch(() => {});
+  document.getElementById("pingcarMonthlyPrice").textContent = "…";
+  document.getElementById("pingcarYearlyPrice").textContent = "…";
+  for (const button of [monthlyButton, yearlyButton]) {
+    button.disabled = true;
+    button.setAttribute("aria-disabled", "true");
+    button.style.opacity = "0.6";
+  }
+
+  function callNativeIap(action, payload = {}) {
+    return new Promise((resolve, reject) => {
+      const callbackId = `iap-${++iapSequence}`;
+      const timeout = setTimeout(() => {
+        iapCallbacks.delete(callbackId);
+        reject(new Error(copy.error));
+      }, 120000);
+      iapCallbacks.set(callbackId, { resolve, reject, timeout });
+      pingcarIapBridge.postMessage({ action, callbackId, ...payload });
+    });
+  }
+
+  window.addEventListener("pingcar-iap-result", (event) => {
+    const detail = event.detail || {};
+    const callback = iapCallbacks.get(detail.callbackId);
+    if (!callback) return;
+    clearTimeout(callback.timeout);
+    iapCallbacks.delete(detail.callbackId);
+    if (detail.error) callback.reject(new Error(detail.error));
+    else callback.resolve(detail.payload || {});
+  });
+
+  async function signedInUser() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    if (!user) throw new Error(copy.signIn);
+    return user;
+  }
+
+  async function verifyAndFinish(transaction) {
+    const { data, error } = await supabase.functions.invoke("apple-iap-verify", {
+      body: { signedTransactionInfo: transaction.signedTransactionInfo }
+    });
+    if (error || !data) throw new Error(error?.message || copy.error);
+    await callNativeIap("finish", { transactionId: transaction.transactionId });
+    return data;
+  }
+
+  async function reconcileIapTransactions(transactions, successMessage) {
+    let activeEntitlement = null;
+    let failures = 0;
+    for (const transaction of transactions || []) {
+      try {
+        const result = await verifyAndFinish(transaction);
+        if (result.active) activeEntitlement = result;
+      } catch (error) {
+        failures += 1;
+        console.error("PingCar Apple purchase verification:", error);
+        statusNode.textContent = error.message || copy.error;
+      }
+    }
+    if (activeEntitlement) {
+      const expiry = new Date(activeEntitlement.expiresAt).toLocaleDateString();
+      statusNode.textContent = `${copy.active} ${expiry}.`;
+    } else if (successMessage && failures === 0) {
+      statusNode.textContent = copy.none;
+    }
+    return activeEntitlement;
+  }
+
+  async function buyIap(productId) {
+    try {
+      const user = await signedInUser();
+      if (!iapProductsReady) throw new Error(copy.unavailable);
+      statusNode.textContent = copy.verifying;
+      const purchase = await callNativeIap("purchase", {
+        productId,
+        appAccountToken: user.id
+      });
+      if (purchase.status === "cancelled") {
+        statusNode.textContent = "";
+        return;
+      }
+      if (purchase.status === "pending") {
+        statusNode.textContent = iapLanguage === "sq"
+          ? "Blerja pret miratimin e Apple."
+          : iapLanguage === "en" ? "The purchase is awaiting Apple's approval." : "Der Kauf wartet auf die Freigabe von Apple.";
+        return;
+      }
+      const result = await verifyAndFinish(purchase);
+      statusNode.textContent = result.active
+        ? `${copy.active} ${new Date(result.expiresAt).toLocaleDateString()}.`
+        : copy.error;
+    } catch (error) {
+      console.error("PingCar Apple purchase:", error);
+      statusNode.textContent = error.message || copy.error;
+    }
+  }
+
+  monthlyButton.addEventListener("click", () => {
+    if (!iapProductsReady) {
+      statusNode.textContent = copy.unavailable;
+      return;
+    }
+    buyIap("ch.pingcar.premium.monthly");
+  });
+  yearlyButton.addEventListener("click", () => {
+    if (!iapProductsReady) {
+      statusNode.textContent = copy.unavailable;
+      return;
+    }
+    buyIap("ch.pingcar.premium.yearly");
+  });
+  document.getElementById("pingcarIapRestore").addEventListener("click", async () => {
+    try {
+      await signedInUser();
+      statusNode.textContent = copy.verifying;
+      const result = await callNativeIap("restore");
+      await reconcileIapTransactions(result.transactions, true);
+    } catch (error) {
+      console.error("PingCar restore purchases:", error);
+      statusNode.textContent = error.message || copy.error;
+    }
+  });
+
+  callNativeIap("products").then(({ products }) => {
+    const productMap = new Map((products || []).map(product => [product.id, product]));
+    const monthly = productMap.get("ch.pingcar.premium.monthly");
+    const yearly = productMap.get("ch.pingcar.premium.yearly");
+    if (!monthly || !yearly) throw new Error(copy.unavailable);
+    document.getElementById("pingcarMonthlyPrice").textContent = monthly.displayPrice;
+    document.getElementById("pingcarYearlyPrice").textContent = yearly.displayPrice;
+    for (const button of [monthlyButton, yearlyButton]) {
+      button.disabled = false;
+      button.setAttribute("aria-disabled", "false");
+      button.style.opacity = "1";
+    }
+    iapProductsReady = true;
+    statusNode.textContent = "";
+    return callNativeIap("entitlements");
+  }).then((result) => reconcileIapTransactions(result.transactions, false))
+    .catch((error) => {
+      console.error("PingCar StoreKit products:", error);
+      statusNode.textContent = error.message || copy.unavailable;
+    });
+}
 // PingCar Live Online - Website
 async function startWebsitePresence() {
   try {

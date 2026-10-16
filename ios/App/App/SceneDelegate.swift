@@ -1,11 +1,17 @@
 import UIKit
 import Capacitor
 import WebKit
+import StoreKit
 
 final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandler {
 
     private var backButton: UIButton!
     private var webViewObservation: NSKeyValueObservation!
+    private weak var iapWebView: WKWebView?
+    private let iapProductIDs = [
+        "ch.pingcar.premium.monthly",
+        "ch.pingcar.premium.yearly"
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +22,7 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
             guard let self = self else { return }
 
             self.registerQRShareHandler()
+            self.registerIAPHandler()
             self.setupWebViewObservation()
             self.enableBackSwipe()
         }
@@ -44,6 +51,12 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
             self,
             name: "pingcarShareQR"
         )
+    }
+
+    private func registerIAPHandler() {
+        guard let webView = findWebView(in: view) else { return }
+        iapWebView = webView
+        webView.configuration.userContentController.add(self, name: "pingcarIAP")
     }
 
     private func setupWebViewObservation() {
@@ -127,6 +140,14 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
         _ userContentController: WKUserContentController,
         didReceive message: WKScriptMessage
     ) {
+        if message.name == "pingcarIAP" {
+            guard let body = message.body as? [String: Any],
+                  let action = body["action"] as? String else { return }
+            let callbackId = body["callbackId"] as? String
+            handleIAP(action: action, body: body, callbackId: callbackId)
+            return
+        }
+
         guard message.name == "pingcarShareQR",
               let dataURL = message.body as? String,
               let commaIndex = dataURL.firstIndex(of: ",") else {
@@ -165,6 +186,122 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
                 activityVC,
                 animated: true
             )
+        }
+    }
+
+    private func handleIAP(action: String, body: [String: Any], callbackId: String?) {
+        switch action {
+        case "products":
+            Task {
+                do {
+                    let products = try await Product.products(for: iapProductIDs)
+                    let result = products.map { product in
+                        ["id": product.id, "displayPrice": product.displayPrice,
+                         "displayName": product.displayName] as [String: Any]
+                    }
+                    sendIAPResult(callbackId, payload: ["products": result])
+                } catch {
+                    sendIAPResult(callbackId, error: error.localizedDescription)
+                }
+            }
+        case "purchase":
+            guard let productId = body["productId"] as? String,
+                  iapProductIDs.contains(productId),
+                  let accountTokenString = body["appAccountToken"] as? String,
+                  let accountToken = UUID(uuidString: accountTokenString) else {
+                sendIAPResult(callbackId, error: "Abonimi ose llogaria nuk është e vlefshme.")
+                return
+            }
+            Task {
+                do {
+                    let products = try await Product.products(for: [productId])
+                    guard let product = products.first else {
+                        sendIAPResult(callbackId, error: "Abonimi nuk u gjet në App Store.")
+                        return
+                    }
+                    let result = try await product.purchase(options: [.appAccountToken(accountToken)])
+                    switch result {
+                    case .success(let verification):
+                        switch verification {
+                        case .verified(let transaction):
+                            sendIAPResult(callbackId, payload: [
+                                "status": "success",
+                                "transactionId": String(transaction.id),
+                                "signedTransactionInfo": verification.jwsRepresentation
+                            ])
+                        case .unverified(_, let error):
+                            sendIAPResult(callbackId, error: "Apple nuk e verifikoi blerjen: \(error.localizedDescription)")
+                        }
+                    case .pending:
+                        sendIAPResult(callbackId, payload: ["status": "pending"])
+                    case .userCancelled:
+                        sendIAPResult(callbackId, payload: ["status": "cancelled"])
+                    @unknown default:
+                        sendIAPResult(callbackId, error: "Rezultati i blerjes nuk u njoh.")
+                    }
+                } catch {
+                    sendIAPResult(callbackId, error: error.localizedDescription)
+                }
+            }
+        case "restore":
+            Task {
+                do {
+                    try await AppStore.sync()
+                    let transactions = await currentEntitlementTransactions()
+                    sendIAPResult(callbackId, payload: ["transactions": transactions])
+                } catch {
+                    sendIAPResult(callbackId, error: error.localizedDescription)
+                }
+            }
+        case "entitlements":
+            Task {
+                let transactions = await currentEntitlementTransactions()
+                sendIAPResult(callbackId, payload: ["transactions": transactions])
+            }
+        case "finish":
+            guard let idString = body["transactionId"] as? String,
+                  let transactionId = UInt64(idString) else {
+                sendIAPResult(callbackId, error: "ID-ja e transaksionit nuk është e vlefshme.")
+                return
+            }
+            Task {
+                for await result in Transaction.unfinished {
+                    if case .verified(let transaction) = result, transaction.id == transactionId {
+                        await transaction.finish()
+                        sendIAPResult(callbackId, payload: ["finished": true])
+                        return
+                    }
+                }
+                // StoreKit may already mark a restored transaction as finished.
+                sendIAPResult(callbackId, payload: ["finished": true])
+            }
+        default:
+            sendIAPResult(callbackId, error: "Veprimi i blerjes nuk njihet.")
+        }
+    }
+
+    private func currentEntitlementTransactions() async -> [[String: String]] {
+        var items: [[String: String]] = []
+        for await result in Transaction.currentEntitlements {
+            guard case .verified(let transaction) = result,
+                  iapProductIDs.contains(transaction.productID) else { continue }
+            items.append([
+                "transactionId": String(transaction.id),
+                "signedTransactionInfo": result.jwsRepresentation
+            ])
+        }
+        return items
+    }
+
+    private func sendIAPResult(_ callbackId: String?, payload: [String: Any]? = nil, error: String? = nil) {
+        guard let callbackId, let webView = iapWebView else { return }
+        var detail: [String: Any] = ["callbackId": callbackId]
+        if let payload { detail["payload"] = payload }
+        if let error { detail["error"] = error }
+        guard let data = try? JSONSerialization.data(withJSONObject: detail, options: [.fragmentsAllowed]),
+              let json = String(data: data, encoding: .utf8) else { return }
+        DispatchQueue.main.async {
+            webView.evaluateJavaScript("window.dispatchEvent(new CustomEvent('pingcar-iap-result', { detail: \(json) }));")
         }
     }
 
