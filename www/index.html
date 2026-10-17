@@ -718,16 +718,75 @@ if (pingcarIapBridge) {
   const monthlyLink = document.getElementById("pingcarMonthlyPurchase");
   const yearlyLink = document.getElementById("pingcarYearlyPurchase");
   const statusNode = document.getElementById("pingcarIapStatus");
-  const iapLanguage = (localStorage.getItem("pingcar_language") || "de").split("-")[0];
+  let iapLanguage = (localStorage.getItem("pingcar_language") || "de").split("-")[0];
   const iapCopy = {
     de: { restore: "Käufe wiederherstellen", signIn: "Bitte melde dich zuerst bei PingCar an.", loading: "Preise werden aus dem App Store geladen …", unavailable: "Die Abonnements sind derzeit nicht verfügbar. Bitte später erneut versuchen.", verifying: "Kauf wird sicher überprüft …", active: "Premium ist aktiv bis", restored: "Käufe wurden wiederhergestellt.", none: "Kein aktives PingCar-Abonnement gefunden.", error: "Kauf konnte nicht abgeschlossen werden.", terms: "Die Zahlung wird deinem Apple Account belastet. Das Abo verlängert sich automatisch, sofern du es nicht mindestens 24 Stunden vor Ablauf kündigst. Du kannst es in deinen Account-Einstellungen verwalten und kündigen." },
     en: { restore: "Restore Purchases", signIn: "Please sign in to PingCar first.", loading: "Loading prices from the App Store …", unavailable: "Subscriptions are unavailable right now. Please try again later.", verifying: "Securely verifying your purchase …", active: "Premium is active until", restored: "Purchases restored.", none: "No active PingCar subscription was found.", error: "The purchase could not be completed.", terms: "Payment is charged to your Apple Account. The subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel it in your account settings." },
-    sq: { restore: "Rikthe blerjet", signIn: "Së pari kyçu në PingCar.", loading: "Po ngarkohen çmimet nga App Store …", unavailable: "Abonimet nuk janë të disponueshme tani. Provo përsëri më vonë.", verifying: "Blerja po verifikohet në mënyrë të sigurt …", active: "Premium është aktiv deri më", restored: "Blerjet u rikthyen.", none: "Nuk u gjet abonim aktiv PingCar.", error: "Blerja nuk u përfundua.", terms: "Pagesa bëhet përmes llogarisë Apple. Abonimi rinovohet automatikisht nëse nuk anulohet të paktën 24 orë para përfundimit. Menaxhoje ose anuloje te cilësimet e llogarisë." }
+    sq: { restore: "Rikthe blerjet", signIn: "Së pari kyçu në PingCar.", loading: "Po ngarkohen çmimet nga App Store …", unavailable: "Abonimet nuk janë të disponueshme tani. Provo përsëri më vonë.", verifying: "Blerja po verifikohet në mënyrë të sigurt …", active: "Premium është aktiv deri më", restored: "Blerjet u rikthyen.", none: "Nuk u gjet abonim aktiv PingCar.", error: "Blerja nuk u përfundua.", terms: "Pagesa bëhet përmes llogarisë Apple. Abonimi rinovohet automatikisht nëse nuk anulohet të paktën 24 orë para përfundimit. Menaxhoje ose anuloje te cilësimet e llogarisë." },
+    fr: { restore: "Restaurer les achats", signIn: "Connectez-vous d’abord à PingCar.", loading: "Chargement des prix de l’App Store…", unavailable: "Abonnements indisponibles pour le moment. Réessayez plus tard.", verifying: "Vérification sécurisée de l’achat…", active: "Premium est actif jusqu’au", restored: "Achats restaurés.", none: "Aucun abonnement PingCar actif trouvé.", error: "L’achat n’a pas pu être effectué.", terms: "Le paiement sera débité de votre compte Apple. L’abonnement se renouvelle automatiquement, sauf annulation au moins 24 heures avant la fin de la période. Gérez ou annulez l’abonnement dans les réglages de votre compte." },
+    it: { restore: "Ripristina acquisti", signIn: "Accedi prima a PingCar.", loading: "Caricamento dei prezzi dall’App Store…", unavailable: "Abbonamenti non disponibili al momento. Riprova più tardi.", verifying: "Verifica sicura dell’acquisto…", active: "Premium è attivo fino al", restored: "Acquisti ripristinati.", none: "Nessun abbonamento PingCar attivo trovato.", error: "Impossibile completare l’acquisto.", terms: "Il pagamento verrà addebitato sul tuo account Apple. L’abbonamento si rinnova automaticamente, salvo annullamento almeno 24 ore prima della fine del periodo. Puoi gestirlo o annullarlo nelle impostazioni del tuo account." },
+    sr: { restore: "Obnovi kupovine", signIn: "Prvo se prijavi u PingCar.", loading: "Učitavanje cena iz App Store-a…", unavailable: "Pretplate trenutno nisu dostupne. Pokušaj ponovo kasnije.", verifying: "Bezbedna provera kupovine…", active: "Premium je aktivan do", restored: "Kupovine su obnovljene.", none: "Nije pronađena aktivna PingCar pretplata.", error: "Kupovina nije mogla da se dovrši.", terms: "Plaćanje se naplaćuje preko Apple naloga. Pretplata se automatski obnavlja osim ako je otkažeš najmanje 24 sata pre isteka perioda. Upravljaj pretplatom ili je otkaži u podešavanjima naloga." },
+    es: { restore: "Restaurar compras", signIn: "Inicia sesión en PingCar primero.", loading: "Cargando precios del App Store…", unavailable: "Las suscripciones no están disponibles ahora. Inténtalo más tarde.", verifying: "Verificando la compra de forma segura…", active: "Premium está activo hasta el", restored: "Compras restauradas.", none: "No se encontró ninguna suscripción activa de PingCar.", error: "No se pudo completar la compra.", terms: "El pago se cargará a tu cuenta de Apple. La suscripción se renueva automáticamente, salvo que la canceles al menos 24 horas antes de que termine el periodo. Puedes gestionarla o cancelarla en los ajustes de tu cuenta." },
+    tr: { restore: "Satın alımları geri yükle", signIn: "Önce PingCar hesabında oturum aç.", loading: "App Store fiyatları yükleniyor…", unavailable: "Abonelikler şu anda kullanılamıyor. Daha sonra tekrar dene.", verifying: "Satın alma güvenli şekilde doğrulanıyor…", active: "Premium şu tarihe kadar etkin:", restored: "Satın alımlar geri yüklendi.", none: "Etkin bir PingCar aboneliği bulunamadı.", error: "Satın alma tamamlanamadı.", terms: "Ödeme Apple Hesabından alınır. Abonelik, dönem bitmeden en az 24 saat önce iptal edilmediği sürece otomatik yenilenir. Hesap ayarlarından yönetebilir veya iptal edebilirsin." },
+    sk: { restore: "Obnoviť nákupy", signIn: "Najprv sa prihláste do PingCar.", loading: "Načítavajú sa ceny z App Store…", unavailable: "Predplatné momentálne nie je dostupné. Skúste to neskôr.", verifying: "Nákup sa bezpečne overuje…", active: "Premium je aktívne do", restored: "Nákupy boli obnovené.", none: "Nenašlo sa aktívne predplatné PingCar.", error: "Nákup sa nepodarilo dokončiť.", terms: "Platba sa účtuje cez váš účet Apple. Predplatné sa automaticky obnoví, ak ho nezrušíte aspoň 24 hodín pred koncom obdobia. Spravovať alebo zrušiť ho môžete v nastaveniach účtu." },
+    hr: { restore: "Obnovi kupnje", signIn: "Najprije se prijavi u PingCar.", loading: "Učitavanje cijena iz App Storea…", unavailable: "Pretplate trenutačno nisu dostupne. Pokušaj ponovno kasnije.", verifying: "Sigurna provjera kupnje…", active: "Premium je aktivan do", restored: "Kupnje su obnovljene.", none: "Nije pronađena aktivna PingCar pretplata.", error: "Kupnju nije bilo moguće dovršiti.", terms: "Plaćanje se naplaćuje putem Apple računa. Pretplata se automatski obnavlja osim ako je ne otkažeš najmanje 24 sata prije isteka razdoblja. Možeš je upravljati ili otkazati u postavkama računa." },
+    hu: { restore: "Vásárlások visszaállítása", signIn: "Először jelentkezz be a PingCarba.", loading: "App Store-árak betöltése…", unavailable: "Az előfizetések most nem érhetők el. Próbáld újra később.", verifying: "A vásárlás biztonságos ellenőrzése…", active: "A Premium eddig aktív:", restored: "A vásárlások visszaállítva.", none: "Nem található aktív PingCar-előfizetés.", error: "A vásárlást nem sikerült befejezni.", terms: "A fizetés az Apple-fiókodat terheli. Az előfizetés automatikusan megújul, kivéve, ha legalább 24 órával az időszak vége előtt lemondod. A fiókbeállításokban kezelheted vagy mondhatod le." },
+    pt: { restore: "Restaurar compras", signIn: "Inicie sessão no PingCar primeiro.", loading: "A carregar preços da App Store…", unavailable: "As assinaturas não estão disponíveis agora. Tente novamente mais tarde.", verifying: "A verificar a compra com segurança…", active: "O Premium está ativo até", restored: "Compras restauradas.", none: "Não foi encontrada nenhuma assinatura ativa do PingCar.", error: "Não foi possível concluir a compra.", terms: "O pagamento será cobrado na sua conta Apple. A assinatura renova-se automaticamente, salvo cancelamento pelo menos 24 horas antes do fim do período. Pode geri-la ou cancelá-la nas definições da conta." },
+    mk: { restore: "Врати ги купувањата", signIn: "Најави се прво во PingCar.", loading: "Се вчитуваат цените од App Store…", unavailable: "Претплатите моментално не се достапни. Обиди се повторно подоцна.", verifying: "Купувањето безбедно се проверува…", active: "Premium е активно до", restored: "Купувањата се вратени.", none: "Не е пронајдена активна PingCar претплата.", error: "Купувањето не можеше да се заврши.", terms: "Плаќањето се наплатува преку Apple сметката. Претплатата автоматски се обновува, освен ако не ја откажеш најмалку 24 часа пред истекот на периодот. Управувај со неа или откажи ја во поставките на сметката." },
+    nl: { restore: "Aankopen herstellen", signIn: "Log eerst in bij PingCar.", loading: "Prijzen uit de App Store laden…", unavailable: "Abonnementen zijn nu niet beschikbaar. Probeer het later opnieuw.", verifying: "Aankoop veilig verifiëren…", active: "Premium is actief tot", restored: "Aankopen hersteld.", none: "Geen actief PingCar-abonnement gevonden.", error: "De aankoop kon niet worden voltooid.", terms: "De betaling wordt in rekening gebracht op je Apple Account. Het abonnement wordt automatisch verlengd, tenzij je het minstens 24 uur voor het einde van de periode opzegt. Je kunt het beheren of opzeggen via je accountinstellingen." }
   };
-  const copy = iapCopy[iapLanguage] || iapCopy.de;
+  let copy = iapCopy[iapLanguage] || iapCopy.en;
+  const iapPresentation = {
+    de: { title: "PingCar Premium", benefits: "QR-Code-Kontakt, Sofortmeldung an den Fahrzeughalter und private Kontaktaufnahme." },
+    fr: { title: "PingCar Premium", benefits: "Contact par QR code, alerte immédiate au propriétaire du véhicule et communication privée." },
+    it: { title: "PingCar Premium", benefits: "Contatto tramite QR code, avviso immediato al proprietario del veicolo e comunicazione privata." },
+    en: { title: "PingCar Premium", benefits: "QR-code contact, instant alerts to vehicle owners, and private messaging." },
+    sq: { title: "PingCar Premium", benefits: "Kontakt me QR-Code, njoftim i menjëhershëm te pronari i automjetit dhe komunikim privat." },
+    sr: { title: "PingCar Premium", benefits: "Kontakt putem QR koda, trenutno obaveštenje vlasnika vozila i privatna komunikacija." },
+    es: { title: "PingCar Premium", benefits: "Contacto mediante código QR, aviso inmediato al propietario del vehículo y comunicación privada." },
+    tr: { title: "PingCar Premium", benefits: "QR koduyla iletişim, araç sahibine anında bildirim ve özel mesajlaşma." },
+    sk: { title: "PingCar Premium", benefits: "Kontakt cez QR kód, okamžité upozornenie majiteľa vozidla a súkromná komunikácia." },
+    hr: { title: "PingCar Premium", benefits: "Kontakt putem QR koda, trenutačna obavijest vlasniku vozila i privatna komunikacija." },
+    hu: { title: "PingCar Prémium", benefits: "Kapcsolat QR-kóddal, azonnali értesítés a jármű tulajdonosának és privát kommunikáció." },
+    pt: { title: "PingCar Premium", benefits: "Contacto por código QR, aviso imediato ao proprietário do veículo e comunicação privada." },
+    mk: { title: "PingCar Premium", benefits: "Контакт преку QR-код, моментално известување до сопственикот на возилото и приватна комуникација." },
+    nl: { title: "PingCar Premium", benefits: "Contact via QR-code, directe melding aan de voertuigeigenaar en privécommunicatie." },
+    sv: { title: "PingCar Premium", benefits: "Kontakt via QR-kod, omedelbara aviseringar till fordonsägare och privata meddelanden." },
+    ro: { title: "PingCar Premium", benefits: "Contact prin cod QR, notificare imediată către proprietarul vehiculului și comunicare privată." },
+    el: { title: "PingCar Premium", benefits: "Επικοινωνία μέσω κωδικού QR, άμεση ειδοποίηση του ιδιοκτήτη του οχήματος και ιδιωτική επικοινωνία." },
+    pl: { title: "PingCar Premium", benefits: "Kontakt przez kod QR, natychmiastowe powiadomienie właściciela pojazdu i prywatna komunikacja." },
+    cs: { title: "PingCar Premium", benefits: "Kontakt přes QR kód, okamžité upozornění majitele vozidla a soukromá komunikace." },
+    sw: { title: "PingCar Premium", benefits: "Mawasiliano kupitia msimbo wa QR, arifa za papo hapo kwa wamiliki wa magari na ujumbe wa faragha." },
+    ar: { title: "PingCar Premium", benefits: "التواصل عبر رمز QR، وإشعار فوري لمالك السيارة، ومراسلة خاصة." },
+    zh: { title: "PingCar Premium", benefits: "通过二维码联系、即时通知车主并进行私人交流。" },
+    ja: { title: "PingCar Premium", benefits: "QRコードでの連絡、車両所有者への即時通知、プライベートなメッセージ機能。" },
+    bg: { title: "PingCar Premium", benefits: "Контакт чрез QR код, незабавно известяване на собственика на автомобила и лична комуникация." },
+    ru: { title: "PingCar Premium", benefits: "Связь по QR-коду, мгновенное уведомление владельца автомобиля и личная переписка." },
+    hi: { title: "PingCar Premium", benefits: "QR कोड से संपर्क, वाहन मालिक को तुरंत सूचना और निजी संदेश।" },
+    da: { title: "PingCar Premium", benefits: "Kontakt via QR-kode, øjeblikkelig besked til køretøjsejeren og privat kommunikation." },
+    fi: { title: "PingCar Premium", benefits: "Yhteydenotto QR-koodilla, välitön ilmoitus ajoneuvon omistajalle ja yksityinen viestintä." }
+  };
+  function applyIapLanguage(lang) {
+    iapLanguage = (lang || "de").split("-")[0];
+    const nextCopy = iapCopy[iapLanguage] || iapCopy.en;
+    copy = nextCopy;
+    const presentation = iapPresentation[iapLanguage] || iapPresentation.en;
+    document.getElementById("pingcarIapTitle").textContent = presentation.title;
+    document.getElementById("pingcarIapBenefits").textContent = presentation.benefits;
+    document.getElementById("pingcarIapPriceInfo").textContent = nextCopy.terms;
+    document.getElementById("pingcarIapRestore").textContent = nextCopy.restore;
+    document.getElementById("pingcarIapSignIn").textContent = nextCopy.signIn;
+    if (Object.values(iapCopy).some(entry => entry.loading === statusNode.textContent)) {
+      statusNode.textContent = nextCopy.loading;
+    } else if (Object.values(iapCopy).some(entry => entry.unavailable === statusNode.textContent)) {
+      statusNode.textContent = nextCopy.unavailable;
+    }
+  }
+  applyIapLanguage(iapLanguage);
+  window.addEventListener("pingcar-language-change", event => applyIapLanguage(event.detail?.lang));
   const iapCallbacks = new Map();
   let iapSequence = 0;
-  let iapProductsReady = false;
+  const iapProductsReady = new Set();
   document.querySelectorAll('script[src*="js.stripe.com"]').forEach(script => script.remove());
   document.getElementById("pingcarExistingPrivacyLink")?.setAttribute("target", "_self");
   document.getElementById("pingcarExistingEulaLink")?.setAttribute("target", "_self");
@@ -747,10 +806,6 @@ if (pingcarIapBridge) {
   iapSection.style.display = "block";
   statusNode.textContent = copy.loading;
   document.getElementById("pingcarIapRestore").textContent = copy.restore;
-  document.getElementById("pingcarIapPriceInfo").textContent = copy.terms;
-  document.getElementById("pingcarIapSignIn").textContent = iapLanguage === "sq"
-    ? "Kyçu në PingCar"
-    : iapLanguage === "en" ? "Sign in to PingCar" : "Bei PingCar anmelden";
   supabase.auth.getUser().then(({ data }) => {
     if (data.user) document.getElementById("pingcarIapSignIn").style.display = "none";
   }).catch(() => {});
@@ -825,7 +880,7 @@ if (pingcarIapBridge) {
   async function buyIap(productId) {
     try {
       const user = await signedInUser();
-      if (!iapProductsReady) throw new Error(copy.unavailable);
+      if (!iapProductsReady.has(productId)) throw new Error(copy.unavailable);
       statusNode.textContent = copy.verifying;
       const purchase = await callNativeIap("purchase", {
         productId,
@@ -852,14 +907,14 @@ if (pingcarIapBridge) {
   }
 
   monthlyButton.addEventListener("click", () => {
-    if (!iapProductsReady) {
+    if (!iapProductsReady.has("ch.pingcar.premium.monthly")) {
       statusNode.textContent = copy.unavailable;
       return;
     }
     buyIap("ch.pingcar.premium.monthly");
   });
   yearlyButton.addEventListener("click", () => {
-    if (!iapProductsReady) {
+    if (!iapProductsReady.has("ch.pingcar.premium.yearly")) {
       statusNode.textContent = copy.unavailable;
       return;
     }
@@ -881,16 +936,25 @@ if (pingcarIapBridge) {
     const productMap = new Map((products || []).map(product => [product.id, product]));
     const monthly = productMap.get("ch.pingcar.premium.monthly");
     const yearly = productMap.get("ch.pingcar.premium.yearly");
-    if (!monthly || !yearly) throw new Error(copy.unavailable);
-    document.getElementById("pingcarMonthlyPrice").textContent = monthly.displayPrice;
-    document.getElementById("pingcarYearlyPrice").textContent = yearly.displayPrice;
-    for (const button of [monthlyButton, yearlyButton]) {
-      button.disabled = false;
-      button.setAttribute("aria-disabled", "false");
-      button.style.opacity = "1";
+    const availableProducts = [
+      { id: "ch.pingcar.premium.monthly", product: monthly, price: "pingcarMonthlyPrice", button: monthlyButton },
+      { id: "ch.pingcar.premium.yearly", product: yearly, price: "pingcarYearlyPrice", button: yearlyButton }
+    ];
+    for (const item of availableProducts) {
+      if (item.product) {
+        iapProductsReady.add(item.id);
+        document.getElementById(item.price).textContent = item.product.displayPrice;
+        item.button.disabled = false;
+        item.button.setAttribute("aria-disabled", "false");
+        item.button.style.opacity = "1";
+      } else {
+        document.getElementById(item.price).textContent = "—";
+      }
     }
-    iapProductsReady = true;
-    statusNode.textContent = "";
+    statusNode.textContent = iapProductsReady.size
+      ? ""
+      : copy.unavailable;
+    if (!iapProductsReady.size) throw new Error(copy.unavailable);
     return callNativeIap("entitlements");
   }).then((result) => reconcileIapTransactions(result.transactions, false))
     .catch((error) => {
@@ -4729,6 +4793,7 @@ if (trialBullet3) trialBullet3.textContent = t.trial_bullet_3;
       }
     }
   }
+  window.dispatchEvent(new CustomEvent("pingcar-language-change", { detail: { lang } }));
 };
 
 // Load saved language
