@@ -516,7 +516,8 @@ margin-top:50px;
   <h2 id="pingcarIapTitle" style="margin:0 0 12px;">PingCar Premium</h2>
   <p id="pingcarIapBenefits" style="line-height:1.6;margin:0 0 16px;">QR-Code-Kontakt, Sofortmeldung an den Fahrzeughalter und private Kontaktaufnahme.</p>
   <p id="pingcarIapPriceInfo" style="font-size:14px;color:#4b5563;margin:0 0 16px;">Monats- oder Jahresabo. Die Zahlung wird über deinen Apple Account bestätigt; das Abo verlängert sich automatisch bis zur Kündigung.</p>
-  <p style="margin:0 0 16px;font-size:14px;"><a href="#loginForm" id="pingcarIapSignIn">Bei PingCar anmelden</a></p>
+  <p id="pingcarIapAccountInfo" style="margin:0 0 16px;font-size:14px;line-height:1.5;">Du kannst Premium zuerst mit deinem Apple Account kaufen. Ein PingCar-Konto ist optional und kann später erstellt werden, um dein Abo mit deinen Fahrzeugfunktionen zu verbinden.</p>
+  <p style="margin:0 0 16px;font-size:14px;"><a href="#registerForm" id="pingcarIapSignIn">PingCar-Konto später erstellen</a></p>
   <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
     <button type="button" id="pingcarIapRestore" style="padding:11px 18px;border:1px solid #64748b;border-radius:8px;background:#fff;color:#1f2937;font-weight:600;">Käufe wiederherstellen</button>
   </div>
@@ -636,6 +637,7 @@ style="width:100%;padding:14px;border:0;border-radius:10px;background:#0d6efd;co
 >
 Anmelden
 </button>
+<p id="loginStatus" role="status" aria-live="polite" style="margin:0;color:#b91c1c;font-size:14px;"></p>
 
 <p style="margin-top:15px;">
 <a href="#" id="forgotPassword">
@@ -720,9 +722,9 @@ if (pingcarIapBridge) {
   const statusNode = document.getElementById("pingcarIapStatus");
   let iapLanguage = (localStorage.getItem("pingcar_language") || "de").split("-")[0];
   const iapCopy = {
-    de: { restore: "Käufe wiederherstellen", signIn: "Bitte melde dich zuerst bei PingCar an.", loading: "Preise werden aus dem App Store geladen …", unavailable: "Die Abonnements sind derzeit nicht verfügbar. Bitte später erneut versuchen.", verifying: "Kauf wird sicher überprüft …", active: "Premium ist aktiv bis", restored: "Käufe wurden wiederhergestellt.", none: "Kein aktives PingCar-Abonnement gefunden.", error: "Kauf konnte nicht abgeschlossen werden.", terms: "Die Zahlung wird deinem Apple Account belastet. Das Abo verlängert sich automatisch, sofern du es nicht mindestens 24 Stunden vor Ablauf kündigst. Du kannst es in deinen Account-Einstellungen verwalten und kündigen." },
-    en: { restore: "Restore Purchases", signIn: "Please sign in to PingCar first.", loading: "Loading prices from the App Store …", unavailable: "Subscriptions are unavailable right now. Please try again later.", verifying: "Securely verifying your purchase …", active: "Premium is active until", restored: "Purchases restored.", none: "No active PingCar subscription was found.", error: "The purchase could not be completed.", terms: "Payment is charged to your Apple Account. The subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel it in your account settings." },
-    sq: { restore: "Rikthe blerjet", signIn: "Së pari kyçu në PingCar.", loading: "Po ngarkohen çmimet nga App Store …", unavailable: "Abonimet nuk janë të disponueshme tani. Provo përsëri më vonë.", verifying: "Blerja po verifikohet në mënyrë të sigurt …", active: "Premium është aktiv deri më", restored: "Blerjet u rikthyen.", none: "Nuk u gjet abonim aktiv PingCar.", error: "Blerja nuk u përfundua.", terms: "Pagesa bëhet përmes llogarisë Apple. Abonimi rinovohet automatikisht nëse nuk anulohet të paktën 24 orë para përfundimit. Menaxhoje ose anuloje te cilësimet e llogarisë." },
+    de: { restore: "Käufe wiederherstellen", signIn: "PingCar-Konto später erstellen", loading: "Preise werden aus dem App Store geladen …", unavailable: "Die Abonnements sind derzeit nicht verfügbar. Bitte später erneut versuchen.", verifying: "Kauf wird sicher überprüft …", active: "Premium ist aktiv bis", restored: "Käufe wurden wiederhergestellt.", none: "Kein aktives PingCar-Abonnement gefunden.", error: "Kauf konnte nicht abgeschlossen werden.", terms: "Die Zahlung wird deinem Apple Account belastet. Das Abo verlängert sich automatisch, sofern du es nicht mindestens 24 Stunden vor Ablauf kündigst. Du kannst es in deinen Account-Einstellungen verwalten und kündigen." },
+    en: { restore: "Restore Purchases", signIn: "Create a PingCar account later", loading: "Loading prices from the App Store …", unavailable: "Subscriptions are unavailable right now. Please try again later.", verifying: "Securely verifying your purchase …", active: "Premium is active until", restored: "Purchases restored.", none: "No active PingCar subscription was found.", error: "The purchase could not be completed.", terms: "Payment is charged to your Apple Account. The subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel it in your account settings." },
+    sq: { restore: "Rikthe blerjet", signIn: "Krijo llogari PingCar më vonë", loading: "Po ngarkohen çmimet nga App Store …", unavailable: "Abonimet nuk janë të disponueshme tani. Provo përsëri më vonë.", verifying: "Blerja po verifikohet në mënyrë të sigurt …", active: "Premium është aktiv deri më", restored: "Blerjet u rikthyen.", none: "Nuk u gjet abonim aktiv PingCar.", error: "Blerja nuk u përfundua.", terms: "Pagesa bëhet përmes llogarisë Apple. Abonimi rinovohet automatikisht nëse nuk anulohet të paktën 24 orë para përfundimit. Menaxhoje ose anuloje te cilësimet e llogarisë." },
     fr: { restore: "Restaurer les achats", signIn: "Connectez-vous d’abord à PingCar.", loading: "Chargement des prix de l’App Store…", unavailable: "Abonnements indisponibles pour le moment. Réessayez plus tard.", verifying: "Vérification sécurisée de l’achat…", active: "Premium est actif jusqu’au", restored: "Achats restaurés.", none: "Aucun abonnement PingCar actif trouvé.", error: "L’achat n’a pas pu être effectué.", terms: "Le paiement sera débité de votre compte Apple. L’abonnement se renouvelle automatiquement, sauf annulation au moins 24 heures avant la fin de la période. Gérez ou annulez l’abonnement dans les réglages de votre compte." },
     it: { restore: "Ripristina acquisti", signIn: "Accedi prima a PingCar.", loading: "Caricamento dei prezzi dall’App Store…", unavailable: "Abbonamenti non disponibili al momento. Riprova più tardi.", verifying: "Verifica sicura dell’acquisto…", active: "Premium è attivo fino al", restored: "Acquisti ripristinati.", none: "Nessun abbonamento PingCar attivo trovato.", error: "Impossibile completare l’acquisto.", terms: "Il pagamento verrà addebitato sul tuo account Apple. L’abbonamento si rinnova automaticamente, salvo annullamento almeno 24 ore prima della fine del periodo. Puoi gestirlo o annullarlo nelle impostazioni del tuo account." },
     sr: { restore: "Obnovi kupovine", signIn: "Prvo se prijavi u PingCar.", loading: "Učitavanje cena iz App Store-a…", unavailable: "Pretplate trenutno nisu dostupne. Pokušaj ponovo kasnije.", verifying: "Bezbedna provera kupovine…", active: "Premium je aktivan do", restored: "Kupovine su obnovljene.", none: "Nije pronađena aktivna PingCar pretplata.", error: "Kupovina nije mogla da se dovrši.", terms: "Plaćanje se naplaćuje preko Apple naloga. Pretplata se automatski obnavlja osim ako je otkažeš najmanje 24 sata pre isteka perioda. Upravljaj pretplatom ili je otkaži u podešavanjima naloga." },
@@ -737,34 +739,34 @@ if (pingcarIapBridge) {
   };
   let copy = iapCopy[iapLanguage] || iapCopy.en;
   const iapPresentation = {
-    de: { title: "PingCar Premium", benefits: "QR-Code-Kontakt, Sofortmeldung an den Fahrzeughalter und private Kontaktaufnahme." },
-    fr: { title: "PingCar Premium", benefits: "Contact par QR code, alerte immédiate au propriétaire du véhicule et communication privée." },
-    it: { title: "PingCar Premium", benefits: "Contatto tramite QR code, avviso immediato al proprietario del veicolo e comunicazione privata." },
-    en: { title: "PingCar Premium", benefits: "QR-code contact, instant alerts to vehicle owners, and private messaging." },
-    sq: { title: "PingCar Premium", benefits: "Kontakt me QR-Code, njoftim i menjëhershëm te pronari i automjetit dhe komunikim privat." },
-    sr: { title: "PingCar Premium", benefits: "Kontakt putem QR koda, trenutno obaveštenje vlasnika vozila i privatna komunikacija." },
-    es: { title: "PingCar Premium", benefits: "Contacto mediante código QR, aviso inmediato al propietario del vehículo y comunicación privada." },
-    tr: { title: "PingCar Premium", benefits: "QR koduyla iletişim, araç sahibine anında bildirim ve özel mesajlaşma." },
-    sk: { title: "PingCar Premium", benefits: "Kontakt cez QR kód, okamžité upozornenie majiteľa vozidla a súkromná komunikácia." },
-    hr: { title: "PingCar Premium", benefits: "Kontakt putem QR koda, trenutačna obavijest vlasniku vozila i privatna komunikacija." },
-    hu: { title: "PingCar Prémium", benefits: "Kapcsolat QR-kóddal, azonnali értesítés a jármű tulajdonosának és privát kommunikáció." },
-    pt: { title: "PingCar Premium", benefits: "Contacto por código QR, aviso imediato ao proprietário do veículo e comunicação privada." },
-    mk: { title: "PingCar Premium", benefits: "Контакт преку QR-код, моментално известување до сопственикот на возилото и приватна комуникација." },
-    nl: { title: "PingCar Premium", benefits: "Contact via QR-code, directe melding aan de voertuigeigenaar en privécommunicatie." },
-    sv: { title: "PingCar Premium", benefits: "Kontakt via QR-kod, omedelbara aviseringar till fordonsägare och privata meddelanden." },
-    ro: { title: "PingCar Premium", benefits: "Contact prin cod QR, notificare imediată către proprietarul vehiculului și comunicare privată." },
-    el: { title: "PingCar Premium", benefits: "Επικοινωνία μέσω κωδικού QR, άμεση ειδοποίηση του ιδιοκτήτη του οχήματος και ιδιωτική επικοινωνία." },
-    pl: { title: "PingCar Premium", benefits: "Kontakt przez kod QR, natychmiastowe powiadomienie właściciela pojazdu i prywatna komunikacja." },
-    cs: { title: "PingCar Premium", benefits: "Kontakt přes QR kód, okamžité upozornění majitele vozidla a soukromá komunikace." },
-    sw: { title: "PingCar Premium", benefits: "Mawasiliano kupitia msimbo wa QR, arifa za papo hapo kwa wamiliki wa magari na ujumbe wa faragha." },
-    ar: { title: "PingCar Premium", benefits: "التواصل عبر رمز QR، وإشعار فوري لمالك السيارة، ومراسلة خاصة." },
-    zh: { title: "PingCar Premium", benefits: "通过二维码联系、即时通知车主并进行私人交流。" },
-    ja: { title: "PingCar Premium", benefits: "QRコードでの連絡、車両所有者への即時通知、プライベートなメッセージ機能。" },
-    bg: { title: "PingCar Premium", benefits: "Контакт чрез QR код, незабавно известяване на собственика на автомобила и лична комуникация." },
-    ru: { title: "PingCar Premium", benefits: "Связь по QR-коду, мгновенное уведомление владельца автомобиля и личная переписка." },
-    hi: { title: "PingCar Premium", benefits: "QR कोड से संपर्क, वाहन मालिक को तुरंत सूचना और निजी संदेश।" },
-    da: { title: "PingCar Premium", benefits: "Kontakt via QR-kode, øjeblikkelig besked til køretøjsejeren og privat kommunikation." },
-    fi: { title: "PingCar Premium", benefits: "Yhteydenotto QR-koodilla, välitön ilmoitus ajoneuvon omistajalle ja yksityinen viestintä." }
+    de: { title: "PingCar Premium", benefits: "QR-Code-Kontakt, Sofortmeldung an den Fahrzeughalter und private Kontaktaufnahme.", account: "Du kannst Premium zuerst mit deinem Apple Account kaufen. Ein PingCar-Konto ist optional und kann später erstellt werden, um dein Abo mit deinen Fahrzeugfunktionen zu verbinden.", createAccount: "PingCar-Konto später erstellen" },
+    fr: { title: "PingCar Premium", benefits: "Contact par QR code, alerte immédiate au propriétaire du véhicule et communication privée.", account: "Vous pouvez acheter Premium avec votre compte Apple sans créer de compte PingCar. La création d’un compte PingCar reste facultative et peut se faire plus tard.", createAccount: "Créer un compte PingCar plus tard" },
+    it: { title: "PingCar Premium", benefits: "Contatto tramite QR code, avviso immediato al proprietario del veicolo e comunicazione privata.", account: "Puoi acquistare Premium con il tuo account Apple senza creare un account PingCar. Creare un account PingCar è facoltativo e puoi farlo in seguito.", createAccount: "Crea un account PingCar in seguito" },
+    en: { title: "PingCar Premium", benefits: "QR-code contact, instant alerts to vehicle owners, and private messaging.", account: "You can buy Premium with your Apple Account without creating a PingCar account. Creating a PingCar account is optional and can be done later.", createAccount: "Create a PingCar account later" },
+    sq: { title: "PingCar Premium", benefits: "Kontakt me QR-Code, njoftim i menjëhershëm te pronari i automjetit dhe komunikim privat.", account: "Mund ta blesh Premium me llogarinë Apple pa krijuar llogari PingCar. Krijimi i llogarisë PingCar është opsional dhe mund ta bësh më vonë.", createAccount: "Krijo llogari PingCar më vonë" },
+    sr: { title: "PingCar Premium", benefits: "Kontakt putem QR koda, trenutno obaveštenje vlasnika vozila i privatna komunikacija.", account: "Premium možeš kupiti Apple nalogom bez pravljenja PingCar naloga. PingCar nalog je opcionalan i možeš ga napraviti kasnije.", createAccount: "Napravi PingCar nalog kasnije" },
+    es: { title: "PingCar Premium", benefits: "Contacto mediante código QR, aviso inmediato al propietario del vehículo y comunicación privada.", account: "Puedes comprar Premium con tu cuenta de Apple sin crear una cuenta PingCar. Crear una cuenta PingCar es opcional y puedes hacerlo más adelante.", createAccount: "Crear una cuenta PingCar más tarde" },
+    tr: { title: "PingCar Premium", benefits: "QR koduyla iletişim, araç sahibine anında bildirim ve özel mesajlaşma.", account: "PingCar hesabı oluşturmadan Apple Hesabınızla Premium satın alabilirsiniz. PingCar hesabı isteğe bağlıdır ve daha sonra oluşturulabilir.", createAccount: "Daha sonra PingCar hesabı oluştur" },
+    sk: { title: "PingCar Premium", benefits: "Kontakt cez QR kód, okamžité upozornenie majiteľa vozidla a súkromná komunikácia.", account: "Premium si môžete kúpiť cez Apple účet aj bez účtu PingCar. Účet PingCar je voliteľný a môžete si ho vytvoriť neskôr.", createAccount: "Vytvoriť účet PingCar neskôr" },
+    hr: { title: "PingCar Premium", benefits: "Kontakt putem QR koda, trenutačna obavijest vlasniku vozila i privatna komunikacija.", account: "Premium možete kupiti putem Apple računa bez izrade PingCar računa. PingCar račun nije obavezan i možete ga izraditi kasnije.", createAccount: "Izraditi PingCar račun kasnije" },
+    hu: { title: "PingCar Prémium", benefits: "Kapcsolat QR-kóddal, azonnali értesítés a jármű tulajdonosának és privát kommunikáció.", account: "A Premiumot PingCar-fiók létrehozása nélkül, Apple-fiókjával vásárolhatja meg. A PingCar-fiók létrehozása nem kötelező, később is megteheti.", createAccount: "PingCar-fiók létrehozása később" },
+    pt: { title: "PingCar Premium", benefits: "Contacto por código QR, aviso imediato ao proprietário do veículo e comunicação privada.", account: "Pode comprar o Premium com a sua conta Apple sem criar uma conta PingCar. A conta PingCar é opcional e pode ser criada mais tarde.", createAccount: "Criar conta PingCar mais tarde" },
+    mk: { title: "PingCar Premium", benefits: "Контакт преку QR-код, моментално известување до сопственикот на возилото и приватна комуникација.", account: "Можеш да купиш Premium преку Apple сметката без да создадеш PingCar сметка. PingCar сметката е изборна и можеш да ја создадеш подоцна.", createAccount: "Создади PingCar сметка подоцна" },
+    nl: { title: "PingCar Premium", benefits: "Contact via QR-code, directe melding aan de voertuigeigenaar en privécommunicatie.", account: "Je kunt Premium kopen met je Apple Account zonder een PingCar-account aan te maken. Een PingCar-account is optioneel en kan later worden aangemaakt.", createAccount: "Maak later een PingCar-account aan" },
+    sv: { title: "PingCar Premium", benefits: "Kontakt via QR-kod, omedelbara aviseringar till fordonsägare och privata meddelanden.", account: "Du kan köpa Premium med ditt Apple-konto utan att skapa ett PingCar-konto. Ett PingCar-konto är valfritt och kan skapas senare.", createAccount: "Skapa ett PingCar-konto senare" },
+    ro: { title: "PingCar Premium", benefits: "Contact prin cod QR, notificare imediată către proprietarul vehiculului și comunicare privată.", account: "Poți cumpăra Premium cu contul Apple fără să creezi un cont PingCar. Crearea unui cont PingCar este opțională și se poate face mai târziu.", createAccount: "Creează un cont PingCar mai târziu" },
+    el: { title: "PingCar Premium", benefits: "Επικοινωνία μέσω κωδικού QR, άμεση ειδοποίηση του ιδιοκτήτη του οχήματος και ιδιωτική επικοινωνία.", account: "Μπορείτε να αγοράσετε το Premium με τον λογαριασμό Apple χωρίς να δημιουργήσετε λογαριασμό PingCar. Η δημιουργία λογαριασμού PingCar είναι προαιρετική και μπορεί να γίνει αργότερα.", createAccount: "Δημιουργία λογαριασμού PingCar αργότερα" },
+    pl: { title: "PingCar Premium", benefits: "Kontakt przez kod QR, natychmiastowe powiadomienie właściciela pojazdu i prywatna komunikacja.", account: "Możesz kupić Premium za pomocą konta Apple bez tworzenia konta PingCar. Konto PingCar jest opcjonalne i możesz utworzyć je później.", createAccount: "Utwórz konto PingCar później" },
+    cs: { title: "PingCar Premium", benefits: "Kontakt přes QR kód, okamžité upozornění majitele vozidla a soukromá komunikace.", account: "Premium si můžete koupit pomocí účtu Apple bez vytvoření účtu PingCar. Účet PingCar je dobrovolný a můžete si ho vytvořit později.", createAccount: "Vytvořit účet PingCar později" },
+    sw: { title: "PingCar Premium", benefits: "Mawasiliano kupitia msimbo wa QR, arifa za papo hapo kwa wamiliki wa magari na ujumbe wa faragha.", account: "Unaweza kununua Premium kwa akaunti yako ya Apple bila kufungua akaunti ya PingCar. Akaunti ya PingCar ni ya hiari na unaweza kuifungua baadaye.", createAccount: "Fungua akaunti ya PingCar baadaye" },
+    ar: { title: "PingCar Premium", benefits: "التواصل عبر رمز QR، وإشعار فوري لمالك السيارة، ومراسلة خاصة.", account: "يمكنك شراء Premium باستخدام حساب Apple دون إنشاء حساب PingCar. إنشاء حساب PingCar اختياري ويمكنك القيام به لاحقًا.", createAccount: "أنشئ حساب PingCar لاحقًا" },
+    zh: { title: "PingCar Premium", benefits: "通过二维码联系、即时通知车主并进行私人交流。", account: "您可以使用 Apple 账户购买 Premium，无需创建 PingCar 账户。PingCar 账户为可选项，之后也可以创建。", createAccount: "稍后创建 PingCar 账户" },
+    ja: { title: "PingCar Premium", benefits: "QRコードでの連絡、車両所有者への即時通知、プライベートなメッセージ機能。", account: "PingCarアカウントを作成せずに、AppleアカウントでPremiumを購入できます。PingCarアカウントの作成は任意で、後から行えます。", createAccount: "後でPingCarアカウントを作成" },
+    bg: { title: "PingCar Premium", benefits: "Контакт чрез QR код, незабавно известяване на собственика на автомобила и лична комуникация.", account: "Можете да закупите Premium с Apple акаунта си, без да създавате PingCar акаунт. Създаването на PingCar акаунт е по избор и може да стане по-късно.", createAccount: "Създайте PingCar акаунт по-късно" },
+    ru: { title: "PingCar Premium", benefits: "Связь по QR-коду, мгновенное уведомление владельца автомобиля и личная переписка.", account: "Вы можете купить Premium через аккаунт Apple без создания аккаунта PingCar. Аккаунт PingCar необязателен, его можно создать позже.", createAccount: "Создать аккаунт PingCar позже" },
+    hi: { title: "PingCar Premium", benefits: "QR कोड से संपर्क, वाहन मालिक को तुरंत सूचना और निजी संदेश।", account: "आप PingCar खाता बनाए बिना अपने Apple खाते से Premium खरीद सकते हैं। PingCar खाता वैकल्पिक है और बाद में बनाया जा सकता है।", createAccount: "बाद में PingCar खाता बनाएँ" },
+    da: { title: "PingCar Premium", benefits: "Kontakt via QR-kode, øjeblikkelig besked til køretøjsejeren og privat kommunikation.", account: "Du kan købe Premium med din Apple-konto uden at oprette en PingCar-konto. En PingCar-konto er valgfri og kan oprettes senere.", createAccount: "Opret en PingCar-konto senere" },
+    fi: { title: "PingCar Premium", benefits: "Yhteydenotto QR-koodilla, välitön ilmoitus ajoneuvon omistajalle ja yksityinen viestintä.", account: "Voit ostaa Premiumin Apple-tililläsi luomatta PingCar-tiliä. PingCar-tilin luominen on vapaaehtoista ja onnistuu myöhemmin.", createAccount: "Luo PingCar-tili myöhemmin" }
   };
   function applyIapLanguage(lang) {
     iapLanguage = (lang || "de").split("-")[0];
@@ -773,9 +775,10 @@ if (pingcarIapBridge) {
     const presentation = iapPresentation[iapLanguage] || iapPresentation.en;
     document.getElementById("pingcarIapTitle").textContent = presentation.title;
     document.getElementById("pingcarIapBenefits").textContent = presentation.benefits;
+    document.getElementById("pingcarIapAccountInfo").textContent = presentation.account;
     document.getElementById("pingcarIapPriceInfo").textContent = nextCopy.terms;
     document.getElementById("pingcarIapRestore").textContent = nextCopy.restore;
-    document.getElementById("pingcarIapSignIn").textContent = nextCopy.signIn;
+    document.getElementById("pingcarIapSignIn").textContent = presentation.createAccount;
     if (Object.values(iapCopy).some(entry => entry.loading === statusNode.textContent)) {
       statusNode.textContent = nextCopy.loading;
     } else if (Object.values(iapCopy).some(entry => entry.unavailable === statusNode.textContent)) {
@@ -839,13 +842,6 @@ if (pingcarIapBridge) {
     else callback.resolve(detail.payload || {});
   });
 
-  async function signedInUser() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    if (!user) throw new Error(copy.signIn);
-    return user;
-  }
-
   async function verifyAndFinish(transaction) {
     const { data, error } = await supabase.functions.invoke("apple-iap-verify", {
       body: { signedTransactionInfo: transaction.signedTransactionInfo }
@@ -879,12 +875,12 @@ if (pingcarIapBridge) {
 
   async function buyIap(productId) {
     try {
-      const user = await signedInUser();
       if (!iapProductsReady.has(productId)) throw new Error(copy.unavailable);
       statusNode.textContent = copy.verifying;
+      const { data: { session } } = await supabase.auth.getSession();
       const purchase = await callNativeIap("purchase", {
         productId,
-        appAccountToken: user.id
+        ...(session?.user?.id ? { appAccountToken: session.user.id } : {})
       });
       if (purchase.status === "cancelled") {
         statusNode.textContent = "";
@@ -922,7 +918,6 @@ if (pingcarIapBridge) {
   });
   document.getElementById("pingcarIapRestore").addEventListener("click", async () => {
     try {
-      await signedInUser();
       statusNode.textContent = copy.verifying;
       const result = await callNativeIap("restore");
       await reconcileIapTransactions(result.transactions, true);
@@ -1228,23 +1223,25 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
+  const form = e.currentTarget;
+  const button = form.querySelector('button[type="submit"]');
+  const status = document.getElementById("loginStatus");
+  button.disabled = true;
+  status.style.color = "#475569";
+  status.textContent = "Anmeldung wird geprüft …";
 
-  const { error } = await supabase.auth.signInWithPassword({
-
-    email,
-    password
-
-  });
-
-if (error) {
-
-    alert(error.message);
-
-} else {
-
-    window.location.href = "dashboard.html";
-
-}
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    if (!data?.session?.user) throw new Error("Anmeldung war nicht vollständig. Bitte erneut versuchen.");
+    status.style.color = "#166534";
+    status.textContent = "Angemeldet. Dashboard wird geöffnet …";
+    window.location.assign(new URL("dashboard.html", window.location.href).toString());
+  } catch (error) {
+    status.style.color = "#b91c1c";
+    status.textContent = error?.message || "Anmeldung fehlgeschlagen. Bitte erneut versuchen.";
+    button.disabled = false;
+  }
 
 });
 

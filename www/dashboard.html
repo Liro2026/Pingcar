@@ -643,9 +643,15 @@ async function loadUser() {
   const { data, error } = await supabase.auth.getSession();
   const sessionUser = data?.session?.user || null;
 
-  if (error || !sessionUser) {
+  if (error) {
+    $("userInfo").textContent = "Anmeldung konnte nicht geprüft werden. Bitte Internetverbindung prüfen und erneut laden.";
+    status("Anmeldestatus konnte nicht geprüft werden. Bitte Seite neu laden.", "error");
+    return null;
+  }
+
+  if (!sessionUser) {
     $("userInfo").textContent = "Keine aktive Anmeldung. Bitte erneut anmelden.";
-    location.replace("index.html");
+    location.replace("index.html#loginForm");
     return null;
   }
 

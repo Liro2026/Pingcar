@@ -68,15 +68,6 @@ Deno.serve(async (request) => {
   try {
     const authorization = request.headers.get("Authorization") ?? "";
     const accessToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
-    if (!accessToken) return jsonResponse({ error: "Please sign in to PingCar first." }, 401);
-
-    const signedTransactionInfo = (await request.json())?.signedTransactionInfo;
-    if (typeof signedTransactionInfo !== "string" || signedTransactionInfo.length > 64_000) {
-      return jsonResponse({ error: "A valid Apple transaction is required." }, 400);
-    }
-
-    const untrustedEnvironment = decodeUntrustedEnvironment(signedTransactionInfo);
-    if (!untrustedEnvironment) return jsonResponse({ error: "Invalid Apple transaction." }, 400);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
@@ -86,11 +77,28 @@ Deno.serve(async (request) => {
       return jsonResponse({ error: "Purchase verification is not configured yet." }, 503);
     }
 
-    const authClient = createClient(supabaseUrl, anonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-    const { data: authData, error: authError } = await authClient.auth.getUser(accessToken);
-    if (authError || !authData.user) return jsonResponse({ error: "Your PingCar session has expired. Sign in again." }, 401);
+    const signedTransactionInfo = (await request.json())?.signedTransactionInfo;
+    if (typeof signedTransactionInfo !== "string" || signedTransactionInfo.length > 64_000) {
+      return jsonResponse({ error: "A valid Apple transaction is required." }, 400);
+    }
+
+    const untrustedEnvironment = decodeUntrustedEnvironment(signedTransactionInfo);
+    if (!untrustedEnvironment) return jsonResponse({ error: "Invalid Apple transaction." }, 400);
+
+    // Purchases may be made before the user creates a PingCar account. When
+    // there is no user session, save the Apple-verified entitlement as
+    // unclaimed; a later sign-in and Restore Purchases call can link it.
+    let authUser: { id: string; email?: string } | null = null;
+    if (accessToken && accessToken !== anonKey) {
+      const authClient = createClient(supabaseUrl, anonKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const { data: authData, error: authError } = await authClient.auth.getUser(accessToken);
+      if (authError || !authData.user) {
+        return jsonResponse({ error: "Your PingCar session has expired. Sign in again." }, 401);
+      }
+      authUser = authData.user;
+    }
 
     const verifier = getVerifier(untrustedEnvironment);
     const transaction = await verifier.verifyAndDecodeTransaction(signedTransactionInfo);
@@ -104,7 +112,8 @@ Deno.serve(async (request) => {
     if (!transaction.transactionId || !transaction.originalTransactionId || !transaction.expiresDate) {
       return jsonResponse({ error: "Apple's transaction is missing required subscription information." }, 400);
     }
-    if (!transaction.appAccountToken || transaction.appAccountToken.toLowerCase() !== authData.user.id.toLowerCase()) {
+    if (transaction.appAccountToken &&
+        (!authUser || transaction.appAccountToken.toLowerCase() !== authUser.id.toLowerCase())) {
       return jsonResponse({ error: "This purchase is not linked to the currently signed-in PingCar account." }, 403);
     }
 
@@ -127,8 +136,11 @@ Deno.serve(async (request) => {
       .eq("original_transaction_id", originalTransactionId)
       .maybeSingle();
     if (lookupError) throw lookupError;
-    if (existing && existing.user_id !== authData.user.id) {
+    if (existing?.user_id && authUser && existing.user_id !== authUser.id) {
       return jsonResponse({ error: "This Apple subscription is linked to another PingCar account." }, 403);
+    }
+    if (existing?.user_id && !authUser) {
+      return jsonResponse({ error: "Sign in to the PingCar account linked to this subscription, then restore purchases." }, 401);
     }
 
     const active = expiresAt.getTime() > Date.now() && !transaction.revocationDate;
@@ -139,8 +151,8 @@ Deno.serve(async (request) => {
     const { error: saveError } = await serviceClient
       .from("apple_iap_subscriptions")
       .upsert({
-        user_id: authData.user.id,
-        email: authData.user.email ?? "",
+        user_id: authUser?.id ?? existing?.user_id ?? null,
+        email: authUser?.email ?? "",
         product_id: transaction.productId,
         original_transaction_id: originalTransactionId,
         latest_transaction_id: transactionId,

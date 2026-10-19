@@ -206,12 +206,11 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
             }
         case "purchase":
             guard let productId = body["productId"] as? String,
-                  iapProductIDs.contains(productId),
-                  let accountTokenString = body["appAccountToken"] as? String,
-                  let accountToken = UUID(uuidString: accountTokenString) else {
-                sendIAPResult(callbackId, error: "Abonimi ose llogaria nuk është e vlefshme.")
+                  iapProductIDs.contains(productId) else {
+                sendIAPResult(callbackId, error: "Abonimi i zgjedhur nuk është i vlefshëm.")
                 return
             }
+            let accountToken = (body["appAccountToken"] as? String).flatMap(UUID.init(uuidString:))
             Task {
                 do {
                     let products = try await Product.products(for: [productId])
@@ -219,7 +218,15 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
                         sendIAPResult(callbackId, error: "Abonimi nuk u gjet në App Store.")
                         return
                     }
-                    let result = try await product.purchase(options: [.appAccountToken(accountToken)])
+                    // A PingCar account is optional at purchase time. If a user
+                    // is already signed in, retain the secure account link;
+                    // otherwise link the verified transaction after sign-up.
+                    let result: Product.PurchaseResult
+                    if let accountToken {
+                        result = try await product.purchase(options: [.appAccountToken(accountToken)])
+                    } else {
+                        result = try await product.purchase()
+                    }
                     switch result {
                     case .success(let verification):
                         switch verification {
