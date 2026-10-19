@@ -467,11 +467,12 @@ margin-top:50px;
   </p>
 </div>
 
+<div id="pingcarWebPricing">
 <script async src="https://js.stripe.com/v3/buy-button.js"></script>
 
 <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:25px;">
 
-  <div style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;width:280px;text-align:center;">
+  <div class="pingcar-plan-card" style="background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;width:280px;text-align:center;">
     <h3 data-i18n="monthly_plan">📅 Monatsabo</h3>
     <h2 id="pingcarMonthlyPrice">CHF 4.90</h2>
     <p data-i18n="per_month">pro Monat</p>
@@ -483,7 +484,7 @@ margin-top:50px;
     </a>
   </div>
 
-  <div style="background:#fff;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:280px;text-align:center;">
+  <div class="pingcar-plan-card" style="background:#fff;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:280px;text-align:center;">
     <h3 data-i18n="yearly_plan">⭐ Jahresabo</h3>
     <h2 id="pingcarYearlyPrice">CHF 49.90</h2>
     <p data-i18n="per_year">pro Jahr</p>
@@ -511,11 +512,13 @@ margin-top:50px;
   </div>
 
 </div>
+</div>
 
 <section id="pingcarAppleIap" style="display:none;max-width:640px;margin:24px auto;padding:20px;background:#f8fafc;border:1px solid #dbe3ee;border-radius:14px;text-align:center;color:#1f2937;">
   <h2 id="pingcarIapTitle" style="margin:0 0 12px;">PingCar Premium</h2>
   <p id="pingcarIapBenefits" style="line-height:1.6;margin:0 0 16px;">QR-Code-Kontakt, Sofortmeldung an den Fahrzeughalter und private Kontaktaufnahme.</p>
   <p id="pingcarIapPriceInfo" style="font-size:14px;color:#4b5563;margin:0 0 16px;">Monats- oder Jahresabo. Die Zahlung wird über deinen Apple Account bestätigt; das Abo verlängert sich automatisch bis zur Kündigung.</p>
+  <div id="pingcarIapPlans" style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:20px 0;"></div>
   <p id="pingcarIapAccountInfo" style="margin:0 0 16px;font-size:14px;line-height:1.5;">Du kannst Premium zuerst mit deinem Apple Account kaufen. Ein PingCar-Konto ist optional und kann später erstellt werden, um dein Abo mit deinen Fahrzeugfunktionen zu verbinden.</p>
   <p style="margin:0 0 16px;font-size:14px;"><a href="#registerForm" id="pingcarIapSignIn">PingCar-Konto später erstellen</a></p>
   <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
@@ -717,6 +720,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const pingcarIapBridge = window.webkit?.messageHandlers?.pingcarIAP;
 if (pingcarIapBridge) {
   const iapSection = document.getElementById("pingcarAppleIap");
+  const webPricing = document.getElementById("pingcarWebPricing");
+  const nativePlans = document.getElementById("pingcarIapPlans");
   const monthlyLink = document.getElementById("pingcarMonthlyPurchase");
   const yearlyLink = document.getElementById("pingcarYearlyPurchase");
   const statusNode = document.getElementById("pingcarIapStatus");
@@ -804,6 +809,12 @@ if (pingcarIapBridge) {
   }
   const monthlyButton = makeNativePurchaseButton(monthlyLink);
   const yearlyButton = makeNativePurchaseButton(yearlyLink);
+  const monthlyCard = monthlyButton.closest(".pingcar-plan-card");
+  const yearlyCard = yearlyButton.closest(".pingcar-plan-card");
+  if (monthlyCard && yearlyCard && nativePlans && webPricing) {
+    nativePlans.append(monthlyCard, yearlyCard);
+    webPricing.style.display = "none";
+  }
   document.getElementById("pingcarTrialOffer")?.setAttribute("style", "display:none");
   document.getElementById("pingcarYearlyPromo")?.setAttribute("style", "display:none");
   iapSection.style.display = "block";
