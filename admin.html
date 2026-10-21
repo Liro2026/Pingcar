@@ -175,6 +175,7 @@ PingCar Administrator
 <a onclick="showAdminAlerts()">🚨 Admin Alerts</a>
 <a onclick="showDevices()">📱 Geräte / Push Tokens</a>
 <a onclick="showOnline()">🟢 Live Online</a>
+<a onclick="showPlatformMonitor()">🌐 Plattformen / Stores</a>
 <a onclick="showSystemStatus()">🔐 Sicherheit / Systemstatus</a>
 <a onclick="showActivityLog()">📋 Aktivitätsprotokoll</a>
 <a onclick="showGlobalSearch()">🔎 Globale Suche</a>
@@ -2639,6 +2640,42 @@ async function showSystemStatus() {
   document.getElementById("status-time").textContent =
     new Date().toLocaleString("de-CH");
 }
+async function showPlatformMonitor() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🌐 Plattformen / Stores</h2>
+      <p>Direkte Übersicht zu PingCar. Store-Downloads und Verkaufszahlen werden nicht automatisch in diesem Admin angezeigt.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:20px;">
+        <section style="background:#f7f8fa;padding:20px;border-radius:12px;">
+          <h3>🌍 PingCar Website</h3>
+          <p>Besucherstatistik und aktuell verbundene Website-Sitzungen prüfen.</p>
+          <button onclick="showStats()">📊 Website-Statistik</button>
+          <button onclick="showOnline()" style="margin-left:8px;">🟢 Live Online</button>
+          <p><a href="https://pingcar.ch" target="_blank" rel="noopener noreferrer">pingcar.ch öffnen ↗</a></p>
+        </section>
+
+        <section style="background:#f7f8fa;padding:20px;border-radius:12px;">
+          <h3>🍎 Apple App Store</h3>
+          <p>Downloads und App-Analysen im offiziellen Apple-Dashboard ansehen.</p>
+          <p><a href="https://appstoreconnect.apple.com/apps/6804319719/analytics/overview?dateSpec=d90" target="_blank" rel="noopener noreferrer">App Store Connect öffnen ↗</a></p>
+          <p><a href="https://apps.apple.com/app/pingcar/id6804319719" target="_blank" rel="noopener noreferrer">PingCar im App Store ↗</a></p>
+        </section>
+
+        <section style="background:#f7f8fa;padding:20px;border-radius:12px;">
+          <h3>▶️ Google Play</h3>
+          <p>Teststatus, Veröffentlichungen und Statistiken in der Play Console prüfen.</p>
+          <p><a href="https://play.google.com/console/u/0/developers/8741128392161010126/app/4973601033514536800/app-dashboard" target="_blank" rel="noopener noreferrer">Google Play Console öffnen ↗</a></p>
+        </section>
+      </div>
+
+      <p style="margin-top:20px;color:#666;">„Live Online“ zeigt aktive Website-Verbindungen und zählt keine App-Installationen. Apple- und Google-Store-Zahlen findest du in den jeweiligen offiziellen Konsolen.</p>
+    </div>
+  `;
+}
+
 async function showActivityLog() {
   if (!(await requireAdmin())) return;
 
