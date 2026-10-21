@@ -717,8 +717,18 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // On iOS, all digital subscription purchases go through StoreKit. The Stripe
 // links below remain available to visitors using the normal website.
-const pingcarIapBridge = window.webkit?.messageHandlers?.pingcarIAP;
-if (pingcarIapBridge) {
+async function initializePingCarIap() {
+  // Capacitor can finish loading this page before the native controller adds
+  // its StoreKit message handler. Wait briefly so the native localized price
+  // lookup is not skipped and the web checkout prices are never shown in iOS.
+  let pingcarIapBridge;
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    pingcarIapBridge = window.webkit?.messageHandlers?.pingcarIAP;
+    if (pingcarIapBridge) break;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  if (!pingcarIapBridge) return;
+
   const iapSection = document.getElementById("pingcarAppleIap");
   const webPricing = document.getElementById("pingcarWebPricing");
   const nativePlans = document.getElementById("pingcarIapPlans");
@@ -968,6 +978,7 @@ if (pingcarIapBridge) {
       statusNode.textContent = error.message || copy.unavailable;
     });
 }
+initializePingCarIap();
 // PingCar Live Online - Website
 async function startWebsitePresence() {
   try {
