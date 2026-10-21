@@ -979,72 +979,37 @@ async function initializePingCarIap() {
     });
 }
 initializePingCarIap();
-// PingCar Live Online - report active iOS app sessions to the admin dashboard.
-async function startPingCarPresence() {
-  // The native StoreKit bridge is injected only in the iOS app's WKWebView.
-  // Keep normal website visits on the website presence channel identity.
-  const isNativeIOSApp = Boolean(window.webkit?.messageHandlers?.pingcarIAP);
-  if (!isNativeIOSApp()) return;
-
+// PingCar Live Online - Website
+async function startWebsitePresence() {
   try {
     const onlineChannel = supabase.channel("pingcar-online", {
       config: {
         presence: {
-          key: "iphone-" + crypto.randomUUID()
+          key: "website-" + crypto.randomUUID()
         }
       }
     });
 
-    let subscribed = false;
-    let tracked = false;
-
-    const updatePresence = async () => {
-      if (!subscribed) return;
-
-      if (document.visibilityState === "visible") {
-        if (tracked) return;
-        const { error } = await onlineChannel.track({
-          platform: "iphone",
+    onlineChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await onlineChannel.track({
+          platform: "website",
           user_id: null,
           email: null
         });
-        if (error) throw error;
-        tracked = true;
-        console.log("PingCar Live Online: iPhone connected");
-      } else if (tracked) {
-        await onlineChannel.untrack();
-        tracked = false;
-      }
-    };
 
-    onlineChannel.subscribe(async status => {
-      if (status === "SUBSCRIBED") {
-        subscribed = true;
-        try {
-          await updatePresence();
-        } catch (error) {
-          console.error("PingCar iPhone presence error:", error);
-        }
-      } else {
-        subscribed = false;
-        tracked = false;
+        console.log("PingCar Live Online: Website connected");
       }
-    });
-
-    document.addEventListener("visibilitychange", () => {
-      updatePresence().catch(error =>
-        console.error("PingCar iPhone presence error:", error)
-      );
     });
 
     window.pingcarOnlineChannel = onlineChannel;
 
   } catch (error) {
-    console.error("PingCar iPhone presence error:", error);
+    console.error("PingCar Live Online error:", error);
   }
 }
 
-startPingCarPresence();
+startWebsitePresence();
 async function registerPageVisit() {
   try {
     let visitorId = localStorage.getItem("pingcar_visitor_id");
