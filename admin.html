@@ -805,10 +805,11 @@ async function showReferralReport() {
     <div class="card">
       <h2>🎯 Empfohlene Registrierungen</h2>
       <p>Nur bestätigte E-Mail-Registrierungen werden angezeigt.</p>
+      <p style="color:#666;font-size:13px;">Apple-IAP-Abos werden nur bei aktivem, verifiziertem Datensatz gezählt. Ein aktiver Eintrag in „subscriptions“ kann auch manuell oder kostenlos sein und gilt daher nicht als bestätigter Zahlungseingang. Provisionen werden hier nicht berechnet.</p>
       <div id="referralReportStatus">Daten werden geladen...</div>
       <div style="overflow:auto">
         <table>
-          <thead><tr><th>Werber</th><th>Werber-E-Mail</th><th>Code</th><th>Eingeladener Benutzer</th><th>E-Mail</th><th>Registriert</th></tr></thead>
+          <thead><tr><th>Werber</th><th>Werber-E-Mail</th><th>Code</th><th>Eingeladener Benutzer</th><th>E-Mail</th><th>Registriert</th><th>Abo / Zahlungsnachweis</th></tr></thead>
           <tbody id="referralReportRows"></tbody>
         </table>
       </div>
@@ -826,10 +827,17 @@ async function showReferralReport() {
         <td>${escapeAdminText(item.invitee_name || "-")}</td>
         <td>${escapeAdminText(item.invitee_email || "-")}</td>
         <td>${escapeAdminText(item.confirmed_at ? new Date(item.confirmed_at).toLocaleDateString() : "-")}</td>
+        <td>${item.apple_verified_active
+          ? `Apple-verifiziert aktiv (${escapeAdminText(item.apple_product_id || "IAP")})`
+          : item.active_subscription_record
+            ? `Aktiver Eintrag, Zahlung nicht bestätigt${item.subscription_amount != null ? ` (CHF ${Number(item.subscription_amount).toFixed(2)})` : ""}`
+            : "Kein aktives Abo"}</td>
       </tr>
     `).join("");
-    document.getElementById("referralReportRows").innerHTML = rows || '<tr><td colspan="6">Noch keine bestätigten Empfehlungen.</td></tr>';
-    document.getElementById("referralReportStatus").textContent = `${(data || []).length} bestätigte Registrierungen`;
+    document.getElementById("referralReportRows").innerHTML = rows || '<tr><td colspan="7">Noch keine bestätigten Empfehlungen.</td></tr>';
+    const verifiedPaid = (data || []).filter(item => item.apple_verified_active).length;
+    const subscriptionRecords = (data || []).filter(item => item.active_subscription_record).length;
+    document.getElementById("referralReportStatus").textContent = `${(data || []).length} bestätigte Registrierungen · ${verifiedPaid} Apple-verifiziert aktive Abos · ${subscriptionRecords} aktive Abo-Einträge (Zahlung nicht bestätigt)`;
   } catch (error) {
     console.error("Referral report error:", error);
     document.getElementById("referralReportStatus").textContent = `Fehler: ${escapeAdminText(error.message)}`;
@@ -1298,17 +1306,52 @@ async function showPush() {
       <hr style="margin:25px 0;">
 
 <h3>📜 Push History</h3>
-<p style="color:#777;font-size:13px;">Ergebnisse der Push-Versuche in dieser Sitzung. „Gesendet“ und „Fehler“ stammen direkt aus der Antwort des Push-Dienstes.</p>
-<div id="pushHistory">Noch keine Push-Versuche in dieser Sitzung.</div>
+<p style="color:#777;font-size:13px;">Dauerhaft gespeicherte Ergebnisse der letzten Push-Versuche. „Gesendet“ und „Fehler“ stammen aus der Antwort des Push-Dienstes.</p>
+<div id="pushHistory">Wird geladen...</div>
 
     </div>
   `;
- 
+
+  await loadPushHistory();
+}
+
+async function loadPushHistory() {
+  const history = document.getElementById("pushHistory");
+  if (!history) return;
+
+  try {
+    const { data, error } = await db
+      .from("admin_push_logs")
+      .select("attempted_by, message, country, sent, failed, succeeded, error, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    if (!data?.length) {
+      history.textContent = "Noch keine Push-Versuche gespeichert.";
+      return;
+    }
+
+    history.innerHTML = data.map(item => `
+      <div style="padding:12px 0;border-bottom:1px solid #ddd;">
+        <strong>${escapeAdminText(item.created_at ? new Date(item.created_at).toLocaleString("de-CH") : "-")}</strong>
+        · ${escapeAdminText(item.attempted_by || "Admin")}
+        · ${escapeAdminText(item.country || "Alle Länder")}<br>
+        <span>${escapeAdminText(item.message || "")}</span><br>
+        <strong style="color:${item.succeeded && Number(item.failed || 0) === 0 ? "#198754" : "#9a6700"};">Gesendet: ${Number(item.sent || 0)} · Fehler: ${Number(item.failed || 0)}</strong>
+        ${item.error ? `<br><span style="color:#dc3545;">${escapeAdminText(item.error)}</span>` : ""}
+      </div>
+    `).join("");
+  } catch (error) {
+    history.textContent = `Push-Historie konnte nicht geladen werden: ${error.message}. Bitte führe zuerst die Admin-Monitoring-SQL-Migration aus.`;
+  }
 }
 
 async function sendPush() {
   if (!(await requireAdmin())) return;
 
+  const sessionResult = await db.auth.getSession();
+  const attemptedBy = sessionResult.data?.session?.user?.email || "";
   const message =
     document.getElementById("pushMessage").value.trim();
 
@@ -1335,9 +1378,12 @@ async function sendPush() {
       throw error;
     }
 
-    if (!data?.success) {
-      throw new Error(data?.error || "Push konnte nicht gesendet werden.");
-    }
+    if (!data?.success) throw new Error(data?.error || "Push konnte nicht gesendet werden.");
+
+    const sendStats = {
+      sent: Math.max(0, Number(data.sent || 0)),
+      failed: Math.max(0, Number(data.failed || 0))
+    };
 
     await db
       .from("notifications")
@@ -1347,31 +1393,43 @@ async function sendPush() {
         }
       ]);
 
+    const { error: logError } = await db.from("admin_push_logs").insert({
+      attempted_by: attemptedBy.toLowerCase(),
+      message,
+      country: country || null,
+      sent: sendStats.sent,
+      failed: sendStats.failed,
+      succeeded: true,
+      error: null
+    });
+
     alert(
       `Push gesendet!\n\n` +
       `Land: ${country || "Alle Länder"}\n` +
-      `Gesendet: ${data.sent || 0}\n` +
-      `Fehler: ${data.failed || 0}`
+      `Gesendet: ${sendStats.sent}\n` +
+      `Fehler: ${sendStats.failed}` +
+      (logError ? "\n\nDer Push wurde gesendet, aber das Ergebnis konnte nicht dauerhaft gespeichert werden. Bitte SQL-Migration und Admin-Anmeldung prüfen." : "")
     );
-
-    const history = document.getElementById("pushHistory");
-    const previous = history.dataset.entries || "";
-    const outcomeColor = Number(data.failed || 0) > 0 ? "#9a6700" : "#198754";
-    const entry = `<div style="padding:12px 0;border-bottom:1px solid #ddd;"><strong>${new Date().toLocaleString("de-CH")}</strong> · ${escapeAdminText(country || "Alle Länder")}<br><span style="color:${outcomeColor};font-weight:700;">Gesendet: ${Number(data.sent || 0)} · Fehler: ${Number(data.failed || 0)}</span></div>`;
-    history.dataset.entries = entry + previous;
-    history.innerHTML = history.dataset.entries;
+    await loadPushHistory();
 
     document.getElementById("pushMessage").value = "";
 
   } catch (error) {
     console.error("SEND PUSH ERROR:", error);
 
-    const history = document.getElementById("pushHistory");
-    if (history) {
-      const previous = history.dataset.entries || "";
-      const entry = `<div style="padding:12px 0;border-bottom:1px solid #ddd;color:#dc3545;"><strong>${new Date().toLocaleString("de-CH")}</strong> · Push-Anfrage fehlgeschlagen: ${escapeAdminText(error?.message || String(error))}</div>`;
-      history.dataset.entries = entry + previous;
-      history.innerHTML = history.dataset.entries;
+    try {
+      await db.from("admin_push_logs").insert({
+        attempted_by: attemptedBy.toLowerCase(),
+        message,
+        country: country || null,
+        sent: 0,
+        failed: 0,
+        succeeded: false,
+        error: String(error?.message || error).slice(0, 1000)
+      });
+      await loadPushHistory();
+    } catch (logError) {
+      console.error("Push outcome logging failed:", logError);
     }
 
     alert(
