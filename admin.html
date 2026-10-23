@@ -1298,7 +1298,8 @@ async function showPush() {
       <hr style="margin:25px 0;">
 
 <h3>📜 Push History</h3>
-<div id="pushHistory">Wird geladen...</div>
+<p style="color:#777;font-size:13px;">Ergebnisse der Push-Versuche in dieser Sitzung. „Gesendet“ und „Fehler“ stammen direkt aus der Antwort des Push-Dienstes.</p>
+<div id="pushHistory">Noch keine Push-Versuche in dieser Sitzung.</div>
 
     </div>
   `;
@@ -1353,10 +1354,25 @@ async function sendPush() {
       `Fehler: ${data.failed || 0}`
     );
 
+    const history = document.getElementById("pushHistory");
+    const previous = history.dataset.entries || "";
+    const outcomeColor = Number(data.failed || 0) > 0 ? "#9a6700" : "#198754";
+    const entry = `<div style="padding:12px 0;border-bottom:1px solid #ddd;"><strong>${new Date().toLocaleString("de-CH")}</strong> · ${escapeAdminText(country || "Alle Länder")}<br><span style="color:${outcomeColor};font-weight:700;">Gesendet: ${Number(data.sent || 0)} · Fehler: ${Number(data.failed || 0)}</span></div>`;
+    history.dataset.entries = entry + previous;
+    history.innerHTML = history.dataset.entries;
+
     document.getElementById("pushMessage").value = "";
 
   } catch (error) {
     console.error("SEND PUSH ERROR:", error);
+
+    const history = document.getElementById("pushHistory");
+    if (history) {
+      const previous = history.dataset.entries || "";
+      const entry = `<div style="padding:12px 0;border-bottom:1px solid #ddd;color:#dc3545;"><strong>${new Date().toLocaleString("de-CH")}</strong> · Push-Anfrage fehlgeschlagen: ${escapeAdminText(error?.message || String(error))}</div>`;
+      history.dataset.entries = entry + previous;
+      history.innerHTML = history.dataset.entries;
+    }
 
     alert(
       "Push-Fehler:\n" +
@@ -2552,6 +2568,7 @@ async function showOnline() {
   }
 }
 async function showSystemStatus() {
+  if (!(await requireAdmin())) return;
   const content = document.getElementById("content");
 
   content.innerHTML = `
@@ -2578,6 +2595,10 @@ async function showSystemStatus() {
         <div style="padding:15px;border-bottom:1px solid #ddd;">
           🔔 Push-System
           <span id="status-push" style="float:right;">⏳ Prüfen...</span>
+          <div style="clear:both;color:#777;font-size:13px;margin-top:6px;">
+            Registrierte Tokens zeigen nur, dass Geräte angemeldet sind. Ob Push-Nachrichten zugestellt werden, prüfst du über „Push-Benachrichtigungen“ anhand von „Gesendet“ und „Fehler“.
+            <button type="button" onclick="showPush()" style="margin-left:8px;padding:5px 10px;">Push prüfen</button>
+          </div>
         </div>
 
         <div style="padding:15px;">
@@ -2597,55 +2618,54 @@ async function showSystemStatus() {
     </div>
   `;
 
-  const setStatus = (id, ok, text) => {
+  const setStatus = (id, state, text) => {
     const el = document.getElementById(id);
-
-    el.innerHTML = ok
-      ? `<span style="color:#198754;font-weight:bold;">🟢 ${text}</span>`
-      : `<span style="color:#dc3545;font-weight:bold;">🔴 ${text}</span>`;
+    const color = state === "ok" ? "#198754" : state === "warning" ? "#9a6700" : "#dc3545";
+    const icon = state === "ok" ? "🟢" : state === "warning" ? "🟠" : "🔴";
+    el.innerHTML = `<span style="color:${color};font-weight:bold;">${icon} ${text}</span>`;
   };
 
-  // Website / Admin erreichbar
-  setStatus("status-website", true, "Online");
+  // Prüft eine echte HTTP-Antwort der öffentlichen Website, nicht nur die Anzeige dieser Admin-Seite.
+  try {
+    const response = await fetch(`${location.origin}/?healthcheck=${Date.now()}`, {
+      method: "GET",
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000)
+    });
+    setStatus("status-website", response.ok ? "ok" : "error", response.ok ? `HTTP ${response.status} erreichbar` : `HTTP ${response.status}`);
+  } catch (error) {
+    setStatus("status-website", "error", "Nicht erreichbar / Zeitüberschreitung");
+  }
 
-  // Supabase Datenbank
+  // Supabase Datenbank: prüft Zugriff auf die Admin-Fehlerprotokolle.
   try {
     const { error } = await db
-      .from("device_tokens")
+      .from("error_logs")
       .select("id", { count: "exact", head: true });
 
-    setStatus("status-database", !error, error ? "Fehler" : "Online");
+    setStatus("status-database", error ? "error" : "ok", error ? "Fehler / kein Zugriff" : "Online, Abfrage erfolgreich");
   } catch (error) {
-    setStatus("status-database", false, "Fehler");
+    setStatus("status-database", "error", "Fehler / kein Zugriff");
   }
 
-  // Realtime
+  // Realtime: wartet auf tatsächliche Kanalverbindung, mit Timeout.
   try {
     const testChannel = db.channel("pingcar-system-status-" + Date.now());
-
-    testChannel.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
-        setStatus("status-realtime", true, "Online");
-        await db.removeChannel(testChannel);
-      }
+    const realtimeConnected = await new Promise(resolve => {
+      const timer = setTimeout(() => resolve(false), 7000);
+      testChannel.subscribe(status => {
+        if (status === "SUBSCRIBED") { clearTimeout(timer); resolve(true); }
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") { clearTimeout(timer); resolve(false); }
+      });
     });
-
-    setTimeout(async () => {
-      if (document.getElementById("status-realtime")) {
-        const current = document.getElementById("status-realtime").textContent;
-
-        if (current.includes("Prüfen")) {
-          setStatus("status-realtime", false, "Nicht erreichbar");
-          await db.removeChannel(testChannel);
-        }
-      }
-    }, 5000);
+    setStatus("status-realtime", realtimeConnected ? "ok" : "error", realtimeConnected ? "Verbindung erfolgreich" : "Verbindung fehlgeschlagen / Zeitüberschreitung");
+    await db.removeChannel(testChannel);
 
   } catch (error) {
-    setStatus("status-realtime", false, "Fehler");
+    setStatus("status-realtime", "error", "Fehler");
   }
 
-  // Push-System / Device Tokens
+  // Token-Anzahl ist kein Zustellnachweis; diese Prüfung wird bewusst als Hinweis markiert.
   try {
     const { count, error } = await db
       .from("device_tokens")
@@ -2653,11 +2673,11 @@ async function showSystemStatus() {
 
     setStatus(
       "status-push",
-      !error,
-      error ? "Fehler" : `${count || 0} Geräte registriert`
+      error ? "error" : "warning",
+      error ? "Token-Abfrage fehlgeschlagen" : `${count || 0} Tokens registriert – Zustellung nicht geprüft`
     );
   } catch (error) {
-    setStatus("status-push", false, "Fehler");
+    setStatus("status-push", "error", "Token-Abfrage fehlgeschlagen");
   }
 
   // Error Logs
@@ -2668,11 +2688,11 @@ async function showSystemStatus() {
 
     setStatus(
       "status-errors",
-      !error,
-      error ? "Fehler" : `${count || 0} Einträge`
+      error ? "error" : (count || 0) > 0 ? "warning" : "ok",
+      error ? "Protokoll nicht erreichbar" : `${count || 0} gespeicherte Einträge`
     );
   } catch (error) {
-    setStatus("status-errors", false, "Fehler");
+    setStatus("status-errors", "error", "Protokoll nicht erreichbar");
   }
 
   document.getElementById("status-time").textContent =
