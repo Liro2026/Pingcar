@@ -963,6 +963,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const password = document.getElementById("password").value;
 
  const name = document.getElementById("name")?.value?.trim() || "";
+const referralCode = (new URLSearchParams(window.location.search).get("ref") || localStorage.getItem("pingcar_referral_code") || "").trim().toUpperCase();
 const location = await getPingCarLocation();
 
 const { error } = await supabase.auth.signUp({
@@ -971,6 +972,7 @@ const { error } = await supabase.auth.signUp({
   options: {
     data: {
       name: name,
+      referral_code: referralCode,
       location_ip: location.ip,
       location_country_code: location.countryCode,
       location_country: location.country,

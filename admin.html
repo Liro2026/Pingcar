@@ -162,6 +162,7 @@ PingCar Administrator
 <a onclick="showDashboard()">📊 Dashboard</a>
 
 <a onclick="showUsers()">👥 Benutzer</a>
+<a onclick="showReferralReport()">🎯 Empfehlungen</a>
 <a onclick="showUserVehicles()">👤🚗 Benutzer & Fahrzeuge</a>
 <a onclick="showEmail()">📧 E-Mail senden</a>
 
@@ -796,6 +797,43 @@ function escapeAdminText(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+async function showReferralReport() {
+  if (!(await requireAdmin())) return;
+
+  content.innerHTML = `
+    <div class="card">
+      <h2>🎯 Empfohlene Registrierungen</h2>
+      <p>Nur bestätigte E-Mail-Registrierungen werden angezeigt.</p>
+      <div id="referralReportStatus">Daten werden geladen...</div>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>Werber</th><th>Werber-E-Mail</th><th>Code</th><th>Eingeladener Benutzer</th><th>E-Mail</th><th>Registriert</th></tr></thead>
+          <tbody id="referralReportRows"></tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  try {
+    const { data, error } = await db.rpc("get_admin_referral_report");
+    if (error) throw error;
+    const rows = (data || []).map(item => `
+      <tr>
+        <td>${escapeAdminText(item.inviter_name || "-")}</td>
+        <td>${escapeAdminText(item.inviter_email || "-")}</td>
+        <td>${escapeAdminText(item.referral_code || "-")}</td>
+        <td>${escapeAdminText(item.invitee_name || "-")}</td>
+        <td>${escapeAdminText(item.invitee_email || "-")}</td>
+        <td>${escapeAdminText(item.confirmed_at ? new Date(item.confirmed_at).toLocaleDateString() : "-")}</td>
+      </tr>
+    `).join("");
+    document.getElementById("referralReportRows").innerHTML = rows || '<tr><td colspan="6">Noch keine bestätigten Empfehlungen.</td></tr>';
+    document.getElementById("referralReportStatus").textContent = `${(data || []).length} bestätigte Registrierungen`;
+  } catch (error) {
+    console.error("Referral report error:", error);
+    document.getElementById("referralReportStatus").textContent = `Fehler: ${escapeAdminText(error.message)}`;
+  }
 }
 async function showAdminAlerts() {
   if (!(await requireAdmin())) return;

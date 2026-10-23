@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#1762d2">
+  <title>PingCar invitation</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;padding:24px;min-height:100vh;display:grid;place-items:center;background:#f3f7fb;color:#172033;font-family:Arial,Helvetica,sans-serif}.card{width:min(100%,520px);padding:32px;border-radius:22px;background:white;box-shadow:0 12px 36px #152b4a1a;text-align:center}.brand{font-size:14px;font-weight:700;color:#1762d2;letter-spacing:.12em;text-transform:uppercase}h1{margin:12px 0;font-size:32px}p{line-height:1.6;color:#536176}.code{margin:22px auto;padding:16px;border:1px dashed #1762d2;border-radius:12px;background:#f5f9ff;font-size:27px;font-weight:800;letter-spacing:.18em;overflow-wrap:anywhere}.button{display:block;margin:12px 0;padding:15px;border-radius:11px;background:#1762d2;color:white;text-decoration:none;font-weight:700}.secondary{background:#edf4ff;color:#1455ae;border:0;width:100%;font-size:16px;cursor:pointer}.small{font-size:13px;color:#667085}.status{min-height:20px;font-size:13px;color:#176b37}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">PingCar</div>
+    <h1>You’re invited</h1>
+    <p>A friend invited you to discover PingCar. Download the app and create your account to get started.</p>
+    <p><strong>Your invitation code</strong></p>
+    <div class="code" id="inviteCode">—</div>
+    <button class="button secondary" id="copyCode" type="button">Copy invitation code</button>
+    <a class="button" id="websiteSignup" href="/">Create your account on the PingCar website</a>
+    <a class="button" href="https://apps.apple.com/app/pingcar/id6804319719" target="_blank" rel="noopener noreferrer">Download PingCar on the App Store</a>
+    <p class="small">To make sure your invitation is counted, create your account on the website using the button above. The current App Store version does not yet have the invitation-code field, and Apple does not pass codes into newly installed apps automatically. A later app update can add the same field.</p>
+    <p class="status" id="status" aria-live="polite"></p>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const code = (params.get('ref') || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 24);
+    const codeNode = document.getElementById('inviteCode');
+    const button = document.getElementById('copyCode');
+    if (code) {
+      codeNode.textContent = code;
+      document.getElementById('websiteSignup').href = `/?ref=${encodeURIComponent(code)}#registerForm`;
+      try { localStorage.setItem('pingcar_referral_code', code); } catch (_) {}
+    } else {
+      codeNode.textContent = 'No code found';
+      button.disabled = true;
+      button.textContent = 'Ask your friend for their invitation link';
+      document.getElementById('websiteSignup').hidden = true;
+    }
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(code);
+        document.getElementById('status').textContent = 'Code copied. Keep it for account registration after installation.';
+      } catch (_) {
+        document.getElementById('status').textContent = 'Select and copy the code above before installing the app.';
+      }
+    });
+  </script>
+</body>
+</html>
