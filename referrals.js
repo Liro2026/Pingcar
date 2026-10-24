@@ -32,7 +32,14 @@ try {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) throw authError || new Error("Not signed in");
   const { data, error } = await supabase.rpc("get_my_referral_summary");
-  if (error || !data?.code) throw error || new Error("Missing referral code");
+  if (error) throw error;
+  // Only accounts explicitly assigned a referral code by the administrator
+  // are partners. Regular users should not receive their own invite link.
+  if (data?.authorized === false) {
+    card.remove();
+    return;
+  }
+  if (!data?.code) throw new Error("Missing authorized referral code");
   const link = `${inviteBase}?ref=${encodeURIComponent(data.code)}`;
   card.querySelector("#referralCount").textContent = `${data.confirmed_signups} · ${t.count}`;
   card.querySelector("#referralLink").value = link;
