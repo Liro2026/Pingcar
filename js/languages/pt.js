@@ -100,7 +100,9 @@ export default {
   phonePrivate: "O seu número de telefone permanece privado.",
 personalDataPrivate: "O nome e os dados de contacto não são apresentados.",
 ownerNotified: "O proprietário do veículo é informado imediatamente.",
-privacyFocus: "Desenvolvido com foco na proteção de dados.",
+privacyFocus: "Os outros utilizadores não veem o seu número de telefone. O contacto é feito através do PingCar.",
+
+privacyPolicy: "Leia a política de privacidade",
   heroTitle: "🚗 Tem um carro? Então precisa do PingCar.",
   heroSubtitle: "Fique disponível para contacto sem partilhar publicamente o seu número de telefone.",
   heroQr: "✅ Código QR no veículo",

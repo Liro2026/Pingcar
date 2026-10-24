@@ -96,7 +96,9 @@ export default {
   phonePrivate: "Vaše telefónne číslo zostáva súkromné.",
 personalDataPrivate: "Meno a kontaktné údaje sa nezobrazujú.",
 ownerNotified: "Majiteľ vozidla je okamžite informovaný.",
-privacyFocus: "Vyvinuté so zameraním na ochranu osobných údajov.",
+privacyFocus: "Ostatní používatelia nevidia vaše telefónne číslo. Kontakt prebieha cez PingCar.",
+
+privacyPolicy: "Prečítať zásady ochrany osobných údajov",
   heroTitle: "🚗 Máte auto? Potom potrebujete PingCar.",
   heroSubtitle: "Buďte dostupní pre kontakt bez toho, aby ste verejne zdieľali svoje telefónne číslo.",
   heroQr: "✅ QR kód na vozidle",

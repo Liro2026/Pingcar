@@ -60,7 +60,9 @@ export default {
   phonePrivate: "Telefon numaranız gizli kalır.",
 personalDataPrivate: "İsim ve iletişim bilgileri görüntülenmez.",
 ownerNotified: "Araç sahibi hemen bilgilendirilir.",
-privacyFocus: "Veri korumasına odaklanılarak geliştirilmiştir.",
+privacyFocus: "Diğer kullanıcılar telefon numaranızı görmez. İletişim PingCar üzerinden gerçekleşir.",
+
+privacyPolicy: "Gizlilik bildirimimizi okuyun",
   heroTitle: "🚗 Arabanız var mı? O zaman PingCar'a ihtiyacınız var.",
   heroSubtitle: "Telefon numaranızı herkese açık şekilde paylaşmadan ulaşılabilir olun.",
   heroQr: "✅ Araç üzerindeki QR kod",

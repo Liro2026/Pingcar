@@ -47,7 +47,9 @@ export default {
   phonePrivate: "Dit telefonnummer forbliver privat.",
   personalDataPrivate: "Dit navn og dine kontaktoplysninger vises ikke.",
   ownerNotified: "Køretøjets ejer får straks besked.",
-  privacyFocus: "Udviklet med særligt fokus på databeskyttelse.",
+  privacyFocus: "Andre brugere kan ikke se dit telefonnummer. Kontakten foregår via PingCar.",
+
+  privacyPolicy: "Læs vores privatlivspolitik",
   heroTitle: "🚗 Har du en bil? Så har du brug for PingCar.",
   heroSubtitle: "Hold kontakten uden at offentliggøre dit telefonnummer.",
   heroQr: "✅ QR-kode på bilen",

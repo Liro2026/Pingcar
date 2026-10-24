@@ -62,7 +62,9 @@ export default {
   phonePrivate: "Numri juaj i telefonit mbetet privat.",
 personalDataPrivate: "Emri dhe të dhënat e kontaktit nuk shfaqen.",
 ownerNotified: "Pronari i automjetit njoftohet menjëherë.",
-privacyFocus: "Zhvilluar me fokus në mbrojtjen e të dhënave.",
+privacyFocus: "Numri yt i telefonit nuk u shfaqet përdoruesve të tjerë. Kontakti bëhet përmes PingCar.",
+
+privacyPolicy: "Lexo deklaratën e privatësisë",
   heroTitle: "🚗 A ke një makinë? Atëherë të duhet PingCar.",
   heroSubtitle: "Qëndro i kontaktueshëm pa e bërë publik numrin tënd të telefonit.",
   heroQr: "✅ Kodi QR në makinë",

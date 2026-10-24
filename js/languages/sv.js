@@ -92,7 +92,9 @@ export default {
   phonePrivate: "Ditt telefonnummer förblir privat.",
 personalDataPrivate: "Namn och kontaktuppgifter visas inte.",
 ownerNotified: "Fordonsägaren informeras omedelbart.",
-privacyFocus: "Utvecklad med fokus på dataskydd.",
+privacyFocus: "Andra användare ser inte ditt telefonnummer. Kontakten sker via PingCar.",
+
+privacyPolicy: "Läs vår integritetspolicy",
   heroTitle: "🚗 Har du en bil? Då behöver du PingCar.",
   heroSubtitle: "Var tillgänglig för kontakt utan att dela ditt telefonnummer offentligt.",
   heroQr: "✅ QR-kod på fordonet",

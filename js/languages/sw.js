@@ -92,7 +92,9 @@ export default {
   phonePrivate: "Nambari yako ya simu inabaki kuwa ya faragha.",
 personalDataPrivate: "Jina na maelezo ya mawasiliano hayaonyeshwi.",
 ownerNotified: "Mmiliki wa gari anaarifiwa mara moja.",
-privacyFocus: "Imetengenezwa kwa kuzingatia ulinzi wa data.",
+privacyFocus: "Watumiaji wengine hawaoni nambari yako ya simu. Mawasiliano hufanyika kupitia PingCar.",
+
+privacyPolicy: "Soma sera yetu ya faragha",
   heroTitle: "🚗 Una gari? Basi unahitaji PingCar.",
   heroSubtitle: "Endelea kupatikana bila kushiriki hadharani nambari yako ya simu.",
   heroQr: "✅ Msimbo wa QR kwenye gari",
