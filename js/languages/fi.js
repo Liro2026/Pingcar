@@ -47,7 +47,9 @@ export default {
   phonePrivate: "Puhelinnumerosi pysyy yksityisenä.",
   personalDataPrivate: "Nimeäsi ja yhteystietojasi ei näytetä.",
   ownerNotified: "Ajoneuvon omistajalle ilmoitetaan välittömästi.",
-  privacyFocus: "Suunniteltu erityisesti tietosuojan huomioiden.",
+  privacyFocus: "Muut käyttäjät eivät näe puhelinnumeroasi. Yhteydenotto tapahtuu PingCarin kautta.",
+
+  privacyPolicy: "Lue tietosuojaselosteemme",
   heroTitle: "🚗 Onko sinulla auto? Silloin tarvitset PingCarin.",
   heroSubtitle: "Pidä yhteyttä julkaisematta puhelinnumeroasi.",
   heroQr: "✅ QR-koodi autossa",

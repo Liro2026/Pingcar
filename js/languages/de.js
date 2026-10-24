@@ -31,7 +31,9 @@ export default {
   personalDataPrivate: "Name und Kontaktdaten werden nicht angezeigt.",
 
   privacy: "Datenschutz",
-  privacyFocus: "Entwickelt mit Fokus auf Datenschutz.",
+  privacyFocus: "Deine Telefonnummer wird anderen Nutzern nicht angezeigt. Der Kontakt läuft über PingCar.",
+
+  privacyPolicy: "Datenschutzerklärung ansehen",
   discover: "PingCar entdecken",
 
   monthly: "Monatliches Abonnement",

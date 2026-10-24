@@ -96,7 +96,10 @@ export default {
 
   ownerNotified: "車の所有者にはすぐに通知が届きます。",
 
-  privacyFocus: "データプライバシーを重視して設計されています。",
+  privacyFocus: "他のユーザーに電話番号が表示されることはありません。連絡はPingCarを通じて行われます。",
+
+
+  privacyPolicy: "プライバシーポリシーを読む",
   heroTitle: "🚗 車をお持ちですか？それならPingCarが必要です。",
   heroSubtitle: "電話番号を公開せずに、連絡を受け取れるようにしましょう。",
   heroQr: "✅ 車両にQRコードを貼付",

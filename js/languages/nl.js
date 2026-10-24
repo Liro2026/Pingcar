@@ -104,7 +104,9 @@ export default {
   phonePrivate: "Uw telefoonnummer blijft privé.",
 personalDataPrivate: "Naam en contactgegevens worden niet weergegeven.",
 ownerNotified: "De voertuigeigenaar wordt onmiddellijk geïnformeerd.",
-privacyFocus: "Ontwikkeld met focus op gegevensbescherming.",
+privacyFocus: "Andere gebruikers zien je telefoonnummer niet. Contact verloopt via PingCar.",
+
+privacyPolicy: "Lees onze privacyverklaring",
   heroTitle: "🚗 Heb je een auto? Dan heb je PingCar nodig.",
   heroSubtitle: "Blijf bereikbaar zonder je telefoonnummer openbaar te delen.",
   heroQr: "✅ QR-code op het voertuig",

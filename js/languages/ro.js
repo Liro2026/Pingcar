@@ -92,7 +92,9 @@ export default {
   phonePrivate: "Numărul tău de telefon rămâne privat.",
 personalDataPrivate: "Numele și datele de contact nu sunt afișate.",
 ownerNotified: "Proprietarul vehiculului este informat imediat.",
-privacyFocus: "Dezvoltat cu accent pe protecția datelor.",
+privacyFocus: "Ceilalți utilizatori nu îți văd numărul de telefon. Contactul are loc prin PingCar.",
+
+privacyPolicy: "Citește politica noastră de confidențialitate",
   heroTitle: "🚗 Ai o mașină? Atunci ai nevoie de PingCar.",
   heroSubtitle: "Rămâi disponibil pentru contact fără să îți distribui public numărul de telefon.",
   heroQr: "✅ Cod QR pe vehicul",
