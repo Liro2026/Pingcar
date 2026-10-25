@@ -1,2 +1,5 @@
 [functions.apple-iap-verify]
 verify_jwt = false
+
+[functions.send-chat-push]
+verify_jwt = true

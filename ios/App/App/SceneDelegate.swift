@@ -2,12 +2,15 @@ import UIKit
 import Capacitor
 import WebKit
 import StoreKit
+import UserNotifications
 
 final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandler {
 
     private var backButton: UIButton!
     private var webViewObservation: NSKeyValueObservation!
     private weak var iapWebView: WKWebView?
+    private weak var pushWebView: WKWebView?
+    private var pushObservers: [NSObjectProtocol] = []
     private let iapProductIDs = [
         "ch.pingcar.premium.monthly",
         "ch.pingcar.premium.yearly"
@@ -23,6 +26,7 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
 
             self.registerQRShareHandler()
             self.registerIAPHandler()
+            self.registerPushHandler()
             self.setupWebViewObservation()
             self.enableBackSwipe()
         }
@@ -57,6 +61,85 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
         guard let webView = findWebView(in: view) else { return }
         iapWebView = webView
         webView.configuration.userContentController.add(self, name: "pingcarIAP")
+    }
+
+    private func registerPushHandler() {
+        guard let webView = findWebView(in: view) else { return }
+        pushWebView = webView
+        webView.configuration.userContentController.add(self, name: "pingcarPush")
+
+        let center = NotificationCenter.default
+        pushObservers.append(center.addObserver(
+            forName: Notification.Name("PingCarAPNsTokenReceived"),
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let token = notification.userInfo?["token"] as? String else { return }
+            self?.sendPushEvent("pingcar-push-token", detail: ["token": token])
+        })
+        pushObservers.append(center.addObserver(
+            forName: Notification.Name("PingCarAPNsRegistrationFailed"),
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            let error = notification.userInfo?["error"] as? String ?? "Apple push registration failed."
+            self?.sendPushEvent("pingcar-push-error", detail: ["error": error])
+        })
+        pushObservers.append(center.addObserver(
+            forName: Notification.Name("PingCarPushOpened"),
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let url = notification.userInfo?["url"] as? String else { return }
+            UserDefaults.standard.removeObject(forKey: "PingCarPendingPushURL")
+            self?.openPushURL(url)
+        })
+    }
+
+    private func handlePush(action: String) {
+        switch action {
+        case "register":
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
+                if let error {
+                    self?.sendPushEvent("pingcar-push-error", detail: ["error": error.localizedDescription])
+                    return
+                }
+                guard granted else {
+                    self?.sendPushEvent("pingcar-push-error", detail: ["error": "Notification permission was not granted."])
+                    return
+                }
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        case "getState":
+            if let token = UserDefaults.standard.string(forKey: "PingCarAPNsDeviceToken") {
+                sendPushEvent("pingcar-push-token", detail: ["token": token])
+            }
+            if let url = UserDefaults.standard.string(forKey: "PingCarPendingPushURL") {
+                UserDefaults.standard.removeObject(forKey: "PingCarPendingPushURL")
+                openPushURL(url)
+            }
+        default:
+            break
+        }
+    }
+
+    private func sendPushEvent(_ name: String, detail: [String: String]) {
+        guard let webView = pushWebView,
+              let data = try? JSONSerialization.data(withJSONObject: detail),
+              let json = String(data: data, encoding: .utf8) else { return }
+        webView.evaluateJavaScript(
+            "window.dispatchEvent(new CustomEvent('\(name)', { detail: \(json) }));"
+        )
+    }
+
+    private func openPushURL(_ url: String) {
+        guard url.hasPrefix("/message.html?"),
+              let webView = pushWebView,
+              let data = try? JSONSerialization.data(withJSONObject: url),
+              let jsString = String(data: data, encoding: .utf8) else { return }
+        webView.evaluateJavaScript("window.location.assign(\(jsString));")
     }
 
     private func setupWebViewObservation() {
@@ -140,6 +223,13 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
         _ userContentController: WKUserContentController,
         didReceive message: WKScriptMessage
     ) {
+        if message.name == "pingcarPush" {
+            guard let body = message.body as? [String: Any],
+                  let action = body["action"] as? String else { return }
+            handlePush(action: action)
+            return
+        }
+
         if message.name == "pingcarIAP" {
             guard let body = message.body as? [String: Any],
                   let action = body["action"] as? String else { return }
@@ -314,6 +404,7 @@ final class PingCarViewController: CAPBridgeViewController, WKScriptMessageHandl
 
     deinit {
         webViewObservation?.invalidate()
+        pushObservers.forEach { NotificationCenter.default.removeObserver($0) }
     }
 }
 

@@ -1,14 +1,57 @@
 import UIKit
 import Capacitor
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UNUserNotificationCenter.current().delegate = self
         return true
+    }
+
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let token = deviceToken.map { String(format: "%02x", $0) }.joined()
+        UserDefaults.standard.set(token, forKey: "PingCarAPNsDeviceToken")
+        NotificationCenter.default.post(
+            name: Notification.Name("PingCarAPNsTokenReceived"),
+            object: nil,
+            userInfo: ["token": token]
+        )
+    }
+
+    func application(_ application: UIApplication,
+                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        NotificationCenter.default.post(
+            name: Notification.Name("PingCarAPNsRegistrationFailed"),
+            object: nil,
+            userInfo: ["error": error.localizedDescription]
+        )
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound, .badge])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        if let url = response.notification.request.content.userInfo["url"] as? String,
+           url.hasPrefix("/message.html?") {
+            UserDefaults.standard.set(url, forKey: "PingCarPendingPushURL")
+            NotificationCenter.default.post(
+                name: Notification.Name("PingCarPushOpened"),
+                object: nil,
+                userInfo: ["url": url]
+            )
+        }
+        completionHandler()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
