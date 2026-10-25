@@ -637,6 +637,29 @@ function status(message, type="") { $("status").textContent = message; $("status
 
 let currentUser = null;
 
+async function saveIosPushToken(token) {
+  if (!currentUser || !token) return;
+  const { error } = await supabase.from("push_devices").upsert({
+    user_id: currentUser.id,
+    platform: "ios",
+    language: localStorage.getItem("pingcar_language") || "de",
+    device_token: token,
+    updated_at: new Date().toISOString()
+  }, { onConflict: "device_token" });
+  if (error) throw error;
+  localStorage.setItem("pingcar_ios_push_token", token);
+}
+
+window.addEventListener("pingcar-push-token", async event => {
+  try { await saveIosPushToken(event.detail?.token); }
+  catch (error) { console.error("Could not save iOS push token:", error); }
+});
+
+window.addEventListener("pingcar-push-opened", event => {
+  const url = event.detail?.url;
+  if (typeof url === "string" && url.startsWith("/message.html?")) window.location.assign(url);
+});
+
 async function loadUser() {
   // Use the locally persisted Supabase session first. getUser() makes an
   // extra network request and can leave the dashboard looking stuck if it fails.
@@ -913,6 +936,27 @@ function escapeHtml(value) {
 async function enablePush() {
   try {
     if (!currentUser) { status("Du bist nicht angemeldet.", "error"); return; }
+    const nativePush = window.webkit?.messageHandlers?.pingcarPush;
+    if (nativePush) {
+      status("Apple-Benachrichtigungen werden aktiviert...");
+      const token = await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => { cleanup(); reject(new Error("Apple hat kein Push-Gerätetoken zurückgegeben.")); }, 45000);
+        const onToken = event => { cleanup(); resolve(event.detail?.token); };
+        const onError = event => { cleanup(); reject(new Error(event.detail?.error || "Push konnte nicht aktiviert werden.")); };
+        const cleanup = () => {
+          clearTimeout(timeout);
+          window.removeEventListener("pingcar-push-token", onToken);
+          window.removeEventListener("pingcar-push-error", onError);
+        };
+        window.addEventListener("pingcar-push-token", onToken, { once: true });
+        window.addEventListener("pingcar-push-error", onError, { once: true });
+        nativePush.postMessage({ action: "register" });
+      });
+      if (!token) throw new Error("Apple ka kthyer një token bosh.");
+      await saveIosPushToken(token);
+      status("✅ Apple-Benachrichtigungen sind aktiviert.", "success");
+      return;
+    }
     if (!("serviceWorker" in navigator) || !("Notification" in window)) { status("Dieser Browser unterstützt Push-Benachrichtigungen hier nicht.", "error"); return; }
 
     status("Firebase wird geladen...");
@@ -973,6 +1017,13 @@ const { error } = await supabase
 
 async function logout() {
   try {
+    const token = localStorage.getItem("pingcar_ios_push_token");
+    if (token && currentUser) {
+      const { error: pushError } = await supabase.from("push_devices").delete()
+        .eq("user_id", currentUser.id).eq("device_token", token);
+      if (pushError) throw new Error("Push-Gerät konnte nicht abgemeldet werden. Bitte prüfen Sie die Verbindung und versuchen Sie es erneut.");
+      localStorage.removeItem("pingcar_ios_push_token");
+    }
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     location.replace("index.html");
@@ -989,6 +1040,9 @@ async function initializeDashboard() {
   try {
     const user = await loadUser();
     if (!user) return;
+    if (window.webkit?.messageHandlers?.pingcarPush) {
+      window.webkit.messageHandlers.pingcarPush.postMessage({ action: "getState" });
+    }
 
     // One failed data request should not prevent the rest of the dashboard
     // from rendering or leave all loading labels untouched.

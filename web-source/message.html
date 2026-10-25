@@ -190,6 +190,11 @@ const receiverId =
 const qrCode =
   params.get("qr_code");
 
+window.addEventListener("pingcar-push-opened", event => {
+  const url = event.detail?.url;
+  if (typeof url === "string" && url.startsWith("/message.html?")) window.location.replace(url);
+});
+
 
 /* =========================
    LANGUAGE
@@ -977,6 +982,21 @@ async function sendMessage(){
 
       return;
     }
+
+    // The server re-checks the authenticated sender and verifies this message
+    // was inserted by the existing RPC before sending any APNs notification.
+    // A push failure must never undo or misreport a message that was sent.
+    void supabase.functions.invoke("send-chat-push", {
+        body: {
+          conversation_id: conversationId,
+          sender_id: activeSenderId,
+          receiver_id: receiverId,
+          qr_code: qrCode,
+          message: message.trim()
+        }
+      }).then(({ error: pushError }) => {
+        if (pushError) console.warn("Chat push was not delivered:", pushError.message);
+      }).catch(pushError => console.warn("Chat push request failed:", pushError));
 
     input.value = "";
 

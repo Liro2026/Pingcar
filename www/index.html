@@ -718,6 +718,25 @@ const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const nativePushBridge = window.webkit?.messageHandlers?.pingcarPush;
+window.addEventListener("pingcar-push-opened", event => {
+  const url = event.detail?.url;
+  if (typeof url === "string" && url.startsWith("/message.html?")) window.location.assign(url);
+});
+window.addEventListener("pingcar-push-token", async event => {
+  const token = event.detail?.token;
+  if (!nativePushBridge || !token) return;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { error } = await supabase.from("push_devices").upsert({
+      user_id: user.id, platform: "ios", language: localStorage.getItem("pingcar_language") || "de",
+      device_token: token, updated_at: new Date().toISOString()
+    }, { onConflict: "device_token" });
+    if (error) console.warn("Could not refresh iOS push token:", error.message);
+  }
+});
+if (nativePushBridge) nativePushBridge.postMessage({ action: "getState" });
+
 // On iOS, all digital subscription purchases go through StoreKit. The Stripe
 // links below remain available to visitors using the normal website.
 async function initializePingCarIap() {
