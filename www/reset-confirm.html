@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Passwort zurücksetzen · PingCar</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 20px; background: #f5f7fb; color: #172033; font-family: Arial, sans-serif; }
+    main { width: min(100%, 440px); padding: 30px; border-radius: 16px; background: #fff; box-shadow: 0 8px 28px rgba(22, 39, 70, .12); }
+    h1 { margin: 0 0 12px; font-size: 25px; }
+    p { color: #526078; line-height: 1.55; }
+    button { display: block; width: 100%; margin-top: 20px; padding: 14px 18px; border: 0; border-radius: 10px; background: #1677ff; color: #fff; text-align: center; font-size: 16px; font-weight: 700; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .65; }
+    #message { min-height: 24px; margin-top: 16px; color: #b42318; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Passwort zurücksetzen</h1>
+    <p>Drücke auf die Schaltfläche, um den Link zu bestätigen und ein neues Passwort festzulegen.</p>
+    <button id="continueButton" type="button">Weiter zum neuen Passwort</button>
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://uvmkhqzfsgvicacvgskf.supabase.co",
+      "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2"
+    );
+    const params = new URLSearchParams(window.location.search);
+    const tokenHash = params.get("token_hash");
+    const type = params.get("type");
+    const button = document.getElementById("continueButton");
+    const message = document.getElementById("message");
+
+    if (!tokenHash || type !== "recovery") {
+      button.disabled = true;
+      message.textContent = "Der Link ist unvollständig. Bitte fordere eine neue E-Mail zum Zurücksetzen an.";
+    }
+
+    button.addEventListener("click", async () => {
+      if (!tokenHash || type !== "recovery") return;
+      button.disabled = true;
+      button.textContent = "Link wird geprüft …";
+      message.textContent = "";
+
+      const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+      if (error) {
+        button.disabled = false;
+        button.textContent = "Erneut versuchen";
+        message.textContent = "Der Link ist ungültig oder abgelaufen. Bitte fordere eine neue E-Mail an.";
+        console.error("Password recovery verification failed:", error);
+        return;
+      }
+
+      window.location.replace("/?password_recovery=1");
+    });
+  </script>
+</body>
+</html>
