@@ -1150,23 +1150,36 @@ function showPasswordRecoveryForm() {
       });
 }
 
+const recoveryParams = new URLSearchParams(window.location.search);
+const recoveryHashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+const isPasswordRecoveryLink = recoveryParams.get("type") === "recovery" ||
+  recoveryHashParams.get("type") === "recovery" ||
+  recoveryParams.has("code");
+
 supabase.auth.onAuthStateChange((event) => {
-  if (event === "PASSWORD_RECOVERY") showPasswordRecoveryForm();
+  // PKCE recovery links can produce SIGNED_IN after the code is exchanged.
+  if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && isPasswordRecoveryLink)) {
+    showPasswordRecoveryForm();
+  }
 });
 
-// A recovery link can arrive as a query parameter (PKCE) or as a URL hash.
-// Check the URL as well as the auth event so the form still appears if the
-// browser or auth client has already processed the recovery event on startup.
+// Wait for Supabase to finish processing the email callback (especially PKCE
+// ?code= links) before checking for the recovery session.
 (async () => {
-  const params = new URLSearchParams(window.location.search);
-  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const isRecoveryLink = params.get("type") === "recovery" ||
-    hashParams.get("type") === "recovery" ||
-    params.has("code");
-  if (!isRecoveryLink) return;
+  if (!isPasswordRecoveryLink) return;
 
-  const { data } = await supabase.auth.getSession();
-  if (data.session) showPasswordRecoveryForm();
+  try {
+    await supabase.auth.initialize();
+  } catch (error) {
+    console.error("Could not initialize password recovery session:", error);
+  }
+
+  const { data, error } = await supabase.auth.getSession();
+  if (data.session) {
+    showPasswordRecoveryForm();
+  } else if (error) {
+    console.error("Could not load password recovery session:", error);
+  }
 })();
 const { data } = await supabase.auth.getSession();
 
