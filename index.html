@@ -244,10 +244,13 @@ margin-top:50px;
     </nav>
 
  <div class="lang-dropdown">
-  <button class="lang-btn" id="current-lang-btn" type="button">
-    <span id="current-flag">🇨🇭</span> <span id="current-lang-text">DE</span> <span class="arrow">▾</span>
+  <button class="lang-btn" id="current-lang-btn" type="button" aria-expanded="false" aria-controls="lang-menu">
+    <span aria-hidden="true">🌐</span><span id="current-flag">🇨🇭</span> <span id="current-lang-text">DE</span> <span class="arrow" aria-hidden="true">▾</span>
   </button>
-  <div class="lang-menu" id="lang-menu">
+  <div class="lang-menu" id="lang-menu" aria-label="Language selection">
+    <div class="lang-menu-heading">Sprache wählen / Choose your language</div>
+    <input id="language-search" type="search" placeholder="Sprache suchen / Search languages" aria-label="Search languages" autocomplete="off">
+    <div class="lang-options">
     <a href="#" onclick="PingCarLanguage.set('de'); return false;"><span class="flag">🇨🇭</span> Deutsch (DE)</a>
     <a href="#" onclick="PingCarLanguage.set('fr'); return false;"><span class="flag">🇫🇷</span> Français (FR)</a>
     <a href="#" onclick="PingCarLanguage.set('it'); return false;"><span class="flag">🇮🇹</span> Italiano (IT)</a>
@@ -276,7 +279,7 @@ margin-top:50px;
     <a href="#" onclick="PingCarLanguage.set('hi'); return false;"><span class="flag">🇮🇳</span> हिन्दी (HI)</a>
     <a href="#" onclick="PingCarLanguage.set('da'); return false;"><span class="flag">🇩🇰</span> Dansk (DA)</a>
     <a href="#" onclick="PingCarLanguage.set('fi'); return false;"><span class="flag">🇫🇮</span> Suomi (FI)</a>
-
+    </div>
   </div>
 </div>
 
@@ -1047,8 +1050,12 @@ document.getElementById("resetButton").addEventListener("click", async function 
 
 });
 
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === "PASSWORD_RECOVERY") {
+let passwordRecoveryFormShown = false;
+
+function showPasswordRecoveryForm() {
+  if (passwordRecoveryFormShown) return;
+  passwordRecoveryFormShown = true;
+
     const box = document.createElement("div");
 
     box.innerHTML = `
@@ -1141,8 +1148,26 @@ supabase.auth.onAuthStateChange((event, session) => {
           window.location.href = "https://pingcar.ch/";
         }, 1500);
       });
-  }
+}
+
+supabase.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") showPasswordRecoveryForm();
 });
+
+// A recovery link can arrive as a query parameter (PKCE) or as a URL hash.
+// Check the URL as well as the auth event so the form still appears if the
+// browser or auth client has already processed the recovery event on startup.
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const isRecoveryLink = params.get("type") === "recovery" ||
+    hashParams.get("type") === "recovery" ||
+    params.has("code");
+  if (!isRecoveryLink) return;
+
+  const { data } = await supabase.auth.getSession();
+  if (data.session) showPasswordRecoveryForm();
+})();
 const { data } = await supabase.auth.getSession();
 
 if (data.session) {
@@ -4580,56 +4605,92 @@ document.addEventListener("DOMContentLoaded", function() {
     position: relative;
     display: inline-block;
     margin-left: auto;
+    z-index: 10000;
   }
 
   .lang-btn {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 6px 12px;
-    border-radius: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 16px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    min-height: 48px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
   }
 @media (max-width: 600px) {
   .lang-btn {
-    padding: 9px 14px;
-    font-size: 15px;
-    min-width: 88px;
-    min-height: 44px;
-    gap: 7px;
+    padding: 11px 16px;
+    font-size: 16px;
+    min-width: 120px;
+    min-height: 48px;
+    gap: 8px;
   }
 }
   .lang-menu {
     display: none;
     position: absolute;
     right: 0;
-    top: 115%;
+    top: calc(100% + 8px);
     background-color: #ffffff;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    border-radius: 8px;
-    overflow: hidden;
+    width: min(340px, calc(100vw - 24px));
+    max-height: min(70vh, 560px);
+    box-shadow: 0 12px 32px rgba(0,0,0,.24);
+    border: 1px solid #dbe3ee;
+    border-radius: 14px;
+    overflow: auto;
     z-index: 9999;
+    overscroll-behavior: contain;
+    text-align: left;
+  }
+
+  .lang-menu-heading {
+    padding: 16px 16px 10px;
+    color: #172033;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  #language-search {
+    display: block;
+    width: calc(100% - 24px);
+    margin: 0 12px 10px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 15px;
+    outline-color: #1677ff;
+  }
+
+  .lang-options {
+    max-height: 48vh;
+    overflow-y: auto;
+    padding-bottom: 6px;
   }
 
   .lang-menu a {
     color: #333333 !important;
-    padding: 10px 14px;
+    padding: 12px 16px;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 500;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 44px;
   }
 
   .lang-menu a:hover {
     background-color: #f1f5f9;
+  }
+
+  .lang-options a[hidden] {
+    display: none;
   }
 
   .lang-dropdown.active .lang-menu {
@@ -4730,15 +4791,46 @@ document.addEventListener("DOMContentLoaded", function() {
   document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('current-lang-btn');
     var dropdown = document.querySelector('.lang-dropdown');
+    var search = document.getElementById('language-search');
 
     if (btn && dropdown) {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
-        dropdown.classList.toggle('active');
+        var isOpen = dropdown.classList.toggle('active');
+        btn.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen && search) {
+          search.value = '';
+          dropdown.querySelectorAll('.lang-options a').forEach(function(item) { item.hidden = false; });
+          setTimeout(function() { search.focus(); }, 0);
+        }
       });
 
+      dropdown.addEventListener('click', function(e) { e.stopPropagation(); });
+      dropdown.querySelectorAll('.lang-options a').forEach(function(item) {
+        item.addEventListener('click', function() {
+          dropdown.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
       document.addEventListener('click', function() {
         dropdown.classList.remove('active');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          dropdown.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
+      });
+    }
+
+    if (search) {
+      search.addEventListener('input', function() {
+        var query = search.value.trim().toLocaleLowerCase();
+        document.querySelectorAll('.lang-options a').forEach(function(item) {
+          item.hidden = !item.textContent.toLocaleLowerCase().includes(query);
+        });
       });
     }
   });
