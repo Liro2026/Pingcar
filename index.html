@@ -1154,7 +1154,8 @@ const recoveryParams = new URLSearchParams(window.location.search);
 const recoveryHashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
 const isPasswordRecoveryLink = recoveryParams.get("type") === "recovery" ||
   recoveryHashParams.get("type") === "recovery" ||
-  recoveryParams.has("code");
+  recoveryParams.has("code") ||
+  recoveryParams.get("password_recovery") === "1";
 
 supabase.auth.onAuthStateChange((event) => {
   // PKCE recovery links can produce SIGNED_IN after the code is exchanged.
