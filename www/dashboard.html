@@ -650,9 +650,27 @@ async function saveIosPushToken(token) {
   localStorage.setItem("pingcar_ios_push_token", token);
 }
 
+async function saveAndroidPushToken(token) {
+  if (!currentUser || !token) return;
+  const { error } = await supabase.from("push_devices").upsert({
+    user_id: currentUser.id,
+    platform: "android",
+    language: localStorage.getItem("pingcar_language") || "de",
+    device_token: token,
+    updated_at: new Date().toISOString()
+  }, { onConflict: "device_token" });
+  if (error) throw error;
+  localStorage.setItem("pingcar_android_push_token", token);
+}
+
 window.addEventListener("pingcar-push-token", async event => {
   try { await saveIosPushToken(event.detail?.token); }
   catch (error) { console.error("Could not save iOS push token:", error); }
+});
+
+window.addEventListener("pingcar-android-push-token", async event => {
+  try { await saveAndroidPushToken(event.detail?.token); }
+  catch (error) { console.error("Could not save Android push token:", error); }
 });
 
 window.addEventListener("pingcar-push-opened", event => {
@@ -936,6 +954,29 @@ function escapeHtml(value) {
 async function enablePush() {
   try {
     if (!currentUser) { status("Du bist nicht angemeldet.", "error"); return; }
+    if (window.Capacitor?.getPlatform?.() === "android") {
+      if (!window.PingCarAndroidPush) throw new Error("Android-Push ist noch nicht geladen. Bitte die App neu starten.");
+      status("Android-Benachrichtigungen werden aktiviert...");
+      const token = await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => { cleanup(); reject(new Error("Firebase hat keinen Android-Gerätetoken zurückgegeben.")); }, 45000);
+        const onToken = event => { cleanup(); resolve(event.detail?.token); };
+        const onError = event => { cleanup(); reject(new Error(event.detail?.error || "Push konnte nicht aktiviert werden.")); };
+        const cleanup = () => {
+          clearTimeout(timeout);
+          window.removeEventListener("pingcar-android-push-token", onToken);
+          window.removeEventListener("pingcar-android-push-error", onError);
+        };
+        window.addEventListener("pingcar-android-push-token", onToken, { once: true });
+        window.addEventListener("pingcar-android-push-error", onError, { once: true });
+        window.PingCarAndroidPush.register().catch(error => {
+          cleanup();
+          reject(error);
+        });
+      });
+      await saveAndroidPushToken(token);
+      status("✅ Android-Benachrichtigungen sind aktiviert.", "success");
+      return;
+    }
     const nativePush = window.webkit?.messageHandlers?.pingcarPush;
     if (nativePush) {
       status("Apple-Benachrichtigungen werden aktiviert...");
@@ -1017,12 +1058,16 @@ const { error } = await supabase
 
 async function logout() {
   try {
-    const token = localStorage.getItem("pingcar_ios_push_token");
-    if (token && currentUser) {
+    const tokens = [
+      localStorage.getItem("pingcar_ios_push_token"),
+      localStorage.getItem("pingcar_android_push_token")
+    ].filter(Boolean);
+    if (tokens.length && currentUser) {
       const { error: pushError } = await supabase.from("push_devices").delete()
-        .eq("user_id", currentUser.id).eq("device_token", token);
+        .eq("user_id", currentUser.id).in("device_token", tokens);
       if (pushError) throw new Error("Push-Gerät konnte nicht abgemeldet werden. Bitte prüfen Sie die Verbindung und versuchen Sie es erneut.");
       localStorage.removeItem("pingcar_ios_push_token");
+      localStorage.removeItem("pingcar_android_push_token");
     }
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
@@ -1042,6 +1087,19 @@ async function initializeDashboard() {
     if (!user) return;
     if (window.webkit?.messageHandlers?.pingcarPush) {
       window.webkit.messageHandlers.pingcarPush.postMessage({ action: "getState" });
+    }
+    if (window.Capacitor?.getPlatform?.() === "android" && window.PingCarAndroidPush) {
+      try {
+        const permission = await window.PingCarAndroidPush.checkPermissions();
+        if (permission.receive === "granted") {
+          window.addEventListener("pingcar-android-push-token", event => {
+            saveAndroidPushToken(event.detail?.token).catch(error => console.warn("Android token refresh failed:", error));
+          });
+          await window.PingCarAndroidPush.register();
+        }
+      } catch (pushError) {
+        console.warn("Could not refresh Android push registration:", pushError);
+      }
     }
 
     // One failed data request should not prevent the rest of the dashboard
@@ -1941,6 +1999,8 @@ translateDashboard();
 
 <script src="js/language.js"></script>
   
+<script type="module" src="./referrals.js"></script>
+<script type="module" src="./js/native-push.js"></script>
 </body>
 </html>
 <!-- PingCar Pages redeploy test -->

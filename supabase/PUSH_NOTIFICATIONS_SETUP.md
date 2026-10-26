@@ -1,10 +1,11 @@
-# Native iOS chat push setup
+# Native iOS and Android chat push setup
 
 The chat RPC remains unchanged, including its limit of five messages per sender
 per conversation in each 24-hour period. The client invokes `send-chat-push`
 only after that RPC returns `allowed: true`; the Edge Function authenticates the
-sender and confirms the inserted row before sending an APNs alert. The alert
-contains no chat text.
+sender and confirms the inserted row before sending an APNs or FCM alert. Alerts
+contain no chat text. The existing five-message-per-24-hour conversation limit
+is unchanged.
 
 ## Supabase
 
@@ -24,6 +25,9 @@ In Supabase Dashboard → Edge Functions → Secrets, set these values:
 - `APNS_PRIVATE_KEY`: complete contents of the downloaded `.p8` key.
 - `APNS_BUNDLE_ID`: `ch.pingcar.app`.
 - `APNS_ENVIRONMENT`: `production` for TestFlight and App Store builds.
+- `FIREBASE_SERVICE_ACCOUNT_JSON`: the complete Firebase service-account JSON
+  for the same Firebase project used by the Android app. Keep its private key
+  only in Supabase Secrets; never commit or paste it into chat.
 
 Keep the `.p8` private key in Supabase Secrets only. Supabase supplies the
 function's `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and
@@ -51,3 +55,10 @@ logout completes. Tapping a chat alert opens that conversation. If the app is
 uninstalled, APNs cannot deliver to it; invalid tokens are removed when Apple
 reports them. SMS fallback requires a separate SMS provider and verified phone
 numbers.
+
+For Android, register an Android app in the Firebase project `pingcar` with
+package name `ch.pingcar.app`, download its `google-services.json`, and place it
+at `android/app/google-services.json` before building. After installing the
+updated Android app, sign in, open the dashboard, tap **Enable notifications**,
+and allow notifications. The app registers its native FCM token and saves it
+with the account. Tapping a chat notification opens that conversation.

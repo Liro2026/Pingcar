@@ -45,6 +45,51 @@ async function createProviderToken(keyId: string, teamId: string, privateKey: st
   return `${signingInput}.${base64Url(signature)}`;
 }
 
+function base64UrlText(value: string) {
+  return base64Url(new TextEncoder().encode(value));
+}
+
+async function createFirebaseAccessToken(serviceAccountJson: string) {
+  const serviceAccount = JSON.parse(serviceAccountJson);
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64UrlText(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const claims = base64UrlText(JSON.stringify({
+    iss: serviceAccount.client_email,
+    scope: "https://www.googleapis.com/auth/firebase.messaging",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+  }));
+  const signingInput = `${header}.${claims}`;
+  const privateKeyDer = pemToDer(serviceAccount.private_key);
+  const key = await crypto.subtle.importKey(
+    "pkcs8",
+    privateKeyDer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = new Uint8Array(await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    key,
+    new TextEncoder().encode(signingInput),
+  ));
+  const assertion = `${signingInput}.${base64Url(signature)}`;
+  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion,
+    }),
+  });
+  const tokenBody = await tokenResponse.json();
+  if (!tokenResponse.ok || !tokenBody.access_token) {
+    throw new Error(`Firebase OAuth failed (${tokenResponse.status})`);
+  }
+  return { accessToken: tokenBody.access_token as string, projectId: serviceAccount.project_id as string };
+}
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (request.method !== "POST") return response({ error: "Method not allowed" }, 405);
@@ -59,17 +104,13 @@ Deno.serve(async (request) => {
   const apnsKeyId = Deno.env.get("APNS_KEY_ID");
   const apnsTeamId = Deno.env.get("APNS_TEAM_ID");
   const apnsPrivateKey = Deno.env.get("APNS_PRIVATE_KEY");
+  const firebaseServiceAccount = Deno.env.get("FIREBASE_SERVICE_ACCOUNT_JSON");
   const bundleId = Deno.env.get("APNS_BUNDLE_ID") || "ch.pingcar.app";
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
     console.error("Supabase function secrets are incomplete.");
     return response({ error: "Push service is not configured" }, 503);
   }
-  if (!apnsKeyId || !apnsTeamId || !apnsPrivateKey) {
-    console.error("APNs secrets are not configured.");
-    return response({ error: "Apple push service is not configured" }, 503);
-  }
-
   try {
     const userClient = createClient(supabaseUrl, anonKey, {
       auth: { persistSession: false, autoRefreshToken: false },
@@ -125,18 +166,50 @@ Deno.serve(async (request) => {
 
     const { data: devices, error: deviceError } = await admin
       .from("push_devices")
-      .select("device_token, language")
+      .select("device_token, language, platform")
       .eq("user_id", receiverId);
     if (deviceError) {
       console.error("Could not load push devices:", deviceError.message);
       return response({ error: "Could not load recipient devices" }, 500);
     }
-    if (!devices?.length) return response({ sent: 0, reason: "No registered iOS devices" });
+    const { data: webDevices, error: webDeviceError } = await admin
+      .from("device_tokens")
+      .select("fcm_token")
+      .eq("user_id", receiverId);
+    if (webDeviceError) {
+      console.error("Could not load web push devices:", webDeviceError.message);
+      return response({ error: "Could not load recipient devices" }, 500);
+    }
+    const allDevices = [
+      ...(devices || []),
+      ...(webDevices || []).filter((device) => device.fcm_token).map((device) => ({
+        device_token: device.fcm_token,
+        language: "en",
+        platform: "fcm_web",
+      })),
+    ];
+    if (!allDevices.length) return response({ sent: 0, reason: "No registered push devices" });
 
-    const providerToken = await createProviderToken(apnsKeyId, apnsTeamId, apnsPrivateKey);
+    const hasIosDevices = allDevices.some((device) => device.platform === "ios");
+    const hasAndroidDevices = allDevices.some((device) => device.platform !== "ios");
+    if (hasIosDevices && (!apnsKeyId || !apnsTeamId || !apnsPrivateKey)) {
+      console.error("APNs secrets are not configured.");
+      return response({ error: "Apple push service is not configured" }, 503);
+    }
+    if (hasAndroidDevices && !firebaseServiceAccount) {
+      console.error("Firebase service account is not configured.");
+      return response({ error: "Android push service is not configured" }, 503);
+    }
+
+    const apnsProviderToken = hasIosDevices
+      ? await createProviderToken(apnsKeyId!, apnsTeamId!, apnsPrivateKey!)
+      : null;
     const apnsHost = Deno.env.get("APNS_ENVIRONMENT") === "sandbox"
       ? "https://api.sandbox.push.apple.com"
       : "https://api.push.apple.com";
+    const firebase = hasAndroidDevices
+      ? await createFirebaseAccessToken(firebaseServiceAccount!)
+      : null;
     const url = `/message.html?conversation_id=${encodeURIComponent(conversationId)}` +
       `&receiver_id=${encodeURIComponent(senderId)}` +
       (qrCode ? `&qr_code=${encodeURIComponent(qrCode)}` : "");
@@ -149,25 +222,58 @@ Deno.serve(async (request) => {
     };
 
     const invalidTokens: string[] = [];
+    const invalidFcmTokens: string[] = [];
     let sent = 0;
-    await Promise.all(devices.map(async ({ device_token, language }) => {
-      const payload = {
-        aps: {
-          alert: { title: "PingCar", body: alertText[language] || alertText.en },
-          sound: "default",
-        },
-        url,
-      };
+    await Promise.all(allDevices.map(async ({ device_token, language, platform }) => {
+      const body = alertText[language] || alertText.en;
+      if (platform !== "ios") {
+        const result = await fetch(
+          `https://fcm.googleapis.com/v1/projects/${firebase!.projectId}/messages:send`,
+          {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${firebase!.accessToken}`,
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              message: {
+                token: device_token,
+                notification: { title: "PingCar", body },
+                data: { url },
+                android: {
+                  priority: "HIGH",
+                  notification: { channel_id: "chat_messages", sound: "default" },
+                },
+              },
+            }),
+          },
+        );
+        if (result.ok) {
+          sent++;
+          return;
+        }
+        const failure = await result.text();
+        console.error(`FCM rejected an Android token (${result.status}):`, failure);
+        if (result.status === 404 || failure.includes("UNREGISTERED")) {
+          if (platform === "fcm_web") invalidFcmTokens.push(device_token);
+          else invalidTokens.push(device_token);
+        }
+        return;
+      }
+
       const result = await fetch(`${apnsHost}/3/device/${device_token}`, {
         method: "POST",
         headers: {
-          authorization: `bearer ${providerToken}`,
+          authorization: `bearer ${apnsProviderToken}`,
           "apns-topic": bundleId,
           "apns-push-type": "alert",
           "apns-priority": "10",
           "content-type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          aps: { alert: { title: "PingCar", body }, sound: "default" },
+          url,
+        }),
       });
       if (result.ok) {
         sent++;
@@ -182,6 +288,9 @@ Deno.serve(async (request) => {
 
     if (invalidTokens.length) {
       await admin.from("push_devices").delete().in("device_token", invalidTokens);
+    }
+    if (invalidFcmTokens.length) {
+      await admin.from("device_tokens").delete().in("fcm_token", invalidFcmTokens);
     }
 
     return response({ sent });
