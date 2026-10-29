@@ -616,10 +616,12 @@ document.addEventListener("DOMContentLoaded", translateDashboard);
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { startPingCarPresence } from "./js/live-presence.js";
 
 const SUPABASE_URL = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+startPingCarPresence(supabase);
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyD4E_8-_ZSbYPeiU1dxn7yYXL8enbUdOAU",
