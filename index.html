@@ -741,13 +741,21 @@ const supabaseUrl = "https://uvmkhqzfsgvicacvgskf.supabase.co";
 const supabaseKey = "sb_publishable_PlgGThtv9ZEpQgiag8Y7Gw_PvZwsij2";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-// PingCar Live Online - Website
-async function startWebsitePresence() {
+// PingCar Live Online - Website and native apps
+async function startPingCarPresence() {
   try {
+    const capacitorPlatform = window.Capacitor?.getPlatform?.();
+    const platform = capacitorPlatform === "ios" ||
+      window.webkit?.messageHandlers?.pingcarPush
+      ? "iphone"
+      : capacitorPlatform === "android" || window.PingCarAndroidPush
+        ? "android"
+        : "website";
+
     const onlineChannel = supabase.channel("pingcar-online", {
       config: {
         presence: {
-          key: "website-" + crypto.randomUUID()
+          key: `${platform}-${crypto.randomUUID()}`
         }
       }
     });
@@ -755,23 +763,26 @@ async function startWebsitePresence() {
     onlineChannel.subscribe(async (status) => {
       if (status === "SUBSCRIBED") {
         await onlineChannel.track({
-          platform: "website",
+          platform,
           user_id: null,
           email: null
         });
 
-        console.log("PingCar Live Online: Website connected");
+        console.log(`PingCar Live Online: ${platform} connected`);
       }
     });
 
     window.pingcarOnlineChannel = onlineChannel;
+    window.addEventListener("pagehide", () => {
+      void supabase.removeChannel(onlineChannel);
+    }, { once: true });
 
   } catch (error) {
-    console.error("PingCar Live Online error:", error);
+    console.error("PingCar Live Online tracking error:", error);
   }
 }
 
-startWebsitePresence();
+startPingCarPresence();
 async function registerPageVisit() {
   try {
     let visitorId = localStorage.getItem("pingcar_visitor_id");
