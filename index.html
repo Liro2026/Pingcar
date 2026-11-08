@@ -862,7 +862,8 @@ console.log("Detected country:", country);
         {
           visitor_id: visitorId,
           page: window.location.pathname,
-          country: country
+          country: country,
+          referrer: document.referrer || null
         }
       ]);
 
