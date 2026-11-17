@@ -3815,6 +3815,7 @@ async function showSubscriptions() {
           status: "active",
           plan_name: plan,
           amount: amount,
+          is_paid_subscription: amount > 0,
           expires_at: expiresAt
         });
 
@@ -3960,7 +3961,18 @@ Dein PingCar Team
           ? new Date(sub.created_at).toLocaleDateString("de-CH")
           : "-";
 
-        const statusText = isActive ? "Aktiv" : "Inaktiv";
+        const graceEndsAt = sub.is_paid_subscription && sub.expires_at
+          ? new Date(new Date(sub.expires_at).getTime() + 7 * 24 * 60 * 60 * 1000)
+          : null;
+        const statusText = sub.premium_blocked_at
+          ? "Abgelaufen · Premium gesperrt"
+          : isActive && graceEndsAt && new Date(sub.expires_at).getTime() <= Date.now() && graceEndsAt.getTime() > Date.now()
+            ? "Aktiv · Kulanz bis " + graceEndsAt.toLocaleDateString("de-CH")
+            : isActive && sub.is_paid_subscription
+              ? "Aktiv · bezahlt"
+              : isActive
+                ? "Aktiv · kostenlos/manuell"
+                : "Inaktiv";
 
         return `
           <tr style="border-bottom:1px solid #eee;">
