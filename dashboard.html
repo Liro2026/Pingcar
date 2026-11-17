@@ -68,10 +68,6 @@ body {
   margin-bottom: 0;
 }
 </style>
-<style>
-.premium-lock{padding:16px;border:1px solid #f0d58a;border-radius:12px;background:#fff9e8;color:#604b16;line-height:1.5}
-.premium-lock a{color:#145fc2;font-weight:700}
-</style>
 </head>
 <body>
 <header class="top"><div class="wrap"><h1>PingCar</h1><div id="userEmail">Dashboard</div></div></header>
@@ -88,7 +84,7 @@ body {
 <h2 id="pingcarTitle">Mein PingCar</h2>
 <div id="pingInfo" class="muted">Wird geladen...</div>
 <img id="qrimage" class="qr hidden" alt="PingCar QR-Code">
-  <div id="qrActions" class="hidden" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
 
 <button type="button" onclick="downloadQR()"
 style="padding:12px 16px;border:none;border-radius:8px;background:#1976d2;color:white;font-weight:bold;cursor:pointer;">
@@ -111,9 +107,8 @@ style="padding:12px 16px;border:none;border-radius:8px;background:#8e24aa;color:
 </button>
 
 </div>
-<div id="qrPremiumNotice" class="premium-lock hidden"></div>
 </section>
-<section class="card" id="notificationsCard">
+<section class="card">
 <h2 id="notificationsTitle">Benachrichtigungen</h2>
 <div id="notifications" class="muted">Wird geladen...</div>
 </section>
@@ -641,43 +636,6 @@ const $ = id => document.getElementById(id);
 function status(message, type="") { $("status").textContent = message; $("status").className = "status " + type; }
 
 let currentUser = null;
-let premiumAccess = false;
-
-const premiumNoticeText = {
-  de: "Ein aktiver PingCar-Testzeitraum oder ein aktives Abonnement ist erforderlich, um den QR-Code und die Premium-Funktionen zu nutzen.",
-  sq: "Për të përdorur kodin QR dhe funksionet Premium, duhet të kesh provën aktive të PingCar ose një abonim aktiv.",
-  fr: "Une période d’essai PingCar active ou un abonnement actif est nécessaire pour utiliser le QR code et les fonctions Premium.",
-  it: "Per usare il codice QR e le funzioni Premium è necessario un periodo di prova PingCar attivo o un abbonamento attivo.",
-  en: "An active PingCar trial or subscription is required to use the QR code and premium features."
-};
-
-function setPremiumAccess(isActive) {
-  premiumAccess = Boolean(isActive);
-  $("qrActions").classList.toggle("hidden", !premiumAccess);
-  $("qrimage").classList.toggle("hidden", !premiumAccess || !$("qrimage").src);
-  $("notificationsCard").classList.toggle("hidden", !premiumAccess);
-  $("enablePush").classList.toggle("hidden", !premiumAccess);
-  const notice = $("qrPremiumNotice");
-  notice.classList.toggle("hidden", premiumAccess);
-  if (!premiumAccess) {
-    const lang = String(dashLang || "de").split("-")[0];
-    const message = premiumNoticeText[lang] || premiumNoticeText.en;
-    const plansLabel = lang === "sq" ? "Shiko planet" : lang === "de" ? "Pläne ansehen" : lang === "fr" ? "Voir les offres" : lang === "it" ? "Vedi i piani" : "View plans";
-    notice.innerHTML = `${escapeHtml(message)} <a href="index.html">${plansLabel}</a>`;
-    $("pingInfo").classList.add("hidden");
-    $("qrimage").classList.add("hidden");
-  } else {
-    $("pingInfo").classList.remove("hidden");
-    if ($("qrimage").src) $("qrimage").classList.remove("hidden");
-  }
-}
-
-function requirePremiumAccess() {
-  if (premiumAccess) return true;
-  const lang = String(dashLang || "de").split("-")[0];
-  alert(premiumNoticeText[lang] || premiumNoticeText.en);
-  return false;
-}
 
 async function loadUser() {
   const { data, error } = await supabase.auth.getUser();
@@ -692,7 +650,6 @@ async function loadUser() {
 }
 
 async function loadPingCar(user) {
-  if (!premiumAccess) return;
   const { data, error } = await supabase.from("user_qr").select("*").eq("user_id", user.id).maybeSingle();
   if (error) { $("pingInfo").textContent = "PingCar-Daten konnten nicht geladen werden: " + error.message; return; }
   if (!data) { $("pingInfo").textContent = "Noch kein PingCar-Fahrzeug zugeordnet."; return; }
@@ -713,31 +670,20 @@ async function loadSubscription(user) {
     .select("plan_name, amount, status, expires_at, created_at")
     .eq("email", user.email)
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(1)
+    .maybeSingle();
 
   if (error) {
     console.error("Abonnement Fehler:", error);
-    setPremiumAccess(false);
     box.innerHTML = `
       <div style="color:#dc3545;">
         Abonnement konnte nicht geladen werden.
       </div>
     `;
-    return false;
+    return;
   }
 
-  const records = data || [];
-  const now = Date.now();
-  const activeStatuses = new Set(["active", "trialing", "trial", "in_trial", "trial_active"]);
-  const activeRecord = records.find(record => {
-    const subscriptionStatus = String(record.status || "").toLowerCase();
-    const expiry = record.expires_at ? new Date(record.expires_at).getTime() : null;
-    return activeStatuses.has(subscriptionStatus) && (expiry === null || (Number.isFinite(expiry) && expiry > now));
-  });
-  const displayRecord = activeRecord || records[0] || null;
-  setPremiumAccess(Boolean(activeRecord));
-
-  if (!displayRecord) {
+  if (!data) {
     box.innerHTML = `
       <div style="
         padding:15px;
@@ -747,11 +693,10 @@ async function loadSubscription(user) {
         <strong>Kein Abonnement vorhanden</strong>
       </div>
     `;
-    return false;
+    return;
   }
 
-  const data = displayRecord;
-  const isActive = data === activeRecord;
+  const isActive = data.status === "active";
 
   const expiryDate = data.expires_at
     ? new Date(data.expires_at).toLocaleDateString("de-CH")
@@ -791,10 +736,8 @@ async function loadSubscription(user) {
 
     </div>
   `;
-  return isActive;
 }
 async function loadNotifications(user) {
-  if (!premiumAccess) return;
   const box = $("notifications");
 
   const { data, error } = await supabase
@@ -895,7 +838,6 @@ box.innerHTML = data.map(n => {
   }).join("");
 }
 function replyToPingCar(conversationId, senderId, qrCode) {
-  if (!requirePremiumAccess()) return;
   if (!currentUser) {
     alert("Sie sind nicht angemeldet.");
     return;
@@ -917,7 +859,6 @@ function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&"
 
 async function enablePush() {
   try {
-    if (!requirePremiumAccess()) return;
     if (!currentUser) { status("Du bist nicht angemeldet.", "error"); return; }
     if (!("serviceWorker" in navigator) || !("Notification" in window)) { status("Dieser Browser unterstützt Push-Benachrichtigungen hier nicht.", "error"); return; }
 
@@ -993,15 +934,15 @@ document.getElementById("logout").addEventListener("click", logout);
 const user = await loadUser();
 
 if (user) {
-  const hasPremiumAccess = await loadSubscription(user);
-  if (hasPremiumAccess) {
-    await Promise.all([loadPingCar(user), loadNotifications(user)]);
-  }
+  await Promise.all([
+    loadPingCar(user),
+    loadNotifications(user),
+    loadSubscription(user)
+  ]);
 }
   // ===== PingCar QR Actions =====
 
 function saveQRAsPDF() {
-    if (!requirePremiumAccess()) return;
     const qrimage = document.getElementById("qrimage");
 
     if (!qrimage || !qrimage.src) {
@@ -1107,7 +1048,6 @@ printWindow.document.close();
 
 }
 async function downloadQR() {
-  if (!requirePremiumAccess()) return;
   const qrImage = document.querySelector('img[alt="PingCar QR-Code"]');
 
   if (!qrImage || !qrImage.src) {
@@ -1140,12 +1080,10 @@ async function downloadQR() {
   }
 }
 function printQR() {
-    if (!requirePremiumAccess()) return;
     saveQRAsPDF();
 }
 
 async function shareQR() {
-    if (!requirePremiumAccess()) return;
     const qrimage = document.getElementById("qrimage");
 
     if (!qrimage || !qrimage.src) {
