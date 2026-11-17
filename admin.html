@@ -528,6 +528,7 @@ async function showUsers() {
 
     const users = result.users || [];
     let rows = "";
+    const unconfirmedEmails = new Map();
 
     users.forEach(user => {
 
@@ -545,6 +546,9 @@ const country = meta.location_country || countryCode || "-";
 const ip = meta.location_ip || "-";
 
       const email = user.email || "-";
+      if (!user.email_confirmed_at && !user.banned_until && email !== "-") {
+        unconfirmedEmails.set(user.id, email);
+      }
 
      const status = user.banned_until
   ? "Gesperrt"
@@ -568,6 +572,14 @@ const ip = meta.location_ip || "-";
           : `<button onclick="manageUser('${user.id}', 'block')">
                🚫 Blockieren
              </button>`
+      }
+
+      ${
+        !user.email_confirmed_at && !user.banned_until
+          ? `<button type="button" data-resend-confirmation="${user.id}" style="margin-bottom:6px;">
+               📧 Bestätigungslink erneut senden
+             </button><br>`
+          : ""
       }
 
       <button onclick="manageUser('${user.id}', 'delete')">
@@ -607,6 +619,29 @@ const ip = meta.location_ip || "-";
         </table>
       </div>
     `;
+
+    content.querySelectorAll("[data-resend-confirmation]").forEach(button => {
+      button.addEventListener("click", async () => {
+        const email = unconfirmedEmails.get(button.dataset.resendConfirmation);
+        if (!email) return;
+
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = "⏳ Sende...";
+
+        try {
+          const { error } = await db.auth.resend({ type: "signup", email });
+          if (error) throw error;
+          alert(`Der Bestätigungslink wurde erneut an ${email} gesendet.`);
+        } catch (error) {
+          console.error("Confirmation email resend failed:", error);
+          alert(error instanceof Error ? error.message : "Die Bestätigungs-E-Mail konnte nicht gesendet werden.");
+        } finally {
+          button.disabled = false;
+          button.textContent = originalText;
+        }
+      });
+    });
 
   } catch (error) {
 
